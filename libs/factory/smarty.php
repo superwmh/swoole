@@ -1,0 +1,3 @@
+<?php
+$smarty = new Template;
+?>
