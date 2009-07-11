@@ -1,0 +1,99 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5.1
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2009 年 04 月 12 日 05:46
+-- 服务器版本: 5.0.27
+-- PHP 版本: 5.2.9-1
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- 数据库: `exiu`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `swoole_comment`
+--
+
+CREATE TABLE `swoole_comment` (
+  `id` int(11) NOT NULL auto_increment,
+  `fid` int(11) NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `content` text NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `mode` varchar(24) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `swoole_content`
+--
+
+CREATE TABLE `swoole_content` (
+  `id` int(11) NOT NULL auto_increment,
+  `root` int(11) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `dict` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `introduct` text NOT NULL,
+  `content` mediumtext NOT NULL,
+  `url` varchar(128) NOT NULL,
+  `image` varchar(128) NOT NULL,
+  `type` varchar(32) NOT NULL,
+  `star` varchar(16) NOT NULL,
+  `property` varchar(16) NOT NULL,
+  `commentnum` int(11) NOT NULL,
+  `resourcenum` int(11) NOT NULL,
+  `readnum` int(11) NOT NULL,
+  `mod` varchar(32) NOT NULL,
+  `owner` varchar(32) NOT NULL,
+  `groups` varchar(32) NOT NULL,
+  `updatedate` varchar(24) NOT NULL,
+  `createdate` varchar(24) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `swoole_dict`
+--
+
+CREATE TABLE `swoole_dict` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(128) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `root` int(11) NOT NULL,
+  `createdate` varchar(12) NOT NULL,
+  `access` varchar(32) NOT NULL,
+  `owner` varchar(32) NOT NULL,
+  `groups` varchar(32) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `swoole_resource`
+--
+
+CREATE TABLE `swoole_resource` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(128) NOT NULL,
+  `type` varchar(24) NOT NULL,
+  `url` varchar(128) NOT NULL,
+  `file` varchar(128) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `filesize` int(11) NOT NULL,
+  `createdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
