@@ -1,0 +1,3 @@
+a:1:{s:11:"site_config";a:3:{s:5:"value";a:3:{s:12:"tpl_left_tag";s:5:"siao:";s:10:"site_theme";s:10:"swoolelib/";s:13:"plot_category";s:44:"head:网站头部
+foot:网站尾部
+other:其他位置";}s:7:"timeout";i:3600;s:6:"mktime";i:1247130840;}}
