@@ -1,0 +1,3 @@
+<?php
+$tpl = new Template();
+?>

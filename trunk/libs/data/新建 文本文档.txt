@@ -1,0 +1,294 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5.1
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2009 年 04 月 08 日 13:30
+-- 服务器版本: 5.0.27
+-- PHP 版本: 5.2.9-1
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- 数据库: `website`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_admin`
+--
+
+CREATE TABLE `chq_admin` (
+  `id` int(11) NOT NULL auto_increment,
+  `username` varchar(32) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `realname` varchar(32) NOT NULL,
+  `groups` varchar(32) NOT NULL,
+  `lastlogin` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_category`
+--
+
+CREATE TABLE `chq_category` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `cwhere` varchar(16) NOT NULL,
+  `root` varchar(32) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=25 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_config`
+--
+
+CREATE TABLE `chq_config` (
+  `keyname` varchar(64) NOT NULL,
+  `value` text NOT NULL,
+  `updatetime` int(11) NOT NULL,
+  PRIMARY KEY  (`keyname`)
+) ENGINE=MyISAM DEFAULT CHARSET=gb2312;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_download`
+--
+
+CREATE TABLE `chq_download` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `tid` int(11) NOT NULL,
+  `tidname` varchar(32) NOT NULL,
+  `tid2` int(11) NOT NULL,
+  `tid2name` varchar(32) NOT NULL,
+  `author` varchar(32) NOT NULL,
+  `price` varchar(16) NOT NULL,
+  `level` varchar(16) NOT NULL,
+  `os` varchar(50) NOT NULL,
+  `language` varchar(32) NOT NULL,
+  `sizes` varchar(16) NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `downcount` int(11) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `url` varchar(128) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_downloadcate`
+--
+
+CREATE TABLE `chq_downloadcate` (
+  `id` int(11) NOT NULL auto_increment,
+  `fid` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `otherinfo` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_guestbook`
+--
+
+CREATE TABLE `chq_guestbook` (
+  `id` int(11) NOT NULL auto_increment,
+  `title` varchar(128) NOT NULL,
+  `content` text NOT NULL,
+  `author` varchar(32) NOT NULL,
+  `company` varchar(50) NOT NULL,
+  `tel` varchar(36) NOT NULL,
+  `mobile` varchar(16) NOT NULL,
+  `address` varchar(128) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `posttime` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `status_id` varchar(16) NOT NULL,
+  `reply` text NOT NULL,
+  `replytime` varchar(16) default NULL,
+  `ifshow` tinyint(4) NOT NULL,
+  `otherinfo` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=gb2312 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_news`
+--
+
+CREATE TABLE `chq_news` (
+  `id` int(11) NOT NULL auto_increment,
+  `title` varchar(128) NOT NULL,
+  `url` varchar(64) NOT NULL,
+  `intro` mediumtext NOT NULL,
+  `tid` int(11) NOT NULL,
+  `tidname` varchar(64) NOT NULL,
+  `tid2` int(11) NOT NULL,
+  `tid2name` varchar(64) NOT NULL,
+  `readnum` int(11) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `author` varchar(32) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `titlecolor` varchar(7) NOT NULL default '#000000',
+  `showplace` varchar(10) NOT NULL,
+  `otherinfo` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 COMMENT='6' AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_newscate`
+--
+
+CREATE TABLE `chq_newscate` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `cwhere` varchar(16) NOT NULL,
+  `root` varchar(32) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_plot`
+--
+
+CREATE TABLE `chq_plot` (
+  `id` int(11) NOT NULL auto_increment,
+  `title` varchar(128) NOT NULL,
+  `url` varchar(64) NOT NULL,
+  `intro` mediumtext NOT NULL,
+  `tid` int(11) NOT NULL,
+  `tidname` varchar(64) NOT NULL,
+  `tid2` int(11) NOT NULL,
+  `tid2name` varchar(64) NOT NULL,
+  `readnum` int(11) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `author` varchar(32) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `titlecolor` varchar(7) NOT NULL default '#000000',
+  `showplace` varchar(10) NOT NULL,
+  `otherinfo` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=gb2312 COMMENT='6' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_plotcate`
+--
+
+CREATE TABLE `chq_plotcate` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `cwhere` varchar(16) NOT NULL,
+  `root` varchar(32) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_product`
+--
+
+CREATE TABLE `chq_product` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `color` varchar(7) NOT NULL default '#ff0000',
+  `orderid` int(11) NOT NULL default '0',
+  `tid` int(11) NOT NULL,
+  `tidname` varchar(32) NOT NULL,
+  `tid2` int(11) NOT NULL,
+  `tid2name` varchar(32) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `picture` varchar(64) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `author` varchar(32) NOT NULL default 'admin',
+  `readnum` int(11) NOT NULL,
+  `model` varchar(32) NOT NULL,
+  `info` varchar(128) NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `orderid` (`orderid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=122 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_productpic`
+--
+
+CREATE TABLE `chq_productpic` (
+  `id` int(11) NOT NULL auto_increment,
+  `pid` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `picture` varchar(64) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=9 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_solution`
+--
+
+CREATE TABLE `chq_solution` (
+  `id` int(11) NOT NULL auto_increment,
+  `title` varchar(128) NOT NULL,
+  `intro` mediumtext NOT NULL,
+  `tid` int(11) NOT NULL,
+  `tidname` varchar(64) NOT NULL,
+  `tid2` int(11) NOT NULL,
+  `tid2name` varchar(64) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `readnum` int(11) NOT NULL,
+  `postdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `author` varchar(32) NOT NULL,
+  `image` varchar(64) NOT NULL,
+  `titlecolor` varchar(7) NOT NULL default '#000000',
+  `showplace` varchar(10) NOT NULL,
+  `otherinfo` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 COMMENT='6' AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `chq_solutioncate`
+--
+
+CREATE TABLE `chq_solutioncate` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  `fid` int(11) NOT NULL,
+  `cwhere` varchar(16) NOT NULL,
+  `root` varchar(32) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=6 ;
