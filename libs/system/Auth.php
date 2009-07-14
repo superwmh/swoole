@@ -5,14 +5,21 @@
  */
 class Auth
 {
-	var $table='chq_user';
+	var $table = '';
+	var $db = '';
 	
 	function __construct($db,$table='')
 	{
 		if($table=='') $this->table = TABLE_PREFIX.'_user';
 		$this->db = $db;
 	}
-	
+	/**
+	 * 登录
+	 * @param $username
+	 * @param $password
+	 * @param $auto
+	 * @return unknown_type
+	 */
 	function login($username,$password,$auto)
 	{
 		setcookie('username',$username,time() + 2592000,'/');
@@ -26,6 +33,10 @@ class Auth
 			return true;
 		}
 	}
+	/**
+	 * 检查是否登录
+	 * @return unknown_type
+	 */
 	function isLogin()
 	{
 		if(isset($_SESSION['isLogin']) and $_SESSION['isLogin']==1) return true;
@@ -35,7 +46,11 @@ class Auth
 		}
 		return false;
 	}
-	
+	/**
+	 * 自动登录，如果自动登录则在本地记住密码
+	 * @param $user
+	 * @return unknown_type
+	 */
 	function autoLogin($user)
 	{
 		$ip = Swoole_client::getIP();
@@ -44,6 +59,10 @@ class Auth
 		setcookie('ip',$ip,time() + 2592000,'/');
 		setcookie('id',$user['id'],time() + 2592000,'/');
 	}
+	/**
+	 * 注销登录
+	 * @return unknown_type
+	 */
 	function logout()
 	{
 		if(isset($_SESSION['isLogin'])) unset($_SESSION['isLogin']);
@@ -52,6 +71,12 @@ class Auth
 			setcookie('password','',0,'/');
 		}
 	}
+	/**
+	 * 产生一个密码串，连接用户名和密码，并使用sha1产生散列
+	 * @param $username
+	 * @param $password
+	 * @return $password_string 40位的散列
+	 */
 	public static function mkpasswd($username,$password)
 	{
 		return sha1($username.$password);
