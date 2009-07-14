@@ -8,167 +8,167 @@
  * @create:2006-5-31
  * @modify:2006-6-1
  * @modify:feifengxlq 2006-11-4
- * description:³¬Ç¿·ÖÒ³Àà£¬ËÄÖÖ·ÖÒ³Ä£Ê½£¬Ä¬ÈÏ²ÉÓÃÀàËÆbaidu,googleµÄ·ÖÒ³·ç¸ñ¡£
- * 2.0Ôö¼Ó¹¦ÄÜ£ºÖ§³Ö×Ô¶¨Òå·ç¸ñ£¬×Ô¶¨ÒåÑùÊ½£¬Í¬Ê±Ö§³ÖPHP4ºÍPHP5,
+ * description:è¶…å¼ºåˆ†é¡µç±»ï¼Œå››ç§åˆ†é¡µæ¨¡å¼ï¼Œé»˜è®¤é‡‡ç”¨ç±»ä¼¼baidu,googleçš„åˆ†é¡µé£æ ¼ã€‚
+ * 2.0å¢åŠ åŠŸèƒ½ï¼šæ”¯æŒè‡ªå®šä¹‰é£æ ¼ï¼Œè‡ªå®šä¹‰æ ·å¼ï¼ŒåŒæ—¶æ”¯æŒPHP4å’ŒPHP5,
  * to see detail,please visit http://www.phpobject.net/blog/read.php
  * example:
- * Ä£Ê½ËÄÖÖ·ÖÒ³Ä£Ê½£º
-   require_once('../libs/classes/page.class.php');
-   $page=new page(array('total'=>1000,'perpage'=>20));
-   echo 'mode:1<br>'.$page->show();
-   echo '<hr>mode:2<br>'.$page->show(2);
-   echo '<hr>mode:3<br>'.$page->show(3);
-   echo '<hr>mode:4<br>'.$page->show(4);
-   ¿ªÆôAJAX£º
-   $ajaxpage=new page(array('total'=>1000,'perpage'=>20,'ajax'=>'ajax_page','page_name'=>'test'));
-   echo 'mode:1<br>'.$ajaxpage->show();
-   ²ÉÓÃ¼Ì³Ğ×Ô¶¨Òå·ÖÒ³ÏÔÊ¾Ä£Ê½£º
-   demo:[url=http://www.phpobject.net/blog]http://www.phpobject.net/blog[/url]
+ * æ¨¡å¼å››ç§åˆ†é¡µæ¨¡å¼ï¼š
+ require_once('../libs/classes/page.class.php');
+ $page=new page(array('total'=>1000,'perpage'=>20));
+ echo 'mode:1<br>'.$page->show();
+ echo '<hr>mode:2<br>'.$page->show(2);
+ echo '<hr>mode:3<br>'.$page->show(3);
+ echo '<hr>mode:4<br>'.$page->show(4);
+ å¼€å¯AJAXï¼š
+ $ajaxpage=new page(array('total'=>1000,'perpage'=>20,'ajax'=>'ajax_page','page_name'=>'test'));
+ echo 'mode:1<br>'.$ajaxpage->show();
+ é‡‡ç”¨ç»§æ‰¿è‡ªå®šä¹‰åˆ†é¡µæ˜¾ç¤ºæ¨¡å¼ï¼š
+ demo:[url=http://www.phpobject.net/blog]http://www.phpobject.net/blog[/url]
  */
-class Pager 
+class Pager
 {
 	/**
-	* config ,public
-	*/
-	var $page_name="page";//page±êÇ©£¬ÓÃÀ´¿ØÖÆurlÒ³¡£±ÈÈçËµxxx.php?PB_page=2ÖĞµÄPB_page
-	var $next_page='>';//ÏÂÒ»Ò³
-	var $pre_page='<';//ÉÏÒ»Ò³
-	var $first_page='First';//Ê×Ò³
-	var $last_page='Last';//Î²Ò³
-	var $pre_bar='<<';//ÉÏÒ»·ÖÒ³Ìõ
-	var $next_bar='>>';//ÏÂÒ»·ÖÒ³Ìõ
+	 * config ,public
+	 */
+	var $page_name="page";//pageæ ‡ç­¾ï¼Œç”¨æ¥æ§åˆ¶urlé¡µã€‚æ¯”å¦‚è¯´xxx.php?PB_page=2ä¸­çš„PB_page
+	var $next_page='>';//ä¸‹ä¸€é¡µ
+	var $pre_page='<';//ä¸Šä¸€é¡µ
+	var $first_page='First';//é¦–é¡µ
+	var $last_page='Last';//å°¾é¡µ
+	var $pre_bar='<<';//ä¸Šä¸€åˆ†é¡µæ¡
+	var $next_bar='>>';//ä¸‹ä¸€åˆ†é¡µæ¡
 	var $format_left='';
 	var $format_right='';
-	var $is_ajax=false;//ÊÇ·ñÖ§³ÖAJAX·ÖÒ³Ä£Ê½ 
+	var $is_ajax=false;//æ˜¯å¦æ”¯æŒAJAXåˆ†é¡µæ¨¡å¼ 
 
 	/**
-	* private
-	*
-	*/ 
-	var $pagebarnum=10;//¿ØÖÆ¼ÇÂ¼ÌõµÄ¸öÊı¡£
-	var $totalpage=0;//×ÜÒ³Êı
-	var $ajax_action_name='';//AJAX¶¯×÷Ãû
-	var $nowindex=1;//µ±Ç°Ò³
-	var $url="";//urlµØÖ·Í·
+	 * private
+	 *
+	 */
+	var $pagebarnum=10;//æ§åˆ¶è®°å½•æ¡çš„ä¸ªæ•°ã€‚
+	var $totalpage=0;//æ€»é¡µæ•°
+	var $ajax_action_name='';//AJAXåŠ¨ä½œå
+	var $nowindex=1;//å½“å‰é¡µ
+	var $url="";//urlåœ°å€å¤´
 	var $offset=0;
 	var $style;
 
 	/**
-	* constructor¹¹Ôìº¯Êı
-	*
-	* @param array $array['total'],$array['perpage'],$array['nowindex'],$array['url'],$array['ajax']...
-	*/
-function __construct($array)
-{
-if(is_array($array)){
-if(!array_key_exists('total',$array))$this->error(__FUNCTION__,'need a param of total');
-$total=intval($array['total']);
-$perpage=(array_key_exists('perpage',$array))?intval($array['perpage']):10;
-$nowindex=(array_key_exists('nowindex',$array))?intval($array['nowindex']):'';
-$url=(array_key_exists('url',$array))?$array['url']:'';
-}else{
-$total=$array;
-$perpage=10;
-$nowindex='';
-$url='';
-}
-if((!is_int($total))||($total<0))$this->error(__FUNCTION__,$total.' is not a positive integer!');
-if((!is_int($perpage))||($perpage<=0))$this->error(__FUNCTION__,$perpage.' is not a positive integer!');
-if(!empty($array['page_name']))$this->set('page_name',$array['page_name']);//ÉèÖÃpagename
-$this->_set_nowindex($nowindex);//ÉèÖÃµ±Ç°Ò³
-$this->_set_url($url);//ÉèÖÃÁ´½ÓµØÖ·
-$this->totalpage=ceil($total/$perpage);
-$this->offset=($this->nowindex-1)*$perpage;
-if(!empty($array['ajax']))$this->open_ajax($array['ajax']);//´ò¿ªAJAXÄ£Ê½
-}
-/**
-* Éè¶¨ÀàÖĞÖ¸¶¨±äÁ¿ÃûµÄÖµ£¬Èç¹û¸Ä±äÁ¿²»ÊôÓÚÕâ¸öÀà£¬½«throwÒ»¸öexception
-*
-* @param string $var
-* @param string $value
-*/
-function set($var,$value)
-{
-if(in_array($var,get_object_vars($this)))
-$this->$var=$value;
-else {
-$this->error(__FUNCTION__,$var." does not belong to PB_Page!");
-}
-
-}
-/**
-* ´ò¿ªµ¹AJAXÄ£Ê½
-*
-* @param string $action Ä¬ÈÏajax´¥·¢µÄ¶¯×÷¡£
-*/
-function open_ajax($action)
-{
-$this->is_ajax=true;
-$this->ajax_action_name=$action;
-}
-/**
-* »ñÈ¡ÏÔÊ¾"ÏÂÒ»Ò³"µÄ´úÂë
-* 
-* @param string $style
-* @return string
-*/
-function next_page()
-{
-	$style = $this->style;
-	if($this->nowindex<$this->totalpage)
+	 * constructoræ„é€ å‡½æ•°
+	 *
+	 * @param array $array['total'],$array['perpage'],$array['nowindex'],$array['url'],$array['ajax']...
+	 */
+	function __construct($array)
 	{
-		return $this->_get_link($this->_get_url($this->nowindex+1),$this->next_page,$style);
+		if(is_array($array)){
+			if(!array_key_exists('total',$array))$this->error(__FUNCTION__,'need a param of total');
+			$total=intval($array['total']);
+			$perpage=(array_key_exists('perpage',$array))?intval($array['perpage']):10;
+			$nowindex=(array_key_exists('nowindex',$array))?intval($array['nowindex']):'';
+			$url=(array_key_exists('url',$array))?$array['url']:'';
+		}else{
+			$total=$array;
+			$perpage=10;
+			$nowindex='';
+			$url='';
+		}
+		if((!is_int($total))||($total<0))$this->error(__FUNCTION__,$total.' is not a positive integer!');
+		if((!is_int($perpage))||($perpage<=0))$this->error(__FUNCTION__,$perpage.' is not a positive integer!');
+		if(!empty($array['page_name']))$this->set('page_name',$array['page_name']);//è®¾ç½®pagename
+		$this->_set_nowindex($nowindex);//è®¾ç½®å½“å‰é¡µ
+		$this->_set_url($url);//è®¾ç½®é“¾æ¥åœ°å€
+		$this->totalpage=ceil($total/$perpage);
+		$this->offset=($this->nowindex-1)*$perpage;
+		if(!empty($array['ajax']))$this->open_ajax($array['ajax']);//æ‰“å¼€AJAXæ¨¡å¼
 	}
-	return '<span class="'.$style.'">'.$this->next_page.'</span>';
-}
+	/**
+	 * è®¾å®šç±»ä¸­æŒ‡å®šå˜é‡åçš„å€¼ï¼Œå¦‚æœæ”¹å˜é‡ä¸å±äºè¿™ä¸ªç±»ï¼Œå°†throwä¸€ä¸ªexception
+	 *
+	 * @param string $var
+	 * @param string $value
+	 */
+	function set($var,$value)
+	{
+		if(in_array($var,get_object_vars($this)))
+		$this->$var=$value;
+		else {
+			$this->error(__FUNCTION__,$var." does not belong to PB_Page!");
+		}
+
+	}
+	/**
+	 * æ‰“å¼€å€’AJAXæ¨¡å¼
+	 *
+	 * @param string $action é»˜è®¤ajaxè§¦å‘çš„åŠ¨ä½œã€‚
+	 */
+	function open_ajax($action)
+	{
+		$this->is_ajax=true;
+		$this->ajax_action_name=$action;
+	}
+	/**
+	 * è·å–æ˜¾ç¤º"ä¸‹ä¸€é¡µ"çš„ä»£ç 
+	 *
+	 * @param string $style
+	 * @return string
+	 */
+	function next_page()
+	{
+		$style = $this->style;
+		if($this->nowindex<$this->totalpage)
+		{
+			return $this->_get_link($this->_get_url($this->nowindex+1),$this->next_page,$style);
+		}
+		return '<span class="'.$style.'">'.$this->next_page.'</span>';
+	}
 
 	/**
-	* »ñÈ¡ÏÔÊ¾¡°ÉÏÒ»Ò³¡±µÄ´úÂë
-	*
-	* @param string $style
-	* @return string
-	*/
+	 * è·å–æ˜¾ç¤ºâ€œä¸Šä¸€é¡µâ€çš„ä»£ç 
+	 *
+	 * @param string $style
+	 * @return string
+	 */
 	function pre_page()
 	{
 		$style = $this->style;
-	if($this->nowindex>1){
-	return $this->_get_link($this->_get_url($this->nowindex-1),$this->pre_page,$style);
+		if($this->nowindex>1){
+			return $this->_get_link($this->_get_url($this->nowindex-1),$this->pre_page,$style);
+		}
+		return '<span class="'.$style.'">'.$this->pre_page.'</span>';
 	}
-	return '<span class="'.$style.'">'.$this->pre_page.'</span>';
-	}
-
-/**
-* »ñÈ¡ÏÔÊ¾¡°Ê×Ò³¡±µÄ´úÂë
-*
-* @return string
-*/
-function first_page()
-{
-	$style = $this->style;
-	if($this->nowindex==1){
-	return '<span class="'.$style.'">'.$this->first_page.'</span>';
-	}
-	return $this->_get_link($this->_get_url(1),$this->first_page,$style);
-}
 
 	/**
-	* »ñÈ¡ÏÔÊ¾¡°Î²Ò³¡±µÄ´úÂë
-	*
-	* @return string
-	*/
+	 * è·å–æ˜¾ç¤ºâ€œé¦–é¡µâ€çš„ä»£ç 
+	 *
+	 * @return string
+	 */
+	function first_page()
+	{
+		$style = $this->style;
+		if($this->nowindex==1){
+			return '<span class="'.$style.'">'.$this->first_page.'</span>';
+		}
+		return $this->_get_link($this->_get_url(1),$this->first_page,$style);
+	}
+
+	/**
+	 * è·å–æ˜¾ç¤ºâ€œå°¾é¡µâ€çš„ä»£ç 
+	 *
+	 * @return string
+	 */
 	function last_page()
 	{
 		$style = $this->style;
-	if($this->nowindex==$this->totalpage){
-	return '<span class="'.$style.'">'.$this->last_page.'</span>';
-	}
+		if($this->nowindex==$this->totalpage){
+			return '<span class="'.$style.'">'.$this->last_page.'</span>';
+		}
 		return $this->_get_link($this->_get_url($this->totalpage),$this->last_page,$style);
 	}
 
 	function nowbar()
 	{
 		$style = $this->style;
-		
+
 		$plus=ceil($this->pagebarnum/2);
 		if($this->pagebarnum-$plus+$this->nowindex>$this->totalpage)$plus=($this->pagebarnum-$this->totalpage+$this->nowindex);
 		$begin=$this->nowindex-$plus+1;
@@ -177,82 +177,82 @@ function first_page()
 		for($i=$begin;$i<$begin+$this->pagebarnum;$i++)
 		{
 			if($i<=$this->totalpage){
-			if($i!=$this->nowindex)
-			$return.=$this->_get_text($this->_get_link($this->_get_url($i),$i,$style));
-			else 
-			$return.=$this->_get_text('<span id="pager_now">'.$i.'</span>');
+				if($i!=$this->nowindex)
+				$return.=$this->_get_text($this->_get_link($this->_get_url($i),$i,$style));
+				else
+				$return.=$this->_get_text('<span id="pager_now">'.$i.'</span>');
 			}else{
-			break;
+				break;
 			}
 			$return.="\n";
 		}
 		unset($begin);
 		return $return;
 	}
-/**
-* »ñÈ¡ÏÔÊ¾Ìø×ª°´Å¥µÄ´úÂë
-*
-* @return string
-*/
-function select()
-{
-$return='<select name="PB_Page_Select">';
-for($i=1;$i<=$this->totalpage;$i++)
-{
-if($i==$this->nowindex){
-$return.='<option value="'.$i.'" selected>'.$i.'</option>';
-}else{
-$return.='<option value="'.$i.'">'.$i.'</option>';
-}
-}
-unset($i);
-$return.='</select>';
-return $return;
-}
+	/**
+	 * è·å–æ˜¾ç¤ºè·³è½¬æŒ‰é’®çš„ä»£ç 
+	 *
+	 * @return string
+	 */
+	function select()
+	{
+		$return='<select name="PB_Page_Select">';
+		for($i=1;$i<=$this->totalpage;$i++)
+		{
+			if($i==$this->nowindex){
+				$return.='<option value="'.$i.'" selected>'.$i.'</option>';
+			}else{
+				$return.='<option value="'.$i.'">'.$i.'</option>';
+			}
+		}
+		unset($i);
+		$return.='</select>';
+		return $return;
+	}
 
-/**
-* »ñÈ¡mysql Óï¾äÖĞlimitĞèÒªµÄÖµ
-*
-* @return string
-*/
-function offset()
-{
-return $this->offset;
-}
+	/**
+	 * è·å–mysql è¯­å¥ä¸­limitéœ€è¦çš„å€¼
+	 *
+	 * @return string
+	 */
+	function offset()
+	{
+		return $this->offset;
+	}
 
-/**
-* ¿ØÖÆ·ÖÒ³ÏÔÊ¾·ç¸ñ£¨Äã¿ÉÒÔÔö¼ÓÏàÓ¦µÄ·ç¸ñ£©
-*
-* @param int $mode
-* @return string
-*/
+	/**
+	 * æ§åˆ¶åˆ†é¡µæ˜¾ç¤ºé£æ ¼ï¼ˆä½ å¯ä»¥å¢åŠ ç›¸åº”çš„é£æ ¼ï¼‰
+	 *
+	 * @param int $mode
+	 * @return string
+	 */
 	function render($mode=2)
 	{
 		$pager_html = "<div id='pager'>";
 		switch ($mode)
 		{
 			case '1':
-				$this->next_page='ÏÂÒ»Ò³';
-				$this->pre_page='ÉÏÒ»Ò³';
-				$pager_html.=$this->pre_page().$this->nowbar().$this->next_page().'µÚ'.$this->select().'Ò³';
+				$this->next_page='ä¸‹ä¸€é¡µ';
+				$this->pre_page='ä¸Šä¸€é¡µ';
+				$pager_html.=$this->pre_page().$this->nowbar().$this->next_page().'ç¬¬'.$this->select().'é¡µ';
 				break;
 			case '2':
-				$this->next_page='ÏÂÒ»Ò³';
-				$this->pre_page='ÉÏÒ»Ò³';
-				$this->first_page='Ê×Ò³';
-				$this->last_page='Î²Ò³';
-				$pager_html.=$this->first_page().$this->pre_page().'[µÚ'.$this->nowindex.'Ò³]'.$this->nowbar().$this->next_page().$this->last_page();
+				$this->next_page='ä¸‹ä¸€é¡µ';
+				$this->pre_page='ä¸Šä¸€é¡µ';
+				$this->first_page='é¦–é¡µ';
+				$this->last_page='å°¾é¡µ';
+				$pager_html.=$this->first_page().$this->pre_page().'[ç¬¬'.$this->nowindex.'é¡µ]'.$this->nowbar().$this->next_page().$this->last_page();
 				break;
 			case '3':
-				$this->next_page='ÏÂÒ»Ò³';
-				$this->pre_page='ÉÏÒ»Ò³';
-				$this->first_page='Ê×Ò³';
-				$this->last_page='Î²Ò³';
+				$this->next_page='ä¸‹ä¸€é¡µ';
+				$this->pre_page='ä¸Šä¸€é¡µ';
+				$this->first_page='é¦–é¡µ';
+				$this->last_page='å°¾é¡µ';
 				$pager_html.=$this->first_page().$this->pre_page().$this->next_page().$this->last_page();
 				break;
 			case '4':
-				$this->next_page='ÏÂÒ»Ò³';
-				$this->pre_page='ÉÏÒ»Ò³';
+				$this->next_page='ä¸‹ä¸€é¡µ';
+				$this->pre_page='ä¸Šä¸€é¡µ';
 				$pager_html.=$this->pre_page().$this->nowbar().$this->next_page();
 				break;
 			case '5':
@@ -262,99 +262,99 @@ return $this->offset;
 		$pager_html.='</div>';
 		return $pager_html;
 	}
-/*----------------private function (Ë½ÓĞ·½·¨)-----------------------------------------------------------*/
-/**
-* ÉèÖÃurlÍ·µØÖ·
-* @param: String $url
-* @return boolean
-*/
-function _set_url($url="")
-{
-if(!empty($url)){
-//ÊÖ¶¯ÉèÖÃ
-$this->url=$url.((stristr($url,'?'))?'&':'?').$this->page_name."=";
-}else{
-//×Ô¶¯»ñÈ¡
-if(empty($_SERVER['QUERY_STRING'])){
-//²»´æÔÚQUERY_STRINGÊ±
-$this->url=$_SERVER['REQUEST_URI']."?".$this->page_name."=";
-}else{
-//
-if(stristr($_SERVER['QUERY_STRING'],$this->page_name.'=')){
-//µØÖ·´æÔÚÒ³Ãæ²ÎÊı
-$this->url=str_replace($this->page_name.'='.$this->nowindex,'',$_SERVER['REQUEST_URI']);
-$last=$this->url[strlen($this->url)-1];
-if($last=='?'||$last=='&'){
-$this->url.=$this->page_name."=";
-}else{
-$this->url.='&'.$this->page_name."=";
-}
-}else{
-//
-$this->url=$_SERVER['REQUEST_URI'].'&'.$this->page_name.'=';
-}//end if    
-}//end if
-}//end if
-}
-
-/**
-* ÉèÖÃµ±Ç°Ò³Ãæ
-*
-*/
-function _set_nowindex($nowindex)
-{
-if(empty($nowindex)){
-//ÏµÍ³»ñÈ¡
-
-if(isset($_GET[$this->page_name])){
-$this->nowindex=intval($_GET[$this->page_name]);
-}
-}else{
-//ÊÖ¶¯ÉèÖÃ
-$this->nowindex=intval($nowindex);
-}
-}
+	/*----------------private function (ç§æœ‰æ–¹æ³•)-----------------------------------------------------------*/
+	/**
+	 * è®¾ç½®urlå¤´åœ°å€
+	 * @param: String $url
+	 * @return boolean
+	 */
+	function _set_url($url="")
+	{
+		if(!empty($url)){
+			//æ‰‹åŠ¨è®¾ç½®
+			$this->url=$url.((stristr($url,'?'))?'&':'?').$this->page_name."=";
+		}else{
+			//è‡ªåŠ¨è·å–
+			if(empty($_SERVER['QUERY_STRING'])){
+				//ä¸å­˜åœ¨QUERY_STRINGæ—¶
+				$this->url=$_SERVER['REQUEST_URI']."?".$this->page_name."=";
+			}else{
+				//
+				if(stristr($_SERVER['QUERY_STRING'],$this->page_name.'=')){
+					//åœ°å€å­˜åœ¨é¡µé¢å‚æ•°
+					$this->url=str_replace($this->page_name.'='.$this->nowindex,'',$_SERVER['REQUEST_URI']);
+					$last=$this->url[strlen($this->url)-1];
+					if($last=='?'||$last=='&'){
+						$this->url.=$this->page_name."=";
+					}else{
+						$this->url.='&'.$this->page_name."=";
+					}
+				}else{
+					//
+					$this->url=$_SERVER['REQUEST_URI'].'&'.$this->page_name.'=';
+				}//end if
+			}//end if
+		}//end if
+	}
 
 	/**
-	* ÎªÖ¸¶¨µÄÒ³Ãæ·µ»ØµØÖ·Öµ
-	*
-	* @param int $pageno
-	* @return string $url
-	*/
+	 * è®¾ç½®å½“å‰é¡µé¢
+	 *
+	 */
+	function _set_nowindex($nowindex)
+	{
+		if(empty($nowindex)){
+			//ç³»ç»Ÿè·å–
+
+			if(isset($_GET[$this->page_name])){
+				$this->nowindex=intval($_GET[$this->page_name]);
+			}
+		}else{
+			//æ‰‹åŠ¨è®¾ç½®
+			$this->nowindex=intval($nowindex);
+		}
+	}
+
+	/**
+	 * ä¸ºæŒ‡å®šçš„é¡µé¢è¿”å›åœ°å€å€¼
+	 *
+	 * @param int $pageno
+	 * @return string $url
+	 */
 	function _get_url($pageno=1)
 	{
 		return $this->url.$pageno;
 	}
 
 	/**
-	* »ñÈ¡·ÖÒ³ÏÔÊ¾ÎÄ×Ö£¬±ÈÈçËµÄ¬ÈÏÇé¿öÏÂ_get_text('<a href="">1</a>')½«·µ»Ø[<a href="">1</a>]
-	*
-	* @param String $str
-	* @return string $url
-	*/ 
+	 * è·å–åˆ†é¡µæ˜¾ç¤ºæ–‡å­—ï¼Œæ¯”å¦‚è¯´é»˜è®¤æƒ…å†µä¸‹_get_text('<a href="">1</a>')å°†è¿”å›[<a href="">1</a>]
+	 *
+	 * @param String $str
+	 * @return string $url
+	 */
 	function _get_text($str)
 	{
 		return $this->format_left.$str.$this->format_right;
 	}
 
-/**
-* »ñÈ¡Á´½ÓµØÖ·
-*/
-function _get_link($url,$text,$style=''){
-$style=(empty($style))?'':'class="'.$style.'"';
-if($this->is_ajax){
-//Èç¹ûÊÇÊ¹ÓÃAJAXÄ£Ê½
-return '<a '.$style.'href="javascript:'.$this->ajax_action_name.'(\''.$url.'\')">'.$text.'</a>';
-}else{
-return '<a '.$style.'href="'.$url.'">'.$text.'</a>';
-}
-}
-/**
-* ³ö´í´¦Àí·½Ê½
-*/
-function error($function,$errormsg)
-{
-die('Error in file <b>'.__FILE__.'</b> ,Function <b>'.$function.'()</b> :'.$errormsg);
-}
+	/**
+	 * è·å–é“¾æ¥åœ°å€
+	 */
+	function _get_link($url,$text,$style=''){
+		$style=(empty($style))?'':'class="'.$style.'"';
+		if($this->is_ajax){
+			//å¦‚æœæ˜¯ä½¿ç”¨AJAXæ¨¡å¼
+			return '<a '.$style.'href="javascript:'.$this->ajax_action_name.'(\''.$url.'\')">'.$text.'</a>';
+		}else{
+			return '<a '.$style.'href="'.$url.'">'.$text.'</a>';
+		}
+	}
+	/**
+	 * å‡ºé”™å¤„ç†æ–¹å¼
+	 */
+	function error($function,$errormsg)
+	{
+		die('Error in file <b>'.__FILE__.'</b> ,Function <b>'.$function.'()</b> :'.$errormsg);
+	}
 }
 ?>
