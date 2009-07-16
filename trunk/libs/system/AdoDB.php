@@ -1,5 +1,5 @@
 <?php
-import('/libs/module/adodb/adodb.inc');
+require(LIBPATH.'/libs/module/adodb/adodb.inc');
 class AdoDB
 {
 	var $db;
