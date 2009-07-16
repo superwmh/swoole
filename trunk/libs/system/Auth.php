@@ -11,6 +11,7 @@ class Auth
 	function __construct($db,$table='')
 	{
 		if($table=='') $this->table = TABLE_PREFIX.'_user';
+		else $this->table = $table;
 		$this->db = $db;
 	}
 	/**
