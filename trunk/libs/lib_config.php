@@ -1,19 +1,18 @@
 <?php
 /**
  * 基本函数，全局对象$php的构造
- * @package lib_config
+ * @package Swoole
  * @author 韩天峰
  */
 
 define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
-
-#全局变量
+/**
+ * 产生类库的全局变量
+ */
 $php = new Swoole;
 
 /**
-
 *函数的命名空间
-
 */
 function namespace($space_name)
 {
@@ -21,9 +20,7 @@ function namespace($space_name)
 }
 
 /**
-
 *工程函数，制造一个公用对象
-
 */
 function create($object_name)
 {
@@ -33,9 +30,7 @@ function create($object_name)
 }
 
 /**
-
 *生产一个model接口
-
 */
 function createModel($model_name,$db='')
 {
@@ -67,6 +62,10 @@ function import($lib_name)
 		return false;
 	}
 }
+/**
+ * 开启会话
+ * @return None
+ */
 function session()
 {
     if(!defined('SESSION_CACHE'))
