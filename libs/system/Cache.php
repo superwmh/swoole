@@ -2,7 +2,7 @@
 /**
  * 缓存制造类
  * @author Tianfeng.Han
- * @package Swoole
+ * @package SwooleSystem
  * @subpackage cache
  *
  */

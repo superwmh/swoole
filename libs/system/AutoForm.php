@@ -1,4 +1,10 @@
 <?php
+/**
+ * Х┤╙Е┼╗Х║╗Е█∙Г╠╩
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ *
+ */
 class AutoForm
 {
 	var $fields;
@@ -33,7 +39,7 @@ class AutoForm
 	{
 		$form = '';
 		if(!empty($value))
-			$form = "╣╠г╟нд╪Чё╨ <span title=\"header=[м╪ф╛] body=[<img src='$value' class='div_image'>]\"><a href=#>$value</a></span><br />\nжьпбио╢╚ё╨";			
+			$form = "О©╫О©╫г╟О©╫д╪О©╫О©╫О©╫ <span title=\"header=[м╪ф╛] body=[<img src='$value' class='div_image'>]\"><a href=#>$value</a></span><br />\nО©╫О©╫О©╫О©╫О©╫о╢О©╫О©╫О©╫";			
 		return $form."<input type='file' class='input' name='{$params['name']}' id='{$params['name']}' size='50' />";
 	}
 	

@@ -27,7 +27,7 @@ class Swoole extends SwooleObject
 	/**
 	 * 运行MVC处理模型
 	 * @param $url_processor
-	 * @return unknown_type
+	 * @return None
 	 */
 	function runMVC($url_processor='mvc_default')
 	{
