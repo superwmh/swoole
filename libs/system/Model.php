@@ -61,6 +61,18 @@ class Model
 		return $this->db->Insert_ID();
 	}
 	/**
+	 * 更新记录
+	 * @param $id
+	 * @param $data
+	 * @param $where
+	 * @return true/false
+	 */
+	function sets($id,$data,$where='')
+	{
+		if(empty($where)) $where=$this->primary;
+		return $this->db->update($id,$data,$this->table,$where);
+	}
+	/**
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
 	 * @return RecordSet Object (这是一个接口，不包含实际的数据)
 	 */

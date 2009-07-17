@@ -32,7 +32,8 @@ class Auth
 		if(empty($user)) return false;
 		else
 		{
-			$_SESSION['isLogin']=true;	
+			$_SESSION['isLogin']=true;
+			$_SESSION['user_id']=$user['id'];
 			if($auto==1) $this->autoLogin($user);
 			return true;
 		}
