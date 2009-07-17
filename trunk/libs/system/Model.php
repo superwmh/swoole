@@ -58,6 +58,7 @@ class Model
 	public function put($data)
 	{
 		$this->db->insert($data,$this->table);
+		return $this->db->Insert_ID();
 	}
 	/**
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
