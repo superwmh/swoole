@@ -6,6 +6,9 @@
 class Auth
 {
 	var $table = '';
+	static $login_url = '/login.php?';
+	static $username = 'username';
+	static $password = 'password';
 	var $db = '';
 	
 	function __construct($db,$table='')
@@ -81,6 +84,17 @@ class Auth
 	public static function mkpasswd($username,$password)
 	{
 		return sha1($username.$password);
+	}
+	
+	public static function login_require()
+	{
+		if(empty($_SESSION)) session();
+		if(isset($_SESSION['isLogin']) and $_SESSION['isLogin']=='1') $check=true;
+		if(!$check)
+		{
+			header('Location:'.self::$login_url.'refer='.urlencode($_SERVER["REQUEST_URI"]));
+			exit;
+		}
 	}
 }
 ?>
