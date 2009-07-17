@@ -43,9 +43,9 @@ class Model
 	public function gets($params)
 	{
 	    $selectdb = new SelectDB($this->db);
-		$selectdb->from($table);
-		$selectdb->primary = $primary;
-		$selectdb->select($select);
+		$selectdb->from($this->table);
+		$selectdb->primary = $this->primary;
+		$selectdb->select($this->select);
 		$selectdb->order($this->primary." desc");
 		$selectdb->put($params);
 		return $selectdb->getall();
