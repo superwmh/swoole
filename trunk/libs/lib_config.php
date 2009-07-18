@@ -32,16 +32,11 @@ function create($object_name)
 /**
 *生产一个model接口
 */
-function createModel($model_name,$db='')
+function createModel($model_name)
 {
-	if(!is_object($db))
-	{
-		global $php;
-		$php->load->get('db');
-		$db = $php->db;
-	}
+	global $php;
 	require(APPSPATH.'/models/'.$model_name.'.model.php');
-	return new $model_name($db);
+	return new $model_name($php);
 }
 
 /**

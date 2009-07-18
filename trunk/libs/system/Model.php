@@ -9,6 +9,7 @@ class Model
 {
 	var $_data=array(); //数据库字段的具体值
 	var $db;
+	var $swoole;
 	var $primary="id";
 	
 	var $foreignkey='catid';
@@ -19,9 +20,12 @@ class Model
 	
 	var $create_sql='';
 	
-	function __construct($db)
+	var $if_cache = false;
+	
+	function __construct($swoole)
 	{
-		$this->db = $db;
+		$this->db = $swoole->db;
+		$this->swoole = $swoole;
 		//$this->fields = $db->query('describe '.$this->table)->fetchall();
 	}
 	
@@ -67,7 +71,7 @@ class Model
 	 * @param $where
 	 * @return true/false
 	 */
-	function sets($id,$data,$where='')
+	function set($id,$data,$where='')
 	{
 		if(empty($where)) $where=$this->primary;
 		return $this->db->update($id,$data,$this->table,$where);
@@ -152,6 +156,7 @@ class Record implements ArrayAccess
 
 	var $change=0;
 	var $_current_id=0;
+	var $_currend_key;
 
 	function __construct($id,$db,$table,$primary)
 	{
