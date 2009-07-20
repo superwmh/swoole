@@ -45,6 +45,11 @@ function createModel($model_name)
 function import($lib_name)
 {
 	$file = str_replace('.','/',$lib_name);
+	if($file{0}=='@')
+	{
+		require_once(WEBPATH.'/class/'.$file.'.class.php');
+		return true;
+	}
 	$lib_file = LIBPATH.'/class/'.$file.".class.php";
 	if(file_exists($lib_file))
 	{
@@ -119,5 +124,7 @@ function __autoload($class_name)
 {
 	if(file_exists(LIBPATH.'/system/'.$class_name.'.php'))
 		require(LIBPATH.'/system/'.$class_name.'.php');
+	elseif(file_exists(WEBPATH.'/class/'.$class_name.'.class.php'))
+		require(WEBPATH.'/class/'.$class_name.'.class.php');
 }
 ?>
