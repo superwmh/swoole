@@ -141,5 +141,10 @@ class Form
 		}
 		return $htmlStr;
 	}
+	
+	static public function input($name,$value='')
+	{
+		return "<input type='text' name='{$name}' id='{$name}' value='{$value}'>";
+	}
 }
 ?>
