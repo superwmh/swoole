@@ -44,5 +44,15 @@ class Swoole_js
 			location.href=\"".$false."\";
 		</script>";
 	}
+
+	static function js_confirmback($msg,$true)
+	{
+		echo "<script language=\"JavaScript\">
+		if(confirm('$msg'))
+			location.href=\"".$true."\";
+		else
+			history.go(-1);
+		</script>";
+	}
 }
 ?>
