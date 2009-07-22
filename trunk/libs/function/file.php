@@ -13,7 +13,7 @@ function file_upload($name,$option="/upfiles",$access='')
 	$filetype= file_gettype($mime);
 	if($filetype==false)
 	{
-		echo "ϴļʽ";
+		echo "File Type Error!";
 		return false;
 	}
 	elseif(!empty($access))
@@ -21,7 +21,7 @@ function file_upload($name,$option="/upfiles",$access='')
 		$access_type = explode(',',$access);
 		if(!in_array($filetype,$access_type))
 		{	
-			echo "ϴļʽ";
+			echo "File Type '$filetype' not allow upload!";
 			return false;
 		}
 	}
@@ -33,7 +33,7 @@ function file_upload($name,$option="/upfiles",$access='')
 	}
 	else
 	{
-		print "ûгɹ! debugϢ:\n";
+		print "Error! debug:\n";
 		print_r($_FILES[$name]);
 		return false;
 	}
