@@ -65,16 +65,26 @@ class Model
 		return $this->db->Insert_ID();
 	}
 	/**
-	 * 更新记录
+	 * 更新ID为$id的记录,值为$data关联数组
 	 * @param $id
 	 * @param $data
-	 * @param $where
+	 * @param $where 指定匹配字段，默认为主键
 	 * @return true/false
 	 */
 	function set($id,$data,$where='')
 	{
 		if(empty($where)) $where=$this->primary;
 		return $this->db->update($id,$data,$this->table,$where);
+	}
+	/**
+	 * 删除一条数据主键为$id的记录，
+	 * @param $id
+	 * @param $where 指定匹配字段，默认为主键
+	 * @return true/false
+	 */
+	function del($id,$where)
+	{
+		return $this->db->delete($id,$this->table,$where);
 	}
 	/**
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
