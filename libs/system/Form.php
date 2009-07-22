@@ -28,14 +28,9 @@ class Form
 		}
 		$htmlStr .= $attrStr . ">\n";
 
-		if($add_help){
-			if($default){
-				$htmlStr .= "<option value=\"\" ></option>\n";
-				
-			}
-			else{
-				$htmlStr .= "<option value=\"\" selected=\"selected\">请选择</option>\n";
-			}
+		if($add_help)
+		{			
+			$htmlStr .= "<option value=\"\" selected=\"selected\">请选择</option>\n";
 		}
 		if(!$self)
 			$self=array();
@@ -111,7 +106,7 @@ class Form
 	static function checkbox($name,$array=null, $default=null,$self = array(),$attrArray=null) 
 	{
 		$option = $array;
-		if (!is_array($option) || empty($option)) 
+		if (!is_array($option) || empty($option))
 			return("多选框制作失败:需要使用的元素不是数组或没有数值");
 		$htmlStr = "";
 		$attrStr = " ";
@@ -129,14 +124,13 @@ class Form
 			if($key == $self && $self <> null){
 				continue;
 			}
-
-			elseif ($key == $default) 
+			elseif(strpos($default,strval($key))!==false)
 			{
-				$htmlStr .= "<input type=\"checkbox\" name=\"$name\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			else
 			{
-				$htmlStr .= "<input type=\"checkbox\" name=\"$name\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		return $htmlStr;
