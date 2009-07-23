@@ -7,14 +7,18 @@
  */
 class SelectDB
 {
-	var $table="";
+	var $table='';
 	var $primary='id';
-	var $select="*";
-	var $sql="";
-	var $limit="";
-	var $where="";
-	var $order="";
+	var $select='*';
+	var $sql='';
+	var $limit='';
+	var $where='';
+	var $order='';
 	var $group='';
+	var $join='';
+	
+	var $if_join = false;
+	var $if_add_tablename = false;
 	
 	var $page_size = 10;
 	var $num = 0;
@@ -31,7 +35,7 @@ class SelectDB
 	
 	var $result_filter = array();
 	
-	var $call_by = '';	
+	var $call_by = 'func';	
 	var $db;
 	
 	function __construct($db)
@@ -78,7 +82,11 @@ class SelectDB
 			$this->select=$this->select.",".$select;
 		}
 	}
-
+	/**
+	 * where参数
+	 * @param $where
+	 * @return unknown_type
+	 */
 	function where($where)
 	{
 		if($this->where=="")
@@ -118,6 +126,31 @@ class SelectDB
 		$this->group = "group by $group";
 	}
 	
+	function in($field,$ins)
+	{
+		$this->where("$field in ({$ins})");
+	}
+	
+	function notin($field,$ins)
+	{
+		$this->where("$field not in ({$ins})");
+	}
+	
+	function join($table_name,$on)
+	{
+		$this->join="INNER JOIN {$table_name} ON {$on}";
+	}
+	
+	function leftjoin()
+	{
+		$this->join="LEFT JOIN {$table_name} ON {$on}";
+	}
+	
+	function rightjoin()
+	{
+		$this->join="RIGHT JOIN {$table_name} ON {$on}";
+	}
+	
 	function pagesize($pagesize)
 	{
 		$this->page_size = $pagesize;
@@ -154,7 +187,7 @@ class SelectDB
 	function getsql($ifreturn=true)
 	{
 		if($this->sql=='')
-			$this->sql=trim("select {$this->select} from {$this->table} {$this->where} {$this->group} {$this->order} {$this->limit}");
+			$this->sql=trim("select {$this->select} from {$this->table} {$this->join} {$this->where} {$this->group} {$this->order} {$this->limit}");
 		if($ifreturn) return $this->sql;
 	}
 	
@@ -186,7 +219,7 @@ class SelectDB
 							$this->where($key."='{".$value."}'");
 					}
 					else
-						Error::info('Error: SelectDB �������',"<pre>����$key=$value</pre>");
+						Error::info('Error: SelectDB 错误的参数',"<pre>参数$key=$value</pre>");
 				}
 			}
 		}

@@ -35,7 +35,7 @@ function create($object_name)
 function createModel($model_name)
 {
 	global $php;
-	require(APPSPATH.'/models/'.$model_name.'.model.php');
+	require_once(APPSPATH.'/models/'.$model_name.'.model.php');
 	return new $model_name($php);
 }
 
