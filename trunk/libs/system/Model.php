@@ -77,6 +77,22 @@ class Model
 		return $this->db->update($id,$data,$this->table,$where);
 	}
 	/**
+	 * 更新一组数据
+	 * @param $data 更新的数据
+	 * @param $params update的参数列表
+	 * @return true
+	 */
+	function sets($data,$params)
+	{
+		$selectdb = new SelectDB($this->db);
+		$selectdb->from($this->table);
+		$selectdb->primary = $this->primary;
+		$selectdb->select($this->select);
+		$selectdb->put($params);
+		$selectdb->update($data);
+		return true;
+	}
+	/**
 	 * 删除一条数据主键为$id的记录，
 	 * @param $id
 	 * @param $where 指定匹配字段，默认为主键
