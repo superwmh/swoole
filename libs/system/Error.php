@@ -25,7 +25,7 @@ class Error
 <html>
 <head>
 <title>$msg</title>
-<meta http-equiv="Content-Type" content="text/html; charset=gb-2312" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 
 body {
