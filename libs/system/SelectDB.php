@@ -292,8 +292,12 @@ class SelectDB
 			$update=$update."$key='$value',";
 		}
 		
-		$sql=substr($sql,0,-1);		
+		$update = substr($update,0,-1);
 		return $this->db->query("update {$this->table} set $update {$this->where} {$this->limit}");
 	}	
+	function delete()
+	{
+		return $this->db->query("delete from {$this->table} {$this->where} {$this->limit}");
+	}
 }
 ?>
