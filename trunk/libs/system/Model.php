@@ -44,7 +44,7 @@ class Model
 	 * @param $params
 	 * @return Array
 	 */
-	public function gets($params)
+	public function gets($params,&$pager=false)
 	{
 	    $selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
@@ -52,6 +52,11 @@ class Model
 		$selectdb->select($this->select);
 		$selectdb->order($this->primary." desc");
 		$selectdb->put($params);
+		if(array_key_exists('page',$params))
+		{
+			$selectdb->paging();
+			$pager = new Pager(array('total'=>$selectdb->count(),'perpage'=>$params['pagesize']));
+		}
 		return $selectdb->getall();
 	}
 	/**
