@@ -43,6 +43,11 @@ class SelectDB
 		$this->db = $db;
 	}
 
+	/**
+	 * 初始化，select的值，参数$where可以指定初始化哪一项
+	 * @param $what
+	 * @return unknown_type
+	 */
 	function init($what='')
 	{
 		if($what=='')
@@ -57,7 +62,7 @@ class SelectDB
 			$this->$what = '';
 	}
 	/**
-	 * 指定表名
+	 * 指定表名，可以使用table1,table2
 	 * @param $table_name
 	 * @return None
 	 */
@@ -83,7 +88,7 @@ class SelectDB
 		}
 	}
 	/**
-	 * where参数
+	 * where参数，查询的条件
 	 * @param $where
 	 * @return unknown_type
 	 */
@@ -98,7 +103,41 @@ class SelectDB
 			$this->where=$this->where." and ".$where;
 		}
 	}
-
+	/**
+	 * 左边相似的like查询
+	 * @param $field
+	 * @param $like
+	 * @return unknown_type
+	 */
+	function leftlike($field,$like)
+	{
+		$this->where("{$field} like '{$like}%'");
+	}
+	/**
+	 * 右边相似的like查询
+	 * @param $field
+	 * @param $like
+	 * @return unknown_type
+	 */
+	function rightlike($field,$like)
+	{
+		$this->where("{$field} like '%{$like}'");
+	}
+	/**
+	 * 相似like查询
+	 * @param $field
+	 * @param $like
+	 * @return unknown_type
+	 */
+	function like($field,$like)
+	{
+		$this->where("{$field} like '%{$like}%'");
+	}
+	/**
+	 * 使用or连接的条件
+	 * @param $where
+	 * @return unknown_type
+	 */
 	function orwhere($where)
 	{
 		if($this->where=="")
@@ -110,12 +149,20 @@ class SelectDB
 			$this->where=$this->where." or ".$where;
 		}
 	}
-
-	function limit($offset)
+	/**
+	 * 查询的条数
+	 * @param $limit
+	 * @return unknown_type
+	 */
+	function limit($limit)
 	{
-		$this->limit="limit ".$offset;
+		$this->limit="limit ".$limit;
 	}
-
+	/**
+	 * 指定排序方式
+	 * @param $order
+	 * @return unknown_type
+	 */
 	function order($order)
 	{
 		$this->order="order by $order";
