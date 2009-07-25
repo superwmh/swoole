@@ -1,8 +1,9 @@
 <?php
-function file_upload($name,$option="/upfiles",$access='')
+function file_upload($name,$up_dir=null,$access='',$filename=null)
 {
-	$up_path = "$option/".date('Y').date("m")."/".date("d");
-	$path=WEBPATH."/".$up_path;
+	if(empty($up_dir)) $up_dir = UPLOAD_DIR."/".date('Y').date("m")."/".date("d");
+	
+	$path=WEBPATH."/".$up_dir;
 	if(!file_exists($path))
 	{
 		mkdir($path,0777,true);
@@ -25,15 +26,15 @@ function file_upload($name,$option="/upfiles",$access='')
 			return false;
 		}
 	}
+	if($name_mode==null) $filename=substr(time(),6,-1).rand(100000,999999).".".$filetype;
 	
-	$filename=substr(time(),6,-1).rand(100000,999999).".".$filetype;
 	if (move_uploaded_file($_FILES[$name]['tmp_name'],$path."/".$filename))
 	{
-		return "$up_path/$filename";
+		return "$up_dir/$filename";
 	}
 	else
 	{
-		print "Error! debug:\n";
+		echo "Error! debug:\n";
 		print_r($_FILES[$name]);
 		return false;
 	}
