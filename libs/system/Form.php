@@ -10,7 +10,7 @@ class Form
 	 *	$attrArray html标签的熟悉  就是这个select的属性标签 例如  class="x1" 
 	 *	$add_help 增加一个值为空的 请选择 项
 	 */
-	static function select($name,$array,$default=null,$self = array(),$attrArray=null,$add_help = true) 
+	static function select($name,$array,$default=null,$self = array(),$attrArray=null,$add_help=true) 
 	{
 
 		$option = $array;
@@ -30,7 +30,9 @@ class Form
 
 		if($add_help)
 		{			
-			$htmlStr .= "<option value=\"\" selected=\"selected\">请选择</option>\n";
+			if($add_help===true)
+				$htmlStr .= "<option value=\"\">请选择</option>\n";
+			else $htmlStr .= "<option value=\"\">$add_help</option>\n";
 		}
 		if(!$self)
 			$self=array();
