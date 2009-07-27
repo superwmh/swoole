@@ -20,8 +20,20 @@ class Filter
 	{
 		foreach($array as &$string)
 		{
-			if($allow_html===false) $string = htmlspecialchars($string,ENT_QUOTES);
-			self::addslash($string);
+			if($allow_html===false)
+			{
+				if(is_array($string))
+				{
+					self::filter_array($string);
+				}
+				else $string = htmlspecialchars($string,ENT_QUOTES);
+			}
+			if(is_array($string))
+			{
+				self::filter_array($string);
+			}
+			else
+				self::addslash($string);
 		}
 	}
 	
