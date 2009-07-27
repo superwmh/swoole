@@ -250,6 +250,8 @@ class SelectDB
 	{
 		foreach($param as $key=>$value)
 		{
+			if($key=='update' or $key=='delete' or $key=='insert')
+				continue;
 			if(strpos($key,'_')!==0)
 			{
 				if(method_exists($this,$key))
