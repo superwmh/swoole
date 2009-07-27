@@ -26,7 +26,7 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 			return false;
 		}
 	}
-	if($name_mode==null) $filename=substr(time(),6,-1).rand(100000,999999).".".$filetype;
+	if($filename==null) $filename=substr(time(),6,-1).rand(100000,999999).".".$filetype;
 	
 	if (move_uploaded_file($_FILES[$name]['tmp_name'],$path."/".$filename))
 	{

@@ -70,10 +70,10 @@ class Auth
 	 */
 	function logout()
 	{
-		if(isset($_SESSION['isLogin'])) unset($_SESSION['isLogin']);
-		elseif(isset($_COOKIE['password']))
+		if(isset($_SESSION['isLogin']))
 		{
-			setcookie('password','',0,'/');
+			session_destroy();
+			if(isset($_COOKIE['password'])) setcookie('password','',0,'/');
 		}
 	}
 	/**
