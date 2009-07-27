@@ -143,13 +143,16 @@ class Swoole extends SwooleObject
 	 * @param $model_name 模型名称
 	 * @return $model_object 模型对象
 	 */
-	function createModel($model)
-	{
-		if(!class_exists($model)) require(APPSPATH.'/models/'.$model.'.model.php');
-		if(!is_object($this->db)) $this->load->get('db');
-		if(!is_object($this->model->$model))
-			$this->model->$model = new $model($this->db);
-		return $this->model->$model;
+	function createModel($model_name)
+	{		
+		if(is_object($this->model->$model_name))
+			return $this->model->$model_name;
+		$model_file = APPSPATH.'/models/'.$model_name.'.model.php';
+		if(!file_exists($model_file))
+			Error::info('MVC错误',"不存在的模型, <b>$model_name</b>");
+		require_once($model_file);
+		$this->model->$model_name = new $model_name($this);
+		return $this->model->$model_name;
 	}
 	
 	/**

@@ -35,11 +35,7 @@ function create($object_name)
 function createModel($model_name)
 {
 	global $php;
-	$php_file = APPSPATH.'/models/'.$model_name.'.model.php';
-	if(!file_exists($php_file))
-		Error::info('MVC错误',"不存在的模型, <b>$model_name</b>");
-	require_once($php_file);
-	return new $model_name($php);
+	return $php->createModel($model_name);
 }
 
 /**
