@@ -188,12 +188,12 @@ class SelectDB
 		$this->join="INNER JOIN {$table_name} ON {$on}";
 	}
 	
-	function leftjoin()
+	function leftjoin($table_name,$on)
 	{
 		$this->join="LEFT JOIN {$table_name} ON {$on}";
 	}
 	
-	function rightjoin()
+	function rightjoin($table_name,$on)
 	{
 		$this->join="RIGHT JOIN {$table_name} ON {$on}";
 	}
