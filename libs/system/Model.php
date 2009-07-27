@@ -107,6 +107,19 @@ class Model
 	{
 		return $this->db->delete($id,$this->table,$where);
 	}
+    /**
+     * 删除一条数据包含多个参数
+     * @param array $params
+     * @return true/false
+     */
+    function dels($params){
+        $selectdb = new SelectDB($this->db);
+        $selectdb->from($this->table);
+        $selectdb->limit(1);
+		$selectdb->put($params);
+        $selectdb->delete();
+        return true;
+    }
 	/**
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
 	 * @return RecordSet Object (这是一个接口，不包含实际的数据)
