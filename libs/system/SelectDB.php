@@ -255,7 +255,10 @@ class SelectDB
 			if(strpos($key,'_')!==0)
 			{
 				if(method_exists($this,$key))
-					call_user_method($key,$this,$value);
+				{
+					if(is_array($value)) call_user_method_array($key,$this,$value);
+					else call_user_method($key,$this,$value);
+				}
 				else
 				{
 					if($this->call_by=='func')
