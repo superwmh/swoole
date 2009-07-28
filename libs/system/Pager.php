@@ -170,7 +170,8 @@ class Pager
 		$style = $this->style;
 
 		$plus=ceil($this->pagebarnum/2);
-		if($this->pagebarnum-$plus+$this->nowindex>$this->totalpage)$plus=($this->pagebarnum-$this->totalpage+$this->nowindex);
+		if($this->pagebarnum-$plus+$this->nowindex>$this->totalpage)
+			$plus=($this->pagebarnum-$this->totalpage+$this->nowindex);
 		$begin=$this->nowindex-$plus+1;
 		$begin=($begin>=1)?$begin:1;
 		$return='';
@@ -180,7 +181,7 @@ class Pager
 				if($i!=$this->nowindex)
 				$return.=$this->_get_text($this->_get_link($this->_get_url($i),$i,$style));
 				else
-				$return.=$this->_get_text('<span id="pager_now">'.$i.'</span>');
+				$return.=$this->_get_text('<span class="current">'.$i.'</span>');
 			}else{
 				break;
 			}
@@ -241,7 +242,7 @@ class Pager
 				$this->pre_page='上一页';
 				$this->first_page='首页';
 				$this->last_page='尾页';
-				$pager_html.=$this->first_page().$this->pre_page().'[第'.$this->nowindex.'页]'.$this->nowbar().$this->next_page().$this->last_page();
+				$pager_html.=$this->first_page().$this->pre_page().'<span>[第'.$this->nowindex.'页]</span>'.$this->nowbar().$this->next_page().$this->last_page();
 				break;
 			case '3':
 				$this->next_page='下一页';
