@@ -61,6 +61,12 @@ HTMLS;
 		exit;
 	}
 	
+	function warn($title,$content)
+	{
+		echo '<b>Warning </b>:'.$title."<br/> \n";
+		echo $content;
+	}
+	
 	function debug($var)
 	{
 		echo "<pre>";

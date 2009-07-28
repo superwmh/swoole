@@ -212,7 +212,8 @@ class Record implements ArrayAccess
 		{
 			$res=$this->db->query('select * from '.$this->table.' where '.$this->primary."='$id' limit 1");
 			$this->_data=$res->fetch();
-			$this->change=1;
+			if(empty($this->_data)) Error::warn('Model Warning',"Record {$this->table} - $id not found!");
+			else $this->change=1;
 		}
 	}
 	/**

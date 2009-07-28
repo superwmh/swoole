@@ -7,22 +7,24 @@
  */
 class Swoole extends SwooleObject
 {
-	var $load;
 	var $db;
 	var $tpl;
 	var $auth;
 	var $config;
 	var $cache;
+	static $default_cache_life=600;
 	var $pagecache;
 	
+	var $load;
 	var $model;
-	
+	var $genv;
 	var $env;
 	
 	function __construct()
 	{
 		$this->load = new Swoole_register($this);
 		$this->model = new SwooleObject;
+		$this->genv = new SwooleEnv($this);
 	}
 	/**
 	 * 运行MVC处理模型
