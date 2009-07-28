@@ -56,7 +56,7 @@ class Cache
      * @param $expire--过期时间
      * @return unknown_type
      */
-    function set($key,$value,$expire)
+    function set($key,$value,$expire=600)
     {
         if($this->uri['scheme']=='memcache')
             $this->cache->set($key,$value,0,$expire);
