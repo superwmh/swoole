@@ -104,34 +104,14 @@ class SelectDB
 		}
 	}
 	/**
-	 * 左边相似的like查询
-	 * @param $field
-	 * @param $like
-	 * @return unknown_type
-	 */
-	function leftlike($field,$like)
-	{
-		$this->where("{$field} like '{$like}%'");
-	}
-	/**
-	 * 右边相似的like查询
-	 * @param $field
-	 * @param $like
-	 * @return unknown_type
-	 */
-	function rightlike($field,$like)
-	{
-		$this->where("{$field} like '%{$like}'");
-	}
-	/**
-	 * 相似like查询
+	 * 相似查询like
 	 * @param $field
 	 * @param $like
 	 * @return unknown_type
 	 */
 	function like($field,$like)
 	{
-		$this->where("{$field} like '%{$like}%'");
+		$this->where("{$field} like '{$like}'");
 	}
 	/**
 	 * 使用or连接的条件
