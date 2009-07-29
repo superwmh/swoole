@@ -35,7 +35,7 @@ function create($object_name)
 function createModel($model_name)
 {
 	global $php;
-	return $php->createModel($model_name);
+	return $php->model->$model_name;
 }
 
 /**

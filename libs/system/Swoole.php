@@ -23,7 +23,7 @@ class Swoole extends SwooleObject
 	function __construct()
 	{
 		$this->load = new Swoole_register($this);
-		$this->model = new SwooleObject;
+		$this->model = new ModelLoader($this);
 		$this->genv = new SwooleEnv($this);
 	}
 	/**
@@ -147,13 +147,6 @@ class Swoole extends SwooleObject
 	 */
 	function createModel($model_name)
 	{		
-		if(is_object($this->model->$model_name))
-			return $this->model->$model_name;
-		$model_file = APPSPATH.'/models/'.$model_name.'.model.php';
-		if(!file_exists($model_file))
-			Error::info('MVC错误',"不存在的模型, <b>$model_name</b>");
-		require_once($model_file);
-		$this->model->$model_name = new $model_name($this);
 		return $this->model->$model_name;
 	}
 	
