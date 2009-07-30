@@ -162,7 +162,7 @@ class Pager
 		if($this->nowindex==$this->totalpage){
 			return '<span class="'.$style.'">'.$this->last_page.'</span>';
 		}
-		return $this->_get_link($this->_get_url($this->totalpage),$this->last_page,$style);
+		return $this->totalpage?$this->_get_link($this->_get_url($this->totalpage),$this->last_page,$style):'<span>'.$this->last_page.'</span>';
 	}
 
 	function nowbar()
@@ -242,7 +242,7 @@ class Pager
 				$this->pre_page='上一页';
 				$this->first_page='首页';
 				$this->last_page='尾页';
-				$pager_html.=$this->first_page().$this->pre_page().'<span>[第'.$this->nowindex.'页]</span>'.$this->nowbar().$this->next_page().$this->last_page();
+				$pager_html.=$this->first_page().$this->pre_page().'<span>[第'.$this->nowindex.'页]</span> '.$this->nowbar().$this->next_page().$this->last_page();
 				break;
 			case '3':
 				$this->next_page='下一页';
@@ -274,26 +274,29 @@ class Pager
 		if(!empty($url)){
 			//手动设置
 			$this->url=$url.((stristr($url,'?'))?'&':'?').$this->page_name."=";
-		}else{
+		}
+		else
+		{
 			//自动获取
-			if(empty($_SERVER['QUERY_STRING'])){
-				//不存在QUERY_STRING时
-				$this->url=$_SERVER['REQUEST_URI']."?".$this->page_name."=";
-			}else{
+			$last = stristr($_SERVER['REQUEST_URI'],'?')?'&':'?';
+			$this->url = $_SERVER['REQUEST_URI'].$last;
+			if(stristr($_SERVER['QUERY_STRING'],$this->page_name.'='))
+			{
+				//地址存在页面参数
+				$this->url=str_replace($this->page_name.'='.$this->nowindex,'',$_SERVER['REQUEST_URI']);
+				if($last=='?' or $last=='&')
+				{
+					$this->url.=$this->page_name."=";
+				}
+				else
+				{
+					$this->url.=$last.$this->page_name."=";
+				}
+			}
+			else
+			{
 				//
-				if(stristr($_SERVER['QUERY_STRING'],$this->page_name.'=')){
-					//地址存在页面参数
-					$this->url=str_replace($this->page_name.'='.$this->nowindex,'',$_SERVER['REQUEST_URI']);
-					$last=$this->url[strlen($this->url)-1];
-					if($last=='?'||$last=='&'){
-						$this->url.=$this->page_name."=";
-					}else{
-						$this->url.='&'.$this->page_name."=";
-					}
-				}else{
-					//
-					$this->url=$_SERVER['REQUEST_URI'].'&'.$this->page_name.'=';
-				}//end if
+				$this->url=$_SERVER['REQUEST_URI'].$last.$this->page_name.'=';
 			}//end if
 		}//end if
 	}
