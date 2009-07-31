@@ -27,6 +27,15 @@ class Swoole extends SwooleObject
 		$this->genv = new SwooleEnv($this);
 	}
 	/**
+	 * 自动导入模块
+	 * @return None
+	 */
+	function autoload()
+	{
+		$autoload = func_get_args();
+		foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
+	}	
+	/**
 	 * 运行MVC处理模型
 	 * @param $url_processor
 	 * @return None
@@ -36,12 +45,14 @@ class Swoole extends SwooleObject
 		$url_func = 'url_process_'.$url_processor;
 		if(!function_exists($url_func))
 			Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
-		$resources = call_user_func($url_func);
-		foreach($resources as $property=>$ressource) $this->$property = $ressource;
-
-		$controller = $this->createController($this->controller);
-		if(!method_exists($controller,$this->view)) Error::info('没有视图'.$this->view,'不存在的视图方法，请检查您的应用程序！');
-		echo call_user_method($this->view,$controller,$_GET);
+		$mvc = call_user_func($url_func);
+		$controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
+		if(!file_exists($controller_path)) Error::info('MVC Error',"Controller <b>$controller</b> not exist!");
+		else require($controller_path);
+		$controller = new $mvc['controller']($this);
+		
+		if(!method_exists($controller,$mvc['view'])) Error::info('MVC Error!'.$this->view,'不存在的视图方法，请检查您的应用程序！');
+		echo call_user_method($mvc['view'],$controller);
 	}
 	
 	function runAjax()
@@ -108,25 +119,6 @@ class Swoole extends SwooleObject
 		$admin = new $classname($this);
 		$action = isset($_GET['action'])?$_GET['action']:'list';
 		call_user_method('admin_'.$action,$admin);
-	}
-
-	function autoload()
-	{
-		$autoload = func_get_args();
-		foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
-	}
-
-	/**
-	 * 产生一个控制器对象
-	 * @param $controller_name 控制器名称
-	 * @return $controller_object 控制器对象
-	 */
-	function createController($controller)
-	{
-		$controller_path = APPSPATH.'/controllers/'.$controller.'.php';
-		if(!file_exists($controller_path)) Error::info('MVC Error',"Controller <b>$controller</b> not exist!");
-		else require_once($controller_path);
-		return new $controller($this);
 	}
 }
 ?>

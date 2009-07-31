@@ -1,7 +1,7 @@
 <?php 
 class SwooleObject extends ArrayObject
 {
-	public function __construct(array $array = array())
+	public function __construct($array = array())
     {
         parent::__construct($array);
     }
