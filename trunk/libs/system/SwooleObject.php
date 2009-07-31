@@ -1,19 +1,19 @@
 <?php 
-class SwooleObject
+class SwooleObject extends ArrayObject
 {
-	var $_property=array();
-	var $_method;
-	
+	public function __construct(array $array = array())
+    {
+        parent::__construct($array);
+    }
+
 	function __set($keyname,$value)
 	{
-		$this->_property[$keyname] = $value;
+		$this->offsetSet($keyname,$value);
 	}
 	
 	function __get($keyname)
 	{
-		if(array_key_exists($keyname,$this->_property))
-			return $this->_property[$keyname];
-		return false;
+		return $this->offsetGet($keyname);
 	}
 }
 ?>

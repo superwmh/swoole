@@ -9,9 +9,8 @@ class Swoole extends SwooleObject
 {
 	var $db;
 	var $tpl;
-	var $auth;
-	var $config;
 	var $cache;
+	
 	static $default_cache_life=600;
 	var $pagecache;
 	
@@ -22,7 +21,8 @@ class Swoole extends SwooleObject
 	
 	function __construct()
 	{
-		$this->load = new Swoole_register($this);
+		parent::__construct();
+		$this->load = new SwooleLoader($this);
 		$this->model = new ModelLoader($this);
 		$this->genv = new SwooleEnv($this);
 	}
@@ -31,17 +31,13 @@ class Swoole extends SwooleObject
 	 * @param $url_processor
 	 * @return None
 	 */
-	function runMVC($url_processor='mvc_default')
+	function runMVC($url_processor)
 	{
-		namespace('url_process');
 		$url_func = 'url_process_'.$url_processor;
 		if(!function_exists($url_func))
-			Error::info('MVC Error!','Url Process function not found!<br/>Please check <b>"./libs/function/url_process.php"</b>,'."<br/>\nFunction:$url_func");
+			Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
 		$resources = call_user_func($url_func);
-		foreach($resources as $property=>$ressource)
-		{
-			$this->$property = $ressource;
-		}
+		foreach($resources as $property=>$ressource) $this->$property = $ressource;
 
 		$controller = $this->createController($this->controller);
 		if(!method_exists($controller,$this->view)) Error::info('没有视图'.$this->view,'不存在的视图方法，请检查您的应用程序！');
@@ -65,12 +61,12 @@ class Swoole extends SwooleObject
 		
 		$method = $_GET['method'];
 		$data = call_user_func($method);
-		
-//		if(DBCHARSET!='utf8')
-//		{
-//			namespace('array');
-//			$data = array_iconv(DBCHARSET , 'utf-8' , $data);
-//		}
+		/*		
+		if(DBCHARSET!='utf8')
+		{
+			namespace('array');
+			$data = array_iconv(DBCHARSET , 'utf-8' , $data);
+		}*/
 		echo json_encode($data);
 	}
 	
@@ -114,42 +110,12 @@ class Swoole extends SwooleObject
 		call_user_method('admin_'.$action,$admin);
 	}
 
-	public function loadlibs($libs)
+	function autoload()
 	{
-		$_libs=explode(",",$libs);
-		foreach($_libs as $lib) $this->load->get($lib);
+		$autoload = func_get_args();
+		foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
 	}
-	
-	public function loadConfig()
-	{
-		$this->config = $this->createModel('Config');
-	}
-	
-	public function create($name)
-	{
-		$name=str_replace(".","/",$name);
-		$classinfo=explode("/",$name);
-		$classname=$classinfo[count($classinfo)-1];
-		if(!self::loadfile($name)) throw new Exception('Class not found!');
-		if(func_num_args()!=1)
-		{
-			$args=func_get_args();
-			for($i=1;$i<count($args);$i++) $el[]='$args['.$i.']';
-			$object=eval("return new $classname(".implode(",",$el).");");
-			return $object;
-		}
-		else return new $classname;
-	}
-	/**
-	 * 产生一个模型对象
-	 * @param $model_name 模型名称
-	 * @return $model_object 模型对象
-	 */
-	function createModel($model_name)
-	{		
-		return $this->model->$model_name;
-	}
-	
+
 	/**
 	 * 产生一个控制器对象
 	 * @param $controller_name 控制器名称
