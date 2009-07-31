@@ -142,5 +142,19 @@ class Form
 	{
 		return "<input type='text' name='{$name}' id='{$name}' value='{$value}'>";
 	}
+	
+	static public function areaProvince($nameprovince,$namecity,$value='')
+	{
+		if(intval($value)<-1 or empty($value)) $value = 10100000;
+		$forms="<script>getProvinceSelect43rds('','{$nameprovince}','{$nameprovince}','{$namecity}','','{$value}');</script>";
+		return $forms;
+	}
+	
+	static public function areaCity($name,$value='')
+	{
+		if($value==='0') $value='';
+		$forms= "<script>getCitySelect43rds('','$name','$name','','{$value}');</script>";
+		return $forms;
+	}
 }
 ?>
