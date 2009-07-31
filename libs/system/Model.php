@@ -349,7 +349,12 @@ class RecordSet implements Iterator
 	
 	function fetch($field='')
 	{
-		return $this->db_select->getone($field);
+		
+	}
+	
+	function fetchall()
+	{
+		return $this->db_select->getall();
 	}
 	
 	function __call($method,$argv)
