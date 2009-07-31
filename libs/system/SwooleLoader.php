@@ -28,20 +28,11 @@ class SwooleLoader
 			return self::$_objects['model'][$model_name];
 		}
 	}
-	
 	/**
-	 * 加载一个控制器对象
-	 * @param $controller_name 控制器名称
-	 * @return $controller_object 控制器对象
+	 * 加载接口模块
+	 * @param $lib_name
+	 * @return unknown_type
 	 */
-	static function loadController($controller_name)
-	{
-		$controller_path = APPSPATH.'/controllers/'.$controller_name.'.php';
-		if(!file_exists($controller_path)) Error::info('MVC Error',"Controller <b>$controller_name</b> not exist!");
-		else require_once($controller_path);
-		return new $controller_name(self::$swoole);
-	}
-	
 	static function loadLib($lib_name)
 	{
 		if(isset(self::$_objects['lib'][$lib_name]))

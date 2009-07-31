@@ -15,6 +15,11 @@
 if(!defined('SESSION_LIFETIME')) define('SESSION_LIFETIME',3600);
 if(!defined('SESSION_LEFTTIME')) define('SESSION_DOMAIN',@$_ENV['HOST']);
 
+/**
+ * 会话控制类
+ * @author Administrator
+ * @package SwooleSystem
+ */
 class MSession
 {   
     // 类成员属性定义
