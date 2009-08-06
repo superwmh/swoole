@@ -9,6 +9,8 @@ class Auth
 	static $login_url = '/login.php?';
 	static $username = 'username';
 	static $password = 'password';
+	static $check_login = 'isLogin';
+	static $cookie_life = 2592000;
 	var $db = '';
 	
 	function __construct($db,$table='')
@@ -26,13 +28,13 @@ class Auth
 	 */
 	function login($username,$password,$auto)
 	{
-		setcookie('username',$username,time() + 2592000,'/');
+		setcookie('username',$username,time() + self::$cookie_life,'/');
 		$res = $this->db->query('select * from '.$this->table." where username='$username' and password ='$password'");
 		$user = $res->fetch();
 		if(empty($user)) return false;
 		else
 		{
-			$_SESSION['isLogin']=true;
+			$_SESSION[self::$check_login]=true;
 			$_SESSION['user_id']=$user['id'];
 			if($auto==1) $this->autoLogin($user);
 			return true;
@@ -44,8 +46,8 @@ class Auth
 	 */
 	function isLogin()
 	{
-		if(isset($_SESSION['isLogin']) and $_SESSION['isLogin']==1) return true;
-		elseif(isset($_COOKIE['password']))
+		if(isset($_SESSION[self::$check_login]) and $_SESSION[self::$check_login]==1) return true;
+		elseif(isset($_COOKIE['autologin']) and isset($_COOKIE['username']) and isset($_COOKIE['password']))
 		{
 			return $this->login($_COOKIE['username'],$_COOKIE['password'],$auto=1);
 		}
@@ -59,10 +61,11 @@ class Auth
 	function autoLogin($user)
 	{
 		$ip = Swoole_client::getIP();
-		setcookie('username',$user['username'],time() + 2592000,'/');
-		setcookie('password',$user['password'],time() + 2592000,'/');
-		setcookie('ip',$ip,time() + 2592000,'/');
-		setcookie('id',$user['id'],time() + 2592000,'/');
+		setcookie('autologin',1,time() + self::$cookie_life,'/');
+		setcookie('username',$user['username'],time() + self::$cookie_life,'/');
+		setcookie('password',$user['password'],time() + self::$cookie_life,'/');
+		setcookie('ip',$ip,time() + self::$cookie_life,'/');
+		setcookie('id',$user['id'],time() + self::$cookie_life,'/');
 	}
 	/**
 	 * 注销登录
@@ -70,7 +73,7 @@ class Auth
 	 */
 	function logout()
 	{
-		if(isset($_SESSION['isLogin']))
+		if(isset($_SESSION[self::$check_login]))
 		{
 			session_destroy();
 			if(isset($_COOKIE['password'])) setcookie('password','',0,'/');
@@ -90,7 +93,7 @@ class Auth
 	public static function login_require()
 	{
 		if(empty($_SESSION)) session();
-		if(isset($_SESSION['isLogin']) and $_SESSION['isLogin']=='1') $check=true;
+		if(isset($_SESSION[self::$check_login]) and $_SESSION[self::$check_login]=='1') $check=true;
 		if(!$check)
 		{
 			header('Location:'.self::$login_url.'refer='.urlencode($_SERVER["REQUEST_URI"]));
