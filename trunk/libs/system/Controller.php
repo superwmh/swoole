@@ -4,6 +4,7 @@ class Controller
 {
 	var $swoole;
 	var $filter_request = true;
+	var $is_ajax = false;
 	protected $model;
 	
 	function __construct($swoole)

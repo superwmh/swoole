@@ -52,7 +52,19 @@ class Swoole extends SwooleObject
 		$controller = new $mvc['controller']($this);
 		
 		if(!method_exists($controller,$mvc['view'])) Error::info('MVC Error!'.$this->view,'不存在的视图方法，请检查您的应用程序！');
-		echo call_user_method($mvc['view'],$controller);
+		if($controller->is_ajax)
+		{
+			header('Cache-Control: no-cache, must-revalidate');
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+			header('Content-type: application/json');
+			if(DBCHARSET!='utf8')
+			{
+				namespace('array');
+				$data = array_iconv(DBCHARSET , 'utf-8' , $data);
+			}
+			echo json_encode($data);
+		}
+		else echo call_user_method($mvc['view'],$controller);
 	}
 	
 	function runAjax()

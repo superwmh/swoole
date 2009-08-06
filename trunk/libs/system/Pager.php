@@ -47,6 +47,7 @@ class Pager
 	 */
 	var $pagebarnum=10;//控制记录条的个数。
 	var $totalpage=0;//总页数
+	var $total=0;
 	var $ajax_action_name='';//AJAX动作名
 	var $nowindex=1;//当前页
 	var $url="";//url地址头
@@ -66,7 +67,8 @@ class Pager
 			$perpage=(array_key_exists('perpage',$array))?intval($array['perpage']):10;
 			$nowindex=(array_key_exists('nowindex',$array))?intval($array['nowindex']):'';
 			$url=(array_key_exists('url',$array))?$array['url']:'';
-		}else{
+		}
+		else{
 			$total=$array;
 			$perpage=10;
 			$nowindex='';
@@ -78,6 +80,7 @@ class Pager
 		$this->_set_nowindex($nowindex);//设置当前页
 		$this->_set_url($url);//设置链接地址
 		$this->totalpage=ceil($total/$perpage);
+		$this->total = $total;
 		$this->offset=($this->nowindex-1)*$perpage;
 		if(!empty($array['ajax']))$this->open_ajax($array['ajax']);//打开AJAX模式
 	}
