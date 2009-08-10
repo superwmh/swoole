@@ -9,7 +9,7 @@ class Auth
 	static $login_url = '/login.php?';
 	static $username = 'username';
 	static $password = 'password';
-	static $check_login = 'isLogin';
+	static $app_name = '';
 	static $cookie_life = 2592000;
 	var $db = '';
 	
@@ -34,8 +34,8 @@ class Auth
 		if(empty($user)) return false;
 		else
 		{
-			$_SESSION[self::$check_login]=true;
-			$_SESSION['user_id']=$user['id'];
+			$_SESSION[self::$app_name.'isLogin']=true;
+			$_SESSION[self::$app_name.'user_id']=$user['id'];
 			if($auto==1) $this->autoLogin($user);
 			return true;
 		}
@@ -46,7 +46,7 @@ class Auth
 	 */
 	function isLogin()
 	{
-		if(isset($_SESSION[self::$check_login]) and $_SESSION[self::$check_login]==1) return true;
+		if(isset($_SESSION[self::$app_name.'isLogin']) and $_SESSION[self::$app_name.'isLogin']==1) return true;
 		elseif(isset($_COOKIE['autologin']) and isset($_COOKIE['username']) and isset($_COOKIE['password']))
 		{
 			return $this->login($_COOKIE['username'],$_COOKIE['password'],$auto=1);
@@ -93,7 +93,7 @@ class Auth
 	public static function login_require()
 	{
 		if(empty($_SESSION)) session();
-		if(isset($_SESSION[self::$check_login]) and $_SESSION[self::$check_login]=='1') $check=true;
+		if(isset($_SESSION[self::$app_name.'isLogin']) and $_SESSION[self::$app_name.'isLogin']=='1') $check=true;
 		if(!$check)
 		{
 			header('Location:'.self::$login_url.'refer='.urlencode($_SERVER["REQUEST_URI"]));
