@@ -73,7 +73,7 @@ class Auth
 	 */
 	function logout()
 	{
-		if(isset($_SESSION[self::$check_login]))
+		if(isset($_SESSION[self::$session_prefix.'isLogin']))
 		{
 			session_destroy();
 			if(isset($_COOKIE['password'])) setcookie('password','',0,'/');
