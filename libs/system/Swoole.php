@@ -57,6 +57,7 @@ class Swoole extends SwooleObject
 			header('Cache-Control: no-cache, must-revalidate');
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 			header('Content-type: application/json');
+			$data = call_user_method($mvc['view'],$controller);
 			if(DBCHARSET!='utf8')
 			{
 				namespace('array');
