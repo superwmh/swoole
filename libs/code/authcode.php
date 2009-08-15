@@ -22,11 +22,10 @@ for($i=0;$i<4;$i++){
 $randnum=rand(0,35);
 $authnum.=$list[$randnum];
 }
-
+$authnum = strtoupper($authnum);;
 //while(($authnum=rand()%100000)<10000); //生成随机的五们数
 //将五位整数验证码绘入图片
-$_SESSION['authcode']= strtolower($authnum);
-$authnum = strtoupper($authnum);
+$_SESSION['authcode']= $authnum;
 imagestring($im, 8, 8, 4, $authnum, $black);
 // 用 col 颜色将字符串 s 画到 image 所代表的图像的 x，y座标处（图像的左上角为 0, 0）。
 //如果 font 是 1，2，3，4 或 5，则使用内置字体
