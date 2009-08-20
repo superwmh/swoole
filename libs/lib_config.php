@@ -33,12 +33,10 @@ function createModel($model_name)
 function import($lib_name)
 {
 	$file = str_replace('.','/',$lib_name);
-	if($file{0}=='@')
-	{
-		require_once(WEBPATH.'/class/'.$file.'.class.php');
-		return true;
-	}
-	$lib_file = LIBPATH.'/class/'.$file.".class.php";
+	if($file{0}=='@') $lib_file = WEBPATH.'/class/'.substr($file,1).'.class.php';
+	elseif($file{0}=='#') $lib_file = LIBPATH.'/class/swoole/'.substr($file,1).'.class.php';
+	else $lib_file = LIBPATH.'/class/'.$file.".class.php";
+	
 	if(file_exists($lib_file))
 	{
 		require_once($lib_file);
