@@ -116,7 +116,7 @@ class Form
 		{
 			foreach($attrArray as $key => $value)
 			{
-				$attrStr .= " $key=\"$value\" ";						 
+				$attrStr .= " $key=\"$value\" ";
 			}
 		}
 		if(!$self)
@@ -128,11 +128,11 @@ class Form
 			}
 			elseif(strpos($default,strval($key))!==false)
 			{
-				$htmlStr .= "<input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<li><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value.'</li>';
 			}
 			else
 			{
-				$htmlStr .= "<input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<li><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value.'</li>';
 			}
 		}
 		return $htmlStr;
