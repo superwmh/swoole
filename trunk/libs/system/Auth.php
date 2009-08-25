@@ -47,9 +47,9 @@ class Auth
 	function isLogin()
 	{
 		if(isset($_SESSION[self::$session_prefix.'isLogin']) and $_SESSION[self::$session_prefix.'isLogin']==1) return true;
-		elseif(isset($_COOKIE['autologin']) and isset($_COOKIE['username']) and isset($_COOKIE['password']))
+		elseif(isset($_COOKIE[self::$session_prefix.'autologin']) and isset($_COOKIE[self::$session_prefix.'username']) and isset($_COOKIE[self::$session_prefix.'password']))
 		{
-			return $this->login($_COOKIE['username'],$_COOKIE['password'],$auto=1);
+			return $this->login($_COOKIE[self::$session_prefix.'username'],$_COOKIE[self::$session_prefix.'password'],$auto=1);
 		}
 		return false;
 	}
@@ -61,11 +61,11 @@ class Auth
 	function autoLogin($user)
 	{
 		$ip = Swoole_client::getIP();
-		setcookie('autologin',1,time() + self::$cookie_life,'/');
-		setcookie('username',$user['username'],time() + self::$cookie_life,'/');
-		setcookie('password',$user['password'],time() + self::$cookie_life,'/');
-		setcookie('ip',$ip,time() + self::$cookie_life,'/');
-		setcookie('id',$user['id'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'autologin',1,time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'username',$user['username'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'password',$user['password'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'ip',$ip,time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'id',$user['id'],time() + self::$cookie_life,'/');
 	}
 	/**
 	 * 注销登录
@@ -76,7 +76,7 @@ class Auth
 		if(isset($_SESSION[self::$session_prefix.'isLogin']))
 		{
 			session_destroy();
-			if(isset($_COOKIE['password'])) setcookie('password','',0,'/');
+			if(isset($_COOKIE[self::$session_prefix.'password'])) setcookie(self::$session_prefix.'password','',0,'/');
 		}
 	}
 	/**
