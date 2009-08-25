@@ -84,7 +84,7 @@ class SelectDB
 		}
 		else
 		{
-			$this->select=$this->select.",".$select;
+			$this->select=$select;
 		}
 	}
 	/**
