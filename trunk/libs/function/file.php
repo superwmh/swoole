@@ -46,7 +46,7 @@ function file_gettype($mime)
 	$file_types  = array(
 		'image/pjpeg' => 'jpg', 
 		'image/jpeg'  => 'jpg',
-		'image/jpeg'  => 'jpeg',
+		'image/jpeg'  => 'jpg',
 		'image/gif'   => 'gif',
 		'image/X-PNG' => 'png',
 		'image/PNG'   => 'png', 
