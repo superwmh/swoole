@@ -1,7 +1,7 @@
 <?php
 class View extends SwooleObject
 {
-	protected $tVar        =  array();
+	protected $_var        =  array();
 	protected $trace       = array();
 	protected $swoole;
 	var $template_dir = './templates/';
@@ -27,14 +27,14 @@ class View extends SwooleObject
 	{
 		if(is_array($name))
 		{
-			$this->tVar   =  array_merge($this->tVar,$name);
+			$this->_var   =  array_merge($this->_var,$name);
 		}elseif(is_object($name)){
 			foreach($name as $key =>$val)
 			{
-				$this->tVar[$key] = $val;
+				$this->_var[$key] = $val;
 			}
 		}else {
-			$this->tVar[$name] = $value;
+			$this->_var[$name] = $value;
 		}
 	}
 
@@ -68,8 +68,8 @@ class View extends SwooleObject
 	 +----------------------------------------------------------
 	 */
 	public function get($name){
-		if(isset($this->tVar[$name])) {
-			return $this->tVar[$name];
+		if(isset($this->_var[$name])) {
+			return $this->_var[$name];
 		}else {
 			return false;
 		}
@@ -167,11 +167,7 @@ class View extends SwooleObject
 		//页面缓存
 		ob_start();
 		ob_implicit_flush(0);
-
-		$templateFile = $this->parseTemplateFile($templateFile);
-
-		// 模板引擎解析和输出
-		require($templateFile);
+		$this->render($templateFile);
 		// 获取并清空缓存
 		$content = ob_get_clean();
 
@@ -179,6 +175,13 @@ class View extends SwooleObject
 		$content = $this->layout($content,$charset,$contentType);
 		// 输出模板文件
 		return $this->output($content,$display);
+	}
+	
+	private function render($templateFile)
+	{
+		extract($this->_var);
+		$templateFile = $this->parseTemplateFile($templateFile);
+		require($templateFile);	
 	}
 
 	/**
@@ -269,11 +272,11 @@ class View extends SwooleObject
 		$startTime =  $this->swoole->env['runtime']['start'];
 		$endTime = microtime(TRUE);
 		$total_run_time =   number_format(($endTime - $startTime),3);
-		$showTime = 'Process: '.$total_run_time.'s ';
+		$showTime = '执行时间: '.$total_run_time.'s ';
 		
 		$startMem    =  array_sum(explode(' ',$this->swoole->env['runtime']['mem']));
 		$endMem     =  array_sum(explode(' ', memory_get_usage()));
-		$showTime .= ' | UseMem:'. number_format(($endMem - $startMem)/1024).' kb';
+		$showTime .= ' | 内存占用:'. number_format(($endMem - $startMem)/1024).' kb';
 		return $showTime;
 	}
 
@@ -300,7 +303,8 @@ class View extends SwooleObject
 		if(isset($_SESSION)) $this->trace('会话ID'   ,   session_id());
 		$this->trace('读取数据库',   $this->swoole->db->read_times.'次');
 		$this->trace('写入数据库',   $this->swoole->db->write_times.'次');
-		$this->trace('加载文件',    count(get_included_files()));
+		$this->trace('加载文件',     count(get_included_files()));
+		$this->trace('PHP执行',      $this->showTime());
 		$_trace =   array_merge($_trace,$this->trace);
 		// 调用Trace页面模板
 		$traceInfo = <<<HTML

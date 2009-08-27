@@ -35,7 +35,7 @@ class Model
 	 * @param $object_id
 	 * @return Record Object
 	 */
-	public function get($object_id=0)
+	public final function get($object_id=0)
 	{
 		return new Record($object_id,$this->db,$this->table,$this->primary);
 	}
@@ -44,7 +44,7 @@ class Model
 	 * @param $params
 	 * @return Array
 	 */
-	public function gets($params,&$pager=false)
+	public final function gets($params,&$pager=false)
 	{
 	    $selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
@@ -64,7 +64,7 @@ class Model
 	 * @param $data Array 必须是键值（表的字段对应值）对应
 	 * @return None
 	 */
-	public function put($data)
+	public final function put($data)
 	{
 		$this->db->insert($data,$this->table);
 		return $this->db->Insert_ID();
@@ -76,7 +76,7 @@ class Model
 	 * @param $where 指定匹配字段，默认为主键
 	 * @return true/false
 	 */
-	function set($id,$data,$where='')
+	public final function set($id,$data,$where='')
 	{
 		if(empty($where)) $where=$this->primary;
 		return $this->db->update($id,$data,$this->table,$where);
@@ -87,7 +87,7 @@ class Model
 	 * @param $params update的参数列表
 	 * @return true
 	 */
-	function sets($data,$params)
+	public final function sets($data,$params)
 	{
 		$selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
@@ -103,7 +103,7 @@ class Model
 	 * @param $where 指定匹配字段，默认为主键
 	 * @return true/false
 	 */
-	function del($id,$where)
+	public final function del($id,$where)
 	{
 		return $this->db->delete($id,$this->table,$where);
 	}
@@ -112,7 +112,7 @@ class Model
      * @param array $params
      * @return true/false
      */
-    function dels($params){
+    public final function dels($params){
         $selectdb = new SelectDB($this->db);
         $selectdb->from($this->table);
         $selectdb->limit(1);
@@ -124,7 +124,7 @@ class Model
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
 	 * @return RecordSet Object (这是一个接口，不包含实际的数据)
 	 */
-	public function all()
+	public final function all()
 	{
 		return new RecordSet($this->db,$this->table,$this->primary,$this->select);
 	}
@@ -140,7 +140,7 @@ class Model
 	 * 获取表状态
 	 * @return array 表的status，包含了自增ID，计数器等状态数据
 	 */
-	function getStatus()
+	public final function getStatus()
 	{
 		return $this->db->query("show table status from ".DBNAME." where name='{$this->table}'")->fetch();
 	}

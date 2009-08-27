@@ -76,16 +76,10 @@ class SelectDB
      * @param $select
      * @return unknown_type
      */
-	function select($select)
+	function select($select,$force=false)
 	{
-		if($this->select=="*")
-		{
-			$this->select=$select;
-		}
-		else
-		{
-			$this->select=$select;
-		}
+		if($this->select=="*" or $force) $this->select=$select;
+		else $this->select=$this->select.','.$select;
 	}
 	/**
 	 * where参数，查询的条件
