@@ -21,10 +21,16 @@ class Swoole extends SwooleObject
 	
 	function __construct()
 	{
+		$this->__init();
 		parent::__construct();
 		$this->load = new SwooleLoader($this);
 		$this->model = new ModelLoader($this);
 		$this->genv = new SwooleEnv($this);
+	}
+	private function __init()
+	{
+		$this->env['runtime']['start'] = microtime(true);
+		$this->env['runtime']['mem'] = memory_get_usage();
 	}
 	/**
 	 * 自动导入模块
@@ -46,6 +52,7 @@ class Swoole extends SwooleObject
 		if(!function_exists($url_func))
 			Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
 		$mvc = call_user_func($url_func);
+		$this->env['mvc'] = $mvc;
 		$controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
 		if(!file_exists($controller_path)) Error::info('MVC Error',"Controller <b>$controller</b> not exist!");
 		else require($controller_path);
