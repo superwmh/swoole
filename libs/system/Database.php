@@ -8,6 +8,8 @@
 class Database extends PDO
 {
 	var $debug = false;
+	var $read_times = 0;
+	var $write_times = 0;
 	function __construct($host='',$user='',$password='',$dbname='',$charset='utf8')
 	{
         try
@@ -39,17 +41,8 @@ class Database extends PDO
 	{
 		if($this->debug) echo "$sql<br />\n<hr />";
 		$res=parent::query($sql) or die("SQL Error: ".implode(", ",$this->errorInfo())."<br />\n");
+		$this->read_times +=1;
 		return $res;
-    }
-    /**
-     * 执行一个非查询的SQL语句
-     * @param $sql
-     * @return unknown_type
-     */
-    public final function nsquery($sql)
-	{
-		if($this->debug) echo "$sql<br />\n<hr />";
-		return parent::exec($sql);
     }
     /**
      * 插入$data数据库的表$table，$data必须是键值对应的，$key是数据库的字段，$value是对应的值
@@ -72,11 +65,13 @@ class Database extends PDO
 		
 		$field=substr($field,0,-1);
 		$values=substr($values,0,-1);
+		$this->write_times +=1;
 		return $this->query("insert into $table ($field) values($values)") or die("Error:".$this->errorInfo());
 	}
 	
 	public function delete($id,$table,$where='id')
 	{
+		$this->write_times +=1;
 		return $this->query("delete from $table where $where='$id'");
 	}
 	
@@ -91,6 +86,7 @@ class Database extends PDO
 		}
 		
 		$sql=substr($sql,0,-1);
+		$this->write_times +=1;
 		return $this->query("update $table set $sql where $where='$id'");
 	}
 	

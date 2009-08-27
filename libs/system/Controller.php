@@ -3,6 +3,7 @@
 class Controller
 {
 	var $swoole;
+	var $view;
 	var $filter_request = true;
 	var $is_ajax = false;
 	protected $model;
@@ -11,8 +12,8 @@ class Controller
 	{
 		$this->swoole = $swoole;
 		$this->model = $swoole->model;
-		$this->swoole->tpl->assign_by_ref('php_genv',$swoole->genv);
-		$this->swoole->tpl->assign_by_ref('php_env',$swoole->env);
+		$this->view = new View($swoole);
+		
 		if($this->filter_request)
 		{
 			Filter::filter_array($_POST);

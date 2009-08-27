@@ -1,5 +1,5 @@
 <?php
-//Swoole_pageCache£¬Ò³Ãæ»º´æÀà
+//Swoole_pageCacheï¼Œé¡µé¢ç¼“å­˜ç±»
 class Swoole_pageCache
 {
 	var $cache_dir;
@@ -12,20 +12,20 @@ class Swoole_pageCache
 		else $this->cache_dir = $cache_dir;		
 	}
 		
-	//½¨Á¢»º´æ
+	//å»ºç«‹ç¼“å­˜
 	function create($content)
 	{
 		file_put_contents($this->cache_dir.'/'.base64_encode($_SERVER['REQUEST_URI']).'.html',$content);
 	}
 	
-	//¼ÓÔØ»º´æ
+	//åŠ è½½ç¼“å­˜
 	function load()
 	{
 		require($this->cache_dir.'/'.base64_encode($_SERVER['REQUEST_URI']).'.html');
 		exit;
 	}
 	
-	//¼ì²éÊÇ·ñ´æÔÚÓÐÐ§»º´æ
+	//æ£€æŸ¥æ˜¯å¦å­˜åœ¨æœ‰æ•ˆç¼“å­˜
 	function isCached()
 	{
 		$file=$this->cache_dir.'/'.base64_encode($_SERVER['REQUEST_URI']).'.html';
