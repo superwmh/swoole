@@ -28,7 +28,7 @@ class Auth
 	 */
 	function login($username,$password,$auto)
 	{
-		setcookie('username',$username,time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'username',$username,time() + self::$cookie_life,'/');
 		$res = $this->db->query('select * from '.$this->table." where username='$username' and password ='$password'");
 		$user = $res->fetch();
 		if(empty($user)) return false;
