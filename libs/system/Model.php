@@ -25,6 +25,7 @@ class Model
 	function __construct($swoole)
 	{
 		$this->db = $swoole->db;
+		$this->dbs = new SelectDB($swoole->db);
 		$this->swoole = $swoole;
 		//$this->fields = $db->query('describe '.$this->table)->fetchall();
 	}
@@ -91,8 +92,6 @@ class Model
 	{
 		$selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
-		$selectdb->primary = $this->primary;
-		$selectdb->select($this->select);
 		$selectdb->put($params);
 		$selectdb->update($data);
 		return true;
@@ -112,10 +111,10 @@ class Model
      * @param array $params
      * @return true/false
      */
-    public final function dels($params){
+    public final function dels($params)
+    {
         $selectdb = new SelectDB($this->db);
         $selectdb->from($this->table);
-        $selectdb->limit(1);
 		$selectdb->put($params);
         $selectdb->delete();
         return true;
