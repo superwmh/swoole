@@ -51,7 +51,6 @@ class Model
 		$selectdb->from($this->table);
 		$selectdb->primary = $this->primary;
 		$selectdb->select($this->select);
-		$selectdb->order($this->primary." desc");
 		$selectdb->put($params);
 		if(array_key_exists('page',$params))
 		{
