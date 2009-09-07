@@ -2,6 +2,9 @@
 require(LIBPATH."/module/smarty/Smarty.class.php");
 class Template extends Smarty
 {
+	var $if_pagecache = false;
+	var $cache_life = 3600;
+	
 	function __construct()
 	{
 		//$this->templates_dir = WEBPATH."/templates";
@@ -10,6 +13,22 @@ class Template extends Smarty
 		$this->cache_dir = WEBPATH."/cache/tmp";
 		$this->left_delimiter = "{{";
 		$this->right_delimiter = "}}";
+	}
+	
+	function display($template= null,$cache_id= null,$complile_id= null)
+	{
+		if($template==null)
+		{
+			global $php;
+			$template = $php->env['mvc']['controller'].'_'.$php->env['mvc']['view'].'.html';
+		}
+		if($this->if_pagecache)
+		{
+			$pagecache = new Swoole_pageCache($this->cache_life);
+			if(!$pagecache->isCached()) $pagecache->create(parent::fetch($template,$cache_id,$complile_id));
+			$pagecache->load();
+		}
+		else parent::display($template,$cache_id,$complile_id);
 	}
 	
 	/**
