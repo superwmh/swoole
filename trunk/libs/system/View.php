@@ -6,6 +6,7 @@ class View extends SwooleObject
 	protected $swoole;
 	var $template_dir = './templates/';
 	var $if_pagecache = false;
+	var $cache_life = 3600;
 	var $show_runtime = false;
 
 	function __construct($swoole)
@@ -229,7 +230,7 @@ class View extends SwooleObject
 	protected function output($content,$display) {
 		if($this->if_pagecache)
 		{
-			$pagecache = new Swoole_pageCache(3600);
+			$pagecache = new Swoole_pageCache($this->cache_life);
 			if($pagecache->isCached()) $pagecache->load();
 			else $pagecache->create($content);
 		}
@@ -289,7 +290,7 @@ class View extends SwooleObject
 	 * @param string $showTime 运行时间信息
 	 +----------------------------------------------------------
 	 */
-	public function showTrace()
+	public function showTrace($detail=false)
 	{
 		// 显示页面Trace信息 读取Trace定义文件
 		// 定义格式 return array('当前页面'=>$_SERVER['PHP_SELF'],'通信协议'=>$_SERVER['SERVER_PROTOCOL'],...);
@@ -303,20 +304,30 @@ class View extends SwooleObject
 		if(isset($_SESSION)) $this->trace('会话ID'   ,   session_id());
 		$this->trace('读取数据库',   $this->swoole->db->read_times.'次');
 		$this->trace('写入数据库',   $this->swoole->db->write_times.'次');
-		$this->trace('加载文件',     count(get_included_files()));
+		$included_files = get_included_files();
+		$this->trace('加载文件',     count($included_files));
 		$this->trace('PHP执行',      $this->showTime());
 		$_trace =   array_merge($_trace,$this->trace);
 		// 调用Trace页面模板
-		$traceInfo = <<<HTML
+		echo <<<HTML
 		<div id="think_page_trace" style="background:white;margin:6px;font-size:14px;border:1px dashed silver;padding:8px">
 		<fieldset id="querybox" style="margin:5px;">
 		<legend style="color:gray;font-weight:bold">页面Trace信息</legend>
 		<div style="overflow:auto;height:300px;text-align:left;">
 HTML;
-		
+		 
 		foreach ($_trace as $key=>$info)
 		{
 			echo $key.' : '.$info.'<br/>';
+		}
+		if($detail)
+		{
+			//输出包含的文件
+			echo '加载的文件<br/>';
+			foreach ($included_files as $file)
+			{
+				echo 'require '.$file.'<br/>';
+			}
 		}
 		echo "</div></fieldset>	</div>";
 	}
