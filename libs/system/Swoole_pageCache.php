@@ -22,7 +22,6 @@ class Swoole_pageCache
 	function load()
 	{
 		require($this->cache_dir.'/'.base64_encode($_SERVER['REQUEST_URI']).'.html');
-		exit;
 	}
 	
 	//检查是否存在有效缓存
