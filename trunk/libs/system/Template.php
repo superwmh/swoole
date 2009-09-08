@@ -14,7 +14,13 @@ class Template extends Smarty
 		$this->left_delimiter = "{{";
 		$this->right_delimiter = "}}";
 	}
-	
+	function pagecache()
+	{
+		$pagecache = new Swoole_pageCache($this->cache_life);		
+		if($pagecache->isCached()) $pagecache->load();
+		else return false;
+		return true;
+	}
 	function display($template= null,$cache_id= null,$complile_id= null)
 	{
 		if($template==null)
