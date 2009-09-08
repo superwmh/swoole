@@ -145,7 +145,7 @@ class Form
 	
 	static public function areaProvince($nameprovince,$namecity,$value='')
 	{
-		if(intval($value)<-1 or empty($value)) $value = 10100000;
+		if(intval($value)<=-1 or empty($value)) $value = 10100000;
 		$forms="<script>getProvinceSelect43rds('','{$nameprovince}','{$nameprovince}','{$namecity}','','{$value}');</script>";
 		return $forms;
 	}
