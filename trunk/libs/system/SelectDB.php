@@ -315,7 +315,8 @@ class SelectDB
 		$update="";		
 		foreach($data as $key=>$value)
 		{
-			$update=$update."$key='$value',";
+			if($value{0}=='`') $update=$update."$key=$value,";
+			else $update=$update."$key='$value',";
 		}
 		
 		$update = substr($update,0,-1);

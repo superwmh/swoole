@@ -44,9 +44,11 @@ class Cache
      * @param $key
      * @return unknown_type
      */
-    function get($key)
+    function get($key,$default=null)
     {
-        return $this->cache->get($key);
+        $v = $this->cache->get($key);
+        if($v) return $v;
+    	else return $default;
     }
     
     /**
