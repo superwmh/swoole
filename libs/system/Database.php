@@ -81,7 +81,7 @@ class Database extends PDO
 		
 		foreach($data as $key=>$value)
 		{
-			if($value{0}=='`') $sql=$sql."$key=$value,";
+			if($value!='' and $value{0}=='`') $sql=$sql."$key=$value,";
 			else $sql=$sql."$key='$value',";
 		}
 		
