@@ -31,6 +31,7 @@ for($i=0;$i<4;$i++)
 	$authnum.=$list[$randnum];
 }
 $authnum = strtoupper($authnum);;
+$_SESSION['authcode'] = $authnum;
 
 /* Create new empty image */
 $Imagick->newImage( 60, 24, $bg ); 
