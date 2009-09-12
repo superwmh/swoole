@@ -45,18 +45,19 @@ class Model
 	 * @param $params
 	 * @return Array
 	 */
-	public final function gets($params,&$pager=false)
+	public final function gets($params,&$pager=null)
 	{
-	    $selectdb = new SelectDB($this->db);
+	    if(empty($params)) return false;
+		$selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
 		$selectdb->primary = $this->primary;
 		$selectdb->select($this->select);
 		if(!array_key_exists('order',$params)) $params['order'] = $this->primary.' desc';
 		$selectdb->put($params);
-		if(array_key_exists('page',$params))
+		if(isset($params['page']))
 		{
 			$selectdb->paging();
-			$pager = new Pager(array('total'=>$selectdb->count(),'perpage'=>$params['pagesize']));
+			$pager = $selectdb->pager;
 		}
 		return $selectdb->getall();
 	}

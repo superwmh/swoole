@@ -24,6 +24,7 @@ class SelectDB
 	var $num = 0;
 	var $pages = 0;
 	var $page = 0;
+	var $pager = null;
 	
 	var $auto_cache = false;
 	var $cache_life = 600;
@@ -195,8 +196,8 @@ class SelectDB
 			$this->pages=intval($this->num/$this->page_size)+1;
 		else
 			$this->pages=$this->num/$this->page_size;
-
 		$this->limit($offset.','.$this->page_size);
+		$this->pager = new Pager(array('total'=>$this->num,$this->page_size));
 	}
 	
 	function filter($filter_func)
@@ -300,7 +301,7 @@ class SelectDB
 	
 	public function count()
 	{
-		$sql=trim("select count({$this->primary}) as cc from {$this->table} {$this->where}");
+		$sql=trim("select count(*) as cc from {$this->table} {$this->where}");
 		$res=$this->db->query($sql)->fetch();
 		return $res['cc'];
 	}
