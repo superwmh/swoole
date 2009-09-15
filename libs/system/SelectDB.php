@@ -223,6 +223,15 @@ class SelectDB
 	
 	function put($param)
 	{
+		//处理where条件
+		if(isset($param['where']))
+		{
+			$wheres = $param['where'];
+			if(is_array($wheres)) foreach($wheres as $where) $this->where($where);
+			else $this->where($wheres);
+			unset($param['where']);
+		}
+		
 		foreach($param as $key=>$value)
 		{
 			if($key=='update' or $key=='delete' or $key=='insert')
