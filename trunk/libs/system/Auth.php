@@ -92,7 +92,8 @@ class Auth
 	
 	public static function login_require()
 	{
-		if(empty($_SESSION)) session();
+		$check = false;
+		if(!isset($_SESSION)) session();
 		if(isset($_SESSION[self::$session_prefix.'isLogin']) and $_SESSION[self::$session_prefix.'isLogin']=='1') $check=true;
 		if(!$check)
 		{
