@@ -54,11 +54,18 @@ class Swoole extends SwooleObject
 		$mvc = call_user_func($url_func);
 		$this->env['mvc'] = $mvc;
 		$controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
-		if(!file_exists($controller_path)) Error::info('MVC Error',"Controller <b>$controller</b> not exist!");
+		if(!file_exists($controller_path))
+		{
+			header("HTTP/1.1 404 Not Found");
+			Error::info('MVC Error',"Controller <b>{$mvc['controller']}</b> not exist!");
+		}
 		else require($controller_path);
-		$controller = new $mvc['controller']($this);
-		
-		if(!method_exists($controller,$mvc['view'])) Error::info('MVC Error!'.$this->view,'不存在的视图方法，请检查您的应用程序！');
+		$controller = new $mvc['controller']($this);		
+		if(!method_exists($controller,$mvc['view']))
+		{
+			header("HTTP/1.1 404 Not Found");
+			Error::info('MVC Error!'.$this->view,"View <b>{$mvc['view']}</b> Not Found!");
+		}
 		if($controller->is_ajax)
 		{
 			header('Cache-Control: no-cache, must-revalidate');
