@@ -64,4 +64,8 @@ function file_gettype($mime)
 	if(!array_key_exists($mime,$file_types)) return false;
 	else return $file_types[$mime];
 }
+function file_ext($file)
+{ 
+	return strtolower(trim(substr(strrchr($file, '.'), 1))); 
+} 
 ?>
