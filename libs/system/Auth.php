@@ -11,7 +11,9 @@ class Auth
 	static $password = 'password';
 	static $session_prefix = '';
 	static $cookie_life = 2592000;
+	
 	var $db = '';
+	var $user;
 	
 	function __construct($db,$table='')
 	{
@@ -19,24 +21,28 @@ class Auth
 		else $this->table = $table;
 		$this->db = $db;
 	}
+	function setSession($key)
+	{
+		$_SESSION[$key] = $this->user[$key];
+	}
 	/**
 	 * 登录
 	 * @param $username
 	 * @param $password
 	 * @param $auto
+	 * @param $save 保存用户登录信息
 	 * @return unknown_type
 	 */
-	function login($username,$password,$auto)
+	function login($username,$password,$auto,$save=false)
 	{
 		setcookie(self::$session_prefix.'username',$username,time() + self::$cookie_life,'/');
-		$res = $this->db->query('select * from '.$this->table." where username='$username' and password ='$password'");
-		$user = $res->fetch();
-		if(empty($user)) return false;
-		else
+		$this->user = $this->db->query('select * from '.$this->table." where username='$username'")->fetch();
+		if(empty($this->user)) return false;
+		elseif($this->user['password']==$password)
 		{
 			$_SESSION[self::$session_prefix.'isLogin']=true;
-			$_SESSION[self::$session_prefix.'user_id']=$user['id'];
-			if($auto==1) $this->autoLogin($user);
+			$_SESSION[self::$session_prefix.'user_id']=$this->user['id'];
+			if($auto==1) $this->autoLogin();
 			return true;
 		}
 	}
@@ -58,14 +64,14 @@ class Auth
 	 * @param $user
 	 * @return unknown_type
 	 */
-	function autoLogin($user)
+	function autoLogin()
 	{
 		$ip = Swoole_client::getIP();
 		setcookie(self::$session_prefix.'autologin',1,time() + self::$cookie_life,'/');
-		setcookie(self::$session_prefix.'username',$user['username'],time() + self::$cookie_life,'/');
-		setcookie(self::$session_prefix.'password',$user['password'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'username',$this->user['username'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'password',$this->user['password'],time() + self::$cookie_life,'/');
 		setcookie(self::$session_prefix.'ip',$ip,time() + self::$cookie_life,'/');
-		setcookie(self::$session_prefix.'id',$user['id'],time() + self::$cookie_life,'/');
+		setcookie(self::$session_prefix.'id',$this->user['id'],time() + self::$cookie_life,'/');
 	}
 	/**
 	 * 注销登录
