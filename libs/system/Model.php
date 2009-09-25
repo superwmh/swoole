@@ -212,8 +212,7 @@ class Record implements ArrayAccess
 		{
 			$res=$this->db->query('select * from '.$this->table.' where '.$this->primary."='$id' limit 1");
 			$this->_data=$res->fetch();
-			if(empty($this->_data)) Error::warn('Model Warning',"Record {$this->table} - $id not found!");
-			else $this->change=1;
+			if(!empty($this->_data)) $this->change=1;
 		}
 	}
 	/**
@@ -255,6 +254,7 @@ class Record implements ArrayAccess
 		{
 			$this->change=2;
 			$this->_change[$property]=$value;
+			$this->_data[$property]=$value;
 		}
 		else
 		{
@@ -270,7 +270,7 @@ class Record implements ArrayAccess
 	 */
 	function save()
 	{
-		if($this->change==0)
+		if($this->change==0 or $this->change==1)
 		{
 			$this->db->insert($this->_data,$this->table);
 			$this->_current_id=$this->db->lastInsertId();

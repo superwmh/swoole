@@ -70,8 +70,6 @@ class Auth
 		setcookie(self::$session_prefix.'autologin',1,time() + self::$cookie_life,'/');
 		setcookie(self::$session_prefix.'username',$this->user['username'],time() + self::$cookie_life,'/');
 		setcookie(self::$session_prefix.'password',$this->user['password'],time() + self::$cookie_life,'/');
-		setcookie(self::$session_prefix.'ip',$ip,time() + self::$cookie_life,'/');
-		setcookie(self::$session_prefix.'id',$this->user['id'],time() + self::$cookie_life,'/');
 	}
 	/**
 	 * 注销登录
