@@ -9,17 +9,17 @@ class Swoole_client
 {
 	public static function getIP()
 	{
-	   if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
-			   $ip = getenv("HTTP_CLIENT_IP");
-		   else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
-			   $ip = getenv("HTTP_X_FORWARDED_FOR");
-		   else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
-			   $ip = getenv("REMOTE_ADDR");
-		   else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
-			   $ip = $_SERVER['REMOTE_ADDR'];
-		   else
-			   $ip = "unknown";
-	   return($ip);
+		if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
+		$ip = getenv("HTTP_CLIENT_IP");
+		else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
+		$ip = getenv("HTTP_X_FORWARDED_FOR");
+		else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
+		$ip = getenv("REMOTE_ADDR");
+		else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
+		$ip = $_SERVER['REMOTE_ADDR'];
+		else
+		$ip = "unknown";
+		return($ip);
 	}
 	public static function getBrowser()
 	{
@@ -40,16 +40,31 @@ class Swoole_client
 	}
 	public static function getOS()
 	{
-		if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(Windows NT[\ 0-9\.]*)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(Windows[\ 0-9\.]*)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(Mac[^;^)]*)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(unix)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(Linux[\ 0-9\.]*)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(SunOS[\ 0-9\.]*)|i" ) );
-		else if( $System = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(BSD[\ 0-9\.]*)|i" ) );
-		else $System = '其它';
-		$System = trim($System);
-		return($System);
+		$os="";
+		$Agent = $_SERVER["HTTP_USER_AGENT"];
+		if (eregi('win',$Agent) && strpos($Agent, '95')) $os="Windows 95";
+		elseif (eregi('win 9x',$Agent) && strpos($Agent, '4.90')) $os="Windows ME";
+		elseif (eregi('win',$Agent) && ereg('98',$Agent)) $os="Windows 98";
+		elseif (eregi('win',$Agent) && eregi('nt 5.0',$Agent)) $os="Windows 2000";
+		elseif (eregi('win',$Agent) && eregi('nt 5.1',$Agent)) $os="Windows XP";
+		elseif (eregi('win',$Agent) && eregi('nt 5.2',$Agent)) $os="Windows 2003";		
+		elseif (eregi('win',$Agent) && eregi('nt',$Agent)) $os="Windows NT";		
+		elseif (eregi('win',$Agent) && ereg('32',$Agent)) $os="Windows 32";
+		elseif (eregi('linux',$Agent)) $os="Linux";
+		elseif (eregi('unix',$Agent)) $os="Unix";
+		elseif (eregi('sun',$Agent) && eregi('os',$Agent)) $os="SunOS";
+		elseif (eregi('ibm',$Agent) && eregi('os',$Agent)) $os="IBM OS/2";
+		elseif (eregi('Mac',$Agent) && eregi('PC',$Agent)) $os="Macintosh";
+		elseif (eregi('PowerPC',$Agent)) $os="PowerPC";
+		elseif (eregi('AIX',$Agent)) $os="AIX";
+		elseif (eregi('HPUX',$Agent)) $os="HPUX"; 
+		elseif(eregi('NetBSD',$Agent)) $os="NetBSD";
+		elseif (eregi('BSD',$Agent)) $os="BSD";
+		elseif (ereg('OSF1',$Agent)) $os="OSF1";
+		elseif (ereg('IRIX',$Agent)) $os="IRIX";	
+		elseif (eregi('FreeBSD',$Agent)) $os="FreeBSD";
+		if ($os=='') $os = "Unknown";
+		return $os;
 	}
 	public static function matchbrowser( $Agent, $Patten )
 	{
