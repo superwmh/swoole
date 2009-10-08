@@ -14,7 +14,12 @@ class Swoole_tools
 		$time = intval($seconds/2592000);
 		if($time>=1) return $time.'个月前';
 		$time = intval($seconds/86400);
-		if($time>=1) return $time.'天前';
+		if($time>=1)
+		{
+			if($time==1) return '昨天';
+			if($time==2) return '前天';
+			return $time.'天前';
+		}
 		$time = intval($seconds/3600);
 		if($time>=1) return $time.'小时前';
 		$time = intval($seconds/60);
