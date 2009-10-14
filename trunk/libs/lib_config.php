@@ -15,7 +15,9 @@ $php = new Swoole;
 */
 function namespace($space_name)
 {
-	require_once(LIBPATH.'/function/'.$space_name.'.php');
+	if($space_name{0}=='@') $func_file = WEBPATH.'/class/'.substr($space_name,1).'.func.php';
+	else $func_file = LIBPATH.'/function/'.$space_name.'.php';
+	require_once($func_file);
 }
 
 /**
