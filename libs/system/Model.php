@@ -120,6 +120,18 @@ class Model
         $selectdb->delete();
         return true;
     }
+    /**
+     * 返回符合条件的记录数
+     * @param array $params
+     * @return true/false
+     */
+    public final function count($params)
+    {
+    	$selectdb = new SelectDB($this->db);
+		$selectdb->from($this->table);
+		$selectdb->put($params);
+		return $selectdb->count();
+    }
 	/**
 	 * 获取到所有表记录的接口，通过这个接口可以访问到数据库的记录
 	 * @return RecordSet Object (这是一个接口，不包含实际的数据)
