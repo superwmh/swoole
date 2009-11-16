@@ -84,14 +84,15 @@ function session()
     $mSess = new MSession($session_cache);
     $mSess->initSess();
 }
-
 /**
- * 导入一个数组格式的数据
+ * 导入插件
+ * @param $plugin_name
+ * @return None
  */
-function load_data($data_name)
+function loadPlugin($plugin_name)
 {
-	require(LIBPATH.'/data/'.$data_name.'.php');
-	return $$data_name;
+	global $php;
+	$php->plugin->load($plugin_name);
 }
 /**
  * 调试数据，终止程序的运行

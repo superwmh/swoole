@@ -5,7 +5,7 @@
  * @author Tianfeng.Han
  *
  */
-class Swoole extends SwooleObject
+class Swoole extends ArrayObject
 {
 	var $db;
 	var $tpl;
@@ -16,6 +16,7 @@ class Swoole extends SwooleObject
 	
 	var $load;
 	var $model;
+	var $plugin;
 	var $genv;
 	var $env;
 	
@@ -25,7 +26,8 @@ class Swoole extends SwooleObject
 		parent::__construct();
 		$this->load = new SwooleLoader($this);
 		$this->model = new ModelLoader($this);
-		$this->genv = new SwooleEnv($this);
+		$this->plugin = new PluginLoader($this);
+		$this->genv = new SwooleEnv($this);		
 	}
 	private function __init()
 	{
@@ -98,13 +100,12 @@ class Swoole extends SwooleObject
 		header('Content-type: application/json');
 		
 		$method = $_GET['method'];
-		$data = call_user_func($method);
-		/*		
+		$data = call_user_func($method);	
 		if(DBCHARSET!='utf8')
 		{
 			namespace('array');
 			$data = array_iconv(DBCHARSET , 'utf-8' , $data);
-		}*/
+		}
 		echo json_encode($data);
 	}
 	

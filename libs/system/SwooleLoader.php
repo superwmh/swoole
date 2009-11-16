@@ -7,7 +7,7 @@ class SwooleLoader
 	function __construct($swoole)
 	{
 		self::$swoole = $swoole;
-		self::$_objects = array('model'=>new SwooleObject,'lib'=>new SwooleObject,'object'=>new SwooleObject);
+		self::$_objects = array('model'=>new ArrayObject,'lib'=>new ArrayObject,'object'=>new ArrayObject);
 	}
 	
 	/**
