@@ -1,5 +1,5 @@
 <?php
-class SwooleTemplate extends SwooleObject
+class SwooleTemplate extends ArrayObject
 {
 	var $templates_dir;
 	

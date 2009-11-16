@@ -1,5 +1,5 @@
 <?php
-class View extends SwooleObject
+class View extends ArrayObject
 {
 	protected $_var        =  array();
 	protected $trace       = array();

@@ -36,9 +36,9 @@ class Model
 	 * @param $object_id
 	 * @return Record Object
 	 */
-	public final function get($object_id=0)
+	public final function get($object_id=0,$where='')
 	{
-		return new Record($object_id,$this->db,$this->table,$this->primary);
+		return new Record($object_id,$this->db,$this->table,$this->primary,$where);
 	}
 	/**
 	 * 获取表的一段数据，查询的参数由$params指定
@@ -103,8 +103,9 @@ class Model
 	 * @param $where 指定匹配字段，默认为主键
 	 * @return true/false
 	 */
-	public final function del($id,$where)
+	public final function del($id,$where=null)
 	{
+		if($where==null) $where = $this->primary;
 		return $this->db->delete($id,$this->table,$where);
 	}
     /**
@@ -214,15 +215,16 @@ class Record implements ArrayAccess
 	var $_current_id=0;
 	var $_currend_key;
 
-	function __construct($id,$db,$table,$primary)
+	function __construct($id,$db,$table,$primary,$where='')
 	{
 		$this->db=$db;
 		$this->_current_id=$id;
 		$this->table=$table;
 		$this->primary=$primary;
+		if(empty($where)) $where=$primary;
 		if(!empty($this->_current_id))
 		{
-			$res=$this->db->query('select * from '.$this->table.' where '.$this->primary."='$id' limit 1");
+			$res=$this->db->query('select * from '.$this->table.' where '.$where."='$id' limit 1");
 			$this->_data=$res->fetch();
 			if(!empty($this->_data)) $this->change=1;
 		}
@@ -348,7 +350,10 @@ class RecordSet implements Iterator
 		$this->db_select->order($this->primary." desc");
 		if(!empty($limit)) $this->db_select->limit($limit);
 	}
-	
+	function get()
+	{
+		return $this->_list;
+	}
 	function filter($where)
 	{
 		$this->db_select->where($where);
