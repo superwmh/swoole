@@ -68,6 +68,7 @@ class Model
 	 */
 	public final function put($data)
 	{
+		if(empty($data) or !is_array($data)) return false;
 		$this->db->insert($data,$this->table);
 		return $this->db->Insert_ID();
 	}

@@ -4,7 +4,7 @@ class View extends ArrayObject
 	protected $_var        =  array();
 	protected $trace       = array();
 	protected $swoole;
-	var $template_dir = './templates/';
+	var $template_dir = '';
 	var $if_pagecache = false;
 	var $cache_life = 3600;
 	var $show_runtime = false;
@@ -12,6 +12,7 @@ class View extends ArrayObject
 	function __construct($swoole)
 	{
 		$this->swoole = $swoole;
+		$this->template_dir = APPSPATH.'/views/';
 	}
 
 	/**

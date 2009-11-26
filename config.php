@@ -5,33 +5,35 @@ define("WEBROOT",'http://'.$_SERVER['SERVER_NAME']);
 define('DBTYPE','pdo');
 define('DBENGINE','MyISAM');
 define("DBMS","mysql");
-define("DBHOST","localhost");
+define("DBHOST","127.0.0.1");
 define("DBUSER","root");
-define("DBPASSWORD","5524001");
-define("DBNAME","website");
-define("DBCHARSET","gb2312");
+define("DBPASSWORD","root");
+define("DBNAME","test");
+define("DBCHARSET","utf8");
 
-define("TABLE_PREFIX",'chq');
-define('ADMIN_SKIN','very');
-
-//Ӧ�ó����λ��
+//应用程序的位置
 define("APPSPATH",WEBPATH.'/apps');
 define('HTML',WEBPATH.'/html');
 define('HTML_URL_BASE','/html');
 define('HTML_FILE_EXT','.html');
 
-//����ϵͳ
-define('CACHE_URL','file://localhost/#site_cache');
-define('KDB_CACHE','memcache://192.168.11.26:11211');
-define('KDB_ROOT','cms,user');
+//上传文件的位置
+define('UPLOAD_DIR','/static/uploads');
 
-/**
- * Session�Ựϵͳ����
- */
-define('SESSION_CACHE','memcache://192.168.11.26:11211');
-define('SESSION_LIFETIME',3600);
+//缓存系统
+#define('CACHE_URL','memcache://127.0.0.1:11211');
+define('CACHE_URL','filecache://localhost#site_cache');
+//define('SESSION_CACHE','memcache://192.168.11.26:11211');
+//define('KDB_CACHE','memcache://192.168.11.26:11211');
+//define('KDB_ROOT','cms,user');
+
+//DES加密解密的KEY
+define('DESKEY','jcxh@21xiehou.com');
 
 require('libs/lib_config.php');
-$php->loadlibs('db,cache,tpl');
-$php->loadConfig();
+$php->autoload('db','tpl','cache');
+//动态配置系统
+//$php->loadConfig();
+//指定国际编码的方式
+mb_internal_encoding('utf-8');
 ?>
