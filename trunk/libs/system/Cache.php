@@ -46,7 +46,7 @@ class Cache
      */
     function get($key)
     {
-    	return $default;
+    	return $this->cache->get($key);
     }
     
     /**
