@@ -66,7 +66,7 @@ class Swoole extends ArrayObject
 		if(!method_exists($controller,$mvc['view']))
 		{
 			header("HTTP/1.1 404 Not Found");
-			Error::info('MVC Error!'.$this->view,"View <b>{$mvc['view']}</b> Not Found!");
+			Error::info('MVC Error!'.$this->view,"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
 		}
 		if($controller->is_ajax)
 		{
