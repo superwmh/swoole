@@ -18,29 +18,6 @@ class GeneralView
 		else Error::info('GeneralView Error!',"View <b>{$this->app_name}->{$method}</b> Not Found!");
 	}
 	
-	function dlist($list,$params=array())
-	{
-		$this->swoole->tpl->assign('list',$list);
-		$this->swoole->tpl->display('admin_'.$this->app_name.'_list.html');
-	}
-	
-	function add($params=array())
-	{
-		
-	}
-	
-	function modify($id,$params=array())
-	{
-		
-	}
-	function detail($id,$params=array())
-	{
-		
-	}
-	function delete($id,$params=array())
-	{
-		
-	}
 	function proc_upfiles()
 	{
 		namespace('file');

@@ -1,29 +1,29 @@
 <?php
-//SwooleÏµÍ³¹¤¾ß
+/**
+ * å†…å®¹å¤„ç†å·¥å…·ç±»
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ *
+ */
 class Swoole_content
 {
-	public function editor($input_name, $input_value,$height="480")
+	/**
+	 * è‡ªåŠ¨äº§ç”Ÿåˆ†é¡µä»£ç 
+	 * æ ¹æ®$sizeæä¾›çš„é•¿åº¦
+	 * å°†$contentåˆ†æˆ$sptagåˆ†å‰²å¼€çš„ä¸€ä¸ªæ–‡æœ¬ï¼Œå¯ä»¥ä½¿ç”¨explodeå®ç°å†…å®¹åˆ’åˆ†
+	 *
+	 * @param $content å†…å®¹
+	 * @param $size   æ¯é¡µå†…å®¹é•¿åº¦
+	 * @param $sptag  åˆ†éš”ç¬¦
+	 * @return bool   æ˜¯å¦æˆåŠŸ
+	 */
+	function paging(&$content,$size,$sptag)
 	{
-		 $editor = Factory::create("fckeditor",$input_name);
-		 $editor->BasePath   = WEBROOT."/swoole/module/fckeditor/";
-		 $editor->ToolbarSet = "Default";
-		 $editor->Width      = "100%";
-		 $editor->Height     = $height;
-		 $editor->Value      = $input_value;
-		 $editor->Config['AutoDetectLanguage'] = true ;
-		 $editor->Config['DefaultLanguage']  = 'en' ;//ÓïÑÔ
-		 return $editor->CreateHtml();
-	}
-	
-	//×Ô¶¯²úÉú·ÖÒ³´úÂë
-	//¸ù¾İ$spsizeÌá¹©µÄ³¤¶È£¬½«$mybody·Ö³É$sptag·Ö¸î¿ªµÄÒ»¸öÎÄ±¾£¬¿ÉÒÔÊ¹ÓÃexplodeÊµÏÖÄÚÈİ»®·Ö
-	function SpLongBody(&$mybody,$spsize,$sptag)
-	{
-		if(strlen($mybody)<$spsize) return $mybody;
-		$bds = explode('<',$mybody);
+		if(strlen($content)<$spsize) return false;
+		$bds = explode('<',$content);
 		$npageBody = "";
 		$istable = 0;
-		$mybody = "";
+		$content = "";
 		foreach($bds as $i=>$k)
 		{
 			if($i==0){$npageBody .= $bds[$i]; continue;}
@@ -42,28 +42,32 @@ class Swoole_content
 			}
 			if(strlen($npageBody)>$spsize)
 			{
-				$mybody .= $npageBody.$sptag;
+				$content .= $npageBody.$sptag;
 				$npageBody = "";
 			}
 		}
-		if($npageBody!="") $mybody .= $npageBody;
-		return $mybody;
+		if($npageBody!="") $content .= $npageBody;
+		return true;
 	}
-	
-	//×Ô¶¯½«¸ø¶¨µÄÄÚÈİ$dataÖĞÔ¶³ÌÍ¼Æ¬µÄurl¸ÄÎª±¾µØÍ¼Æ¬£¬²¢×Ô¶¯½«Ô¶³ÌÍ¼Æ¬±£´æµ½±¾µØ
-	function imageToLacal($data)
+
+	/**
+	 * è‡ªåŠ¨å°†ç»™å®šçš„å†…å®¹$dataä¸­è¿œç¨‹å›¾ç‰‡çš„urlæ”¹ä¸ºæœ¬åœ°å›¾ç‰‡ï¼Œå¹¶è‡ªåŠ¨å°†è¿œç¨‹å›¾ç‰‡ä¿å­˜åˆ°æœ¬åœ°
+	 * @param $data
+	 * @return unknown_type
+	 */
+	function image_local($data)
 	{
 		$option="upfiles/images";
 		$up_path="/$option/".date('Y')."/".date("m")."/".date("d");
 		$path=WEBPATH."/".$up_path;
-		
+
 		if(!file_exists(WEBPATH."/$option/"))
 		{
 			mkdir(WEBPATH."/$option/",0777);
 		}
 		if(!file_exists($path))
 		{
-			//echo "½¨Á¢Ä¿Â¼".$path;
+			//echo "å»ºç«‹ç›®å½•".$path;
 			if(!file_exists(WEBPATH."/$option/".date('Y')))
 			{
 				mkdir(WEBPATH."/$option/".date('Y'),0777);
@@ -84,12 +88,12 @@ class Swoole_content
 		{
 			if (strstr(strtolower($chunk),"img") && strstr(strtolower($chunk), "src"))
 			{
-				while (eregi("(img[^>]*src[[:blank:]]*)=[[:blank:]]*[\'\"]?(([[a-z]{3,5}://(([.a-zA-Z0-9-])+(:[0-9]+)*))*([+:%/?=&;\\\(\),._a-zA-Z0-9-]*))(#[.a-zA-Z0-9-]*)?[\'\" ]?", $chunk, $regs)) 
+				while (eregi("(img[^>]*src[[:blank:]]*)=[[:blank:]]*[\'\"]?(([[a-z]{3,5}://(([.a-zA-Z0-9-])+(:[0-9]+)*))*([+:%/?=&;\\\(\),._a-zA-Z0-9-]*))(#[.a-zA-Z0-9-]*)?[\'\" ]?", $chunk, $regs))
 				{
-					if($regs[2]){
+					if($regs[2])
+					{
 						$i++;
 						$source[$i] = $regs[2];
-						//$imglinks[$i] = $this->realUrl($regs[2]);
 					}
 					$chunk = str_replace($regs[0], "", $chunk);
 				}
@@ -102,47 +106,49 @@ class Swoole_content
 			{
 				$filename=substr(time(),6,-1).rand(100000,999999).".jpg";
 				copy($uri,$path.'/'.$filename);
-				//echo $uri;
-				//echo WEBROOT.$up_path."/".$filename."<br />";
 				$data=str_replace($uri,WEBROOT.$up_path."/".$filename,$data);
 			}
 		}
 		return $data;
 	}
-	
-	//ºº×Ö×ªÎªÆ´Òô
+
+	/**
+	 * æ±‰å­—è½¬ä¸ºæ‹¼éŸ³
+	 * @param $str ä¸­æ–‡
+	 * @return $res æ‹¼éŸ³
+	 */
 	function pinyin($str)
 	{
 		require("swoole/contrib/data/pinyin.php");
-		$ret=""; 
+		$ret="";
 		for($i=0;$i<strlen($str);$i++)
-		{ 
-			$p=ord(substr($str,$i,1)); 
+		{
+			$p=ord(substr($str,$i,1));
 			if($p>160){
-				$q=ord(substr($str,++$i,1)); 
+				$q=ord(substr($str,++$i,1));
 				$p=$p*256+$q-65536;
 			}
-			$ret.=self::pinyin_z($p,$pinyin);
+			$ret.=self::_pinyin($p,$pinyin);
 		}
 		return $ret;
 	}
-	
-	//Ö÷ÒªÊÇÓÃÓÚpinyin·½·¨
-	function pinyin_z($num,&$pinyin)
+
+	//ä¸»è¦æ˜¯ç”¨äºpinyinæ–¹æ³•
+	private function _pinyin($num,&$pinyin)
 	{
 		if($num>0&&$num<160)
-		{ 
-			return chr($num); 
-		} 
+		{
+			return chr($num);
+		}
 		elseif($num<-20319||$num>-10247)
-		{ 
-			return ""; 
+		{
+			return "";
 		}
 		else
-		{ 
-			for($i=count($pinyin)-1;$i>=0;$i--){if($pinyin[$i][1]<=$num)break;} 
-			return $pinyin[$i][0]; 
-		} 
+		{
+			for($i=count($pinyin)-1;$i>=0;$i--){if($pinyin[$i][1]<=$num)break;}
+			return $pinyin[$i][0];
+		}
 	}
 }
 ?>

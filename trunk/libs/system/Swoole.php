@@ -29,10 +29,19 @@ class Swoole extends ArrayObject
 		$this->plugin = new PluginLoader($this);
 		$this->genv = new SwooleEnv($this);		
 	}
+	/**
+	 * 初始化环境
+	 * @return unknown_type
+	 */
 	private function __init()
 	{
 		$this->env['runtime']['start'] = microtime(true);
 		$this->env['runtime']['mem'] = memory_get_usage();
+		
+		//过滤$_GET $_POST $_REQUEST请求
+		Filter::filter_array($_POST);
+		Filter::filter_array($_GET);
+		Filter::filter_array($_REQUEST);
 	}
 	/**
 	 * 自动导入模块

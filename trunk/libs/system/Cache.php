@@ -32,7 +32,7 @@ class Cache
                 $obj->connect($this->uri['host'],isset($this->uri['port'])?$this->uri['port']:11211);
                 return $obj;
             case 'file':
-                $obj = new FileCache($cache_server['fragment']);
+                $obj = new FileCache(FILECACHE_DIR.'/'.$this->uri['fragment'].'.fc');
                 return $obj;
             default:
                 return;

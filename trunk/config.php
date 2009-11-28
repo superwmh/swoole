@@ -1,8 +1,8 @@
 <?php
 define("WEBPATH",str_replace("\\","/",dirname(__FILE__)));
 define("WEBROOT",'http://'.$_SERVER['SERVER_NAME']);
-
-define('DBTYPE','pdo');
+//Database Driver，可以选择PdoDB , MySQL, MySQL2(MySQLi) , AdoDb(需要安装adodb插件)
+define('DBTYPE','PdoDB');
 define('DBENGINE','MyISAM');
 define("DBMS","mysql");
 define("DBHOST","127.0.0.1");
