@@ -105,7 +105,7 @@ class Database
 	 */
 	function __call($method,$args=array())
 	{
-		return call_user_method_array($method,$this->_db,$args);
+		return call_user_func_array(array($this->_db,$method),$args);
 	}
 }
 ?>

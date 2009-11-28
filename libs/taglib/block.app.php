@@ -42,7 +42,7 @@ function smarty_block_app($params, $body, &$smarty)
 	if(strpos($fields,'url')===false) $fields.=',url';
 	$app_instance->select = $fields;
 	
-	$data = call_user_method($func,$app_instance,$params);
+	$data = call_user_func(array($app_instance,$func),$params);
 	return $stpl->parse_loop($data,$body,$fields);
 }
 ?>

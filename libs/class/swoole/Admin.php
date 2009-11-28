@@ -40,13 +40,13 @@ class Admin
 		$this->fields = $this->app_config[$this->app];
 		$this->fields_array = explode(',',$this->fields);
 		
-		namespace('js');
-		namespace('content');
-		namespace('file');
+		import_func('js');
+		import_func('content');
+		import_func('file');
 		
 		$this->php->tpl->assign('admin',$this);
 		if($this->hasField('catid')) $this->getCategory();
-		call_user_method('admin'.$this->action,$this);
+		return call_user_func(array($this,'admin'.$this->action));
 	}
 	
 	function getCategory()
@@ -109,7 +109,7 @@ class Admin
 		{
 			$this->php->db->query("delete from $this->table where id=".$_GET['del'].' limit 1');
 		}
-		js_goto('删除成功！','admin_main.php?app='.$_GET['app']);
+		js_goto('删晒','admin_main.php?app='.$_GET['app']);
 	}
 	
 	function adminlist()
@@ -142,9 +142,9 @@ class Admin
 				$_POST['content']=imageToLacal($_POST['content']);
 			}
 
-			//插入数据库
+			//菘
 			if($_FILES['image']['type']!="") $_POST['image']=file_upload("image");
-			if($this->php->db->insert($_POST,$this->table)) js_goto("添加成功!",'admin_main.php?app='.$_POST['app'].'&action=add');
+			if($this->php->db->insert($_POST,$this->table)) js_goto("映晒!",'admin_main.php?app='.$_POST['app'].'&action=add');
 		}
 		else
 		{
@@ -170,8 +170,8 @@ class Admin
 			if(isset($_FILES['image'])) if($_FILES['image']['type']!="") $_POST['image']=file_upload("image");
 			if(isset($_FILES['picture'])) if($_FILES['picture']['type']!="") $_POST['picture']=file_upload("picture");			
 			
-			//更新数据库
-			if($this->php->db->update($id,$_POST,$this->table)) js_back('修改成功！',-2);
+			//菘
+			if($this->php->db->update($id,$_POST,$this->table)) js_back('薷某晒',-2);
 		}
 		else
 		{

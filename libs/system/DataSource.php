@@ -26,7 +26,7 @@ class DataSource
 			unset($params['func']);
 		}
 		else $func = 'getList';
-		return call_user_method_array($func,$model,$params);
+		return call_user_func_array(array($model,$func),$params);
 	}
 	
 	function fetch_select($dname,$params)
@@ -89,7 +89,7 @@ function smarty_block_app($params, $body, &$smarty)
 	{
 		$php->model->$model->select = $fields;
 	}
-	$data = call_user_method($func,$php->model->$model,$params);
+	$data = call_user_func(array($php->model->$model,$func),$params);
 	//var_dump($data);
 	return SwooleTemplate::parse_loop($data,$body,$fields);
 }

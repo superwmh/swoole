@@ -30,7 +30,7 @@ function smarty_block_app($params, $body, &$smarty)
 	{
 		$php->model->$model->select = $fields;
 	}
-	$data = call_user_method($func,$php->model->$model,$params);
+	$data = call_user_func(array($php->model->$model,$func),$params);
 	return SwooleTemplate::parse_loop($data,$body,$fields);
 }
 ?>

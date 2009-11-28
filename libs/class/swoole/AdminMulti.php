@@ -36,12 +36,12 @@ class AdminMulti
 		$this->fields = $this->app_config[$this->app];
 		$this->fields_array = explode(',',$this->fields);
 		
-		namespace('content');
-		namespace('file');
+		import_func('content');
+		import_func('file');
 		
 		$this->php->tpl->assign('admin',$this);
 		if($this->hasField('tid')) $this->getCategory();
-		call_user_method('admin'.$this->action,$this);
+		return call_user_func(array($this,'admin'.$this->action));
 	}
 	
 	function getCategory()
@@ -128,9 +128,9 @@ class AdminMulti
 				$_POST['content']=imageToLacal($_POST['content']);
 			}
 
-			//插入数据库
+			//菘
 			if($_FILES['image']['type']!="") $_POST['image']=file_upload("image");
-			if($this->php->db->insert($_POST,$this->table)) js_back("添加成功!",-2);
+			if($this->php->db->insert($_POST,$this->table)) js_back("映晒!",-2);
 		}
 		else
 		{
@@ -156,8 +156,8 @@ class AdminMulti
 			if(isset($_FILES['image'])) if($_FILES['image']['type']!="") $_POST['image']=file_upload("image");
 			if(isset($_FILES['picture'])) if($_FILES['picture']['type']!="") $_POST['picture']=file_upload("picture");			
 			
-			//更新数据库
-			if($this->php->db->update($id,$_POST,$this->table)) js_back('修改成功！',-2);
+			//菘
+			if($this->php->db->update($id,$_POST,$this->table)) js_back('薷某晒',-2);
 		}
 		else
 		{
@@ -206,7 +206,7 @@ class AdminMulti
 	{
 		if(isset($_POST['job']) and $_POST['job']!='')
 		{
-			if(!isset($_POST['ids'])) js_alert('没有选中任何操作的对象');
+			if(!isset($_POST['ids'])) js_alert('没选魏尾亩');
 			extract($_POST);
 			if($job=='delete')
 			{
