@@ -52,12 +52,16 @@ class SelectDB
 	function init($what='')
 	{
 		if($what=='')
-		{
-			$this->table="";
-			$this->select="*";
-			$this->limit="";
-			$this->where="";
-			$this->order="";
+		{			
+			$this->table='';			
+			$this->primary='id';
+			$this->select='*';
+			$this->sql='';
+			$this->limit='';
+			$this->where='';
+			$this->order='';
+			$this->group='';
+			$this->join='';
 		}
 		else
 			$this->$what = '';
@@ -221,18 +225,26 @@ class SelectDB
 		$this->is_execute++;
 	}
 	
-	function put($param)
+	function put($params)
 	{
 		//处理where条件
-		if(isset($param['where']))
+		if(isset($params['where']))
 		{
-			$wheres = $param['where'];
+			$wheres = $params['where'];
 			if(is_array($wheres)) foreach($wheres as $where) $this->where($where);
 			else $this->where($wheres);
-			unset($param['where']);
+			unset($params['where']);
 		}
-		
-		foreach($param as $key=>$value)
+		//处理orwhere条件
+		if(isset($params['orwhere']))
+		{
+			$orwheres = $params['orwhere'];
+			if(is_array($orwheres)) foreach($orwheres as $orwhere) $this->orwhere($orwhere);
+			else $this->$orwheres($orwhere);
+			unset($params['orwhere']);
+		}
+
+		foreach($params as $key=>$value)
 		{
 			if($key=='update' or $key=='delete' or $key=='insert')
 				continue;
@@ -317,14 +329,25 @@ class SelectDB
 	
 	function insert($data)
 	{
-		return $this->db->insert($data,$this->table);
+		$field="";
+		$values="";
+		foreach($data as $key => $value)
+		{
+			$value = str_replace("'","\'",$value);
+			$field=$field."$key,";
+			$values=$values."'$value',";
+		}		
+		$field=substr($field,0,-1);
+		$values=substr($values,0,-1);
+		return $this->db->query("insert into {$this->table} ($field) values($values)");
 	}
 	
 	function update($data)
 	{
-		$update="";		
+		$update="";
 		foreach($data as $key=>$value)
 		{
+			$value = str_replace("'","\'",$value);
 			if($value!='' and $value{0}=='`') $update=$update."$key=$value,";
 			else $update=$update."$key='$value',";
 		}

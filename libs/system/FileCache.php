@@ -1,4 +1,10 @@
 <?php
+/**
+ * 文件缓存类，提供类似memcache的接口
+ * 警告：此类仅用于测试，不作为生产环境的代码，请使用Key-Value缓存系列！
+ * @author Tianfeng.Han
+ *
+ */
 class FileCache
 {
 	var $_vd=array();
@@ -6,9 +12,9 @@ class FileCache
 	var $res;
 	var $autosave = false;
 	
-	function __construct($id=0)
+	function __construct($file)
 	{
-		$this->res=WEBPATH."/cache/virsualdata/vd_".$id.".vd";
+		$this->res=$file;
 		if(file_exists($this->res)) $this->_vd=unserialize(file_get_contents($this->res));
     }
     
