@@ -34,7 +34,7 @@ class ViewToDB extends SwooleObject
 			if(count($exp)>2) die("错误的标签:".$tag);
 			if(count($exp)==1) continue;
 			$this->parse_static($tag);
-			call_user_method_array('proc_'.$exp[0],$this,array(trim($exp[1]),$tag));
+			call_user_func_array(array($this,'proc_'.$exp[0]),array(trim($exp[1]),$tag));
 		}
 		$this->end();
 		echo $this->out_content;

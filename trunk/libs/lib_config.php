@@ -13,7 +13,7 @@ $php = new Swoole;
 /**
 *函数的命名空间
 */
-function namespace($space_name)
+function import_func($space_name)
 {
 	if($space_name{0}=='@') $func_file = WEBPATH.'/class/'.substr($space_name,1).'.func.php';
 	else $func_file = LIBPATH.'/function/'.$space_name.'.php';

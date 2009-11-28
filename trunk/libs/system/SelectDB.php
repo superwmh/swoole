@@ -252,8 +252,8 @@ class SelectDB
 			{
 				if(method_exists($this,$key))
 				{
-					if(is_array($value)) call_user_method_array($key,$this,$value);
-					else call_user_method($key,$this,$value);
+					if(is_array($value)) call_user_func_array(array($this,$key),$value);
+					else call_user_func(array($this,$key),$value);
 				}
 				else
 				{

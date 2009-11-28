@@ -77,7 +77,7 @@ class Cache
     
     function __call($method,$params)
     {
-        return call_user_method_array($method,$this->cache,$params);
+        return call_user_func_array(array($this->cache,$method),$params);
     }
 }
 ?>

@@ -82,15 +82,15 @@ class Swoole extends ArrayObject
 			header('Cache-Control: no-cache, must-revalidate');
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 			header('Content-type: application/json');
-			$data = call_user_method($mvc['view'],$controller);
+			$data = call_user_func(array($controller,$mvc['view']));
 			if(DBCHARSET!='utf8')
 			{
-				namespace('array');
+				import_func('array');
 				$data = array_iconv(DBCHARSET , 'utf-8' , $data);
 			}
 			echo json_encode($data);
 		}
-		else echo call_user_method($mvc['view'],$controller);
+		else echo call_user_func(array($controller,$mvc['view']));
 	}
 	
 	function runAjax()
@@ -112,7 +112,7 @@ class Swoole extends ArrayObject
 		$data = call_user_func($method);	
 		if(DBCHARSET!='utf8')
 		{
-			namespace('array');
+			import_func('array');
 			$data = array_iconv(DBCHARSET , 'utf-8' , $data);
 		}
 		echo json_encode($data);
@@ -155,7 +155,7 @@ class Swoole extends ArrayObject
 		$classname = $admin_do.'Admin';
 		$admin = new $classname($this);
 		$action = isset($_GET['action'])?$_GET['action']:'list';
-		call_user_method('admin_'.$action,$admin);
+		call_user_func('admin_'.$action,$admin);
 	}
 }
 ?>

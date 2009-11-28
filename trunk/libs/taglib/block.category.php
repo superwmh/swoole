@@ -22,7 +22,7 @@ function smarty_block_category($params, $body, &$smarty)
 	else $func = 'getChild';
 	
 	$stpl = new SwooleTemplate($php->db);
-	$data = call_user_method_array($func,$category_ins,$params);
+	$data = call_user_func_array(array($category_ins,$func),$params);
 	return $stpl->parse_loop($data,$body,$fields);
 }
 ?>

@@ -56,7 +56,7 @@ class AutoForm
 	
 	function parse_htmltext($params,$value='')
 	{
-		namespace('content');
+		import_func('content');
 		return editor($params['name'],$value,480);
 	}
 	

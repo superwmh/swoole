@@ -14,13 +14,13 @@ class GeneralView
 	{
 		if(isset($_GET['action'])) $this->action = $_GET['action'];
 		$method = 'admin_'.$this->action;
-		if(method_exists($this,$method)) call_user_method($method,$this);
+		if(method_exists($this,$method)) call_user_func(array($this,$method));
 		else Error::info('GeneralView Error!',"View <b>{$this->app_name}->{$method}</b> Not Found!");
 	}
 	
 	function proc_upfiles()
 	{
-		namespace('file');
+		import_func('file');
 		if(!empty($_FILES))
 		{
 			foreach($_FILES as $k=>$f)

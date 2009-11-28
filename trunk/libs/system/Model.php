@@ -377,7 +377,7 @@ class RecordSet implements Iterator
 	
 	function __call($method,$argv)
 	{
-		return call_user_method_array($method,$this->db_select,$argv);
+		return call_user_func_array(array($this->db_select,$method),$argv);
 	}
 
 	public function rewind()

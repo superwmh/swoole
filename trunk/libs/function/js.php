@@ -62,7 +62,7 @@ function js_encode($php_data)
 	if(DBCHARSET!='utf8')
 	{
 		if(!function_exists('array_iconv'))
-			namespace('array');
+			import_func('array');
 		$php_data = array_iconv(DBCHARSET,'utf-8',$php_data);
 	}
 	return json_encode($php_data);
