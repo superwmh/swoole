@@ -19,7 +19,7 @@ class MySQL2 extends mysqli implements IDatabase
 	function query($sql)
 	{
 		parent::real_escape_string($sql);
-		$res = parent::query($sql);
+		$res = parent::query($sql) or die($this->error);
 		return new MySQLiRecord($res);
 	}
 	/**
