@@ -74,5 +74,32 @@ HTMLS;
 		echo "</pre>";
 		exit;
 	}
+	/**
+	 * 以表格的形式显示一个2维数组
+	 * @param $var
+	 * @return unknown_type
+	 */
+	static function output($var)
+	{
+		if(!is_array($var)) self::warn('Error Debug!','Not is a array!');
+		import('#html.HTML_table');
+		$attr['border'] = 1;
+		$attr['style'] = 'font-size:14px';
+		
+		$table = new HTML_table($var,$attr);
+		echo $table->html();
+	}
+	static function parray($array)
+	{
+		if(!is_array($array)) self::warn('Error Debug!','Not is a array!');
+		foreach($array as $k=>$v)
+		{
+			echo $k,': ',$v,"<br />";	
+		}
+	}
+	static function pecho($str)
+	{
+		echo $str,"<br />\n";
+	}
 }
 ?>

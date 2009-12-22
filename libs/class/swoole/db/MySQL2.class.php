@@ -20,6 +20,7 @@ class MySQL2 extends mysqli implements IDatabase
 	{
 		parent::real_escape_string($sql);
 		$res = parent::query($sql) or die($this->error);
+		if(!$res) echo $sql,"<hr />\n",$this->error,"<br />\n";
 		return new MySQLiRecord($res);
 	}
 	/**
@@ -45,11 +46,21 @@ class MySQLiRecord implements IDbRecord
 	
     function fetch()
     {
+    	if(empty($this->result))
+    	{
+    		Error::warn('Select Result Empty','Select Result Empty');
+  			return false;
+    	}
     	return $this->result->fetch_assoc();
     }
     
     function fetchall()
     {
+   		if(empty($this->result))
+    	{
+    		Error::warn('Select Result Empty','Select Result Empty');
+  			return false;
+    	}
     	$data = array();
     	while($record = $this->result->fetch_assoc())
     	{
