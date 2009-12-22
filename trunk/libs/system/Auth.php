@@ -75,7 +75,7 @@ class Auth
 	 * 注销登录
 	 * @return unknown_type
 	 */
-	function logout()
+	static function logout()
 	{
 		if(isset($_SESSION[self::$session_prefix.'isLogin']))
 		{

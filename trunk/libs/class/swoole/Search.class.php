@@ -59,7 +59,6 @@ class Search
 		global $php;
 		$php->plugin->require_plugin('pscws');
         $cws = $php->cws;
-		$this->swoole
 		$cws->set_ignore_mark(false);
 		$cws->set_autodis(self::$autodis);
 		$cws->set_debug(false);

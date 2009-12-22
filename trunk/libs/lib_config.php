@@ -99,10 +99,11 @@ function loadPlugin($plugin_name)
  * @param $var
  * @return unknown_type
  */
-function debug($var)
+function debug()
 {
     echo '<pre>';
-    var_dump($var);
+    $vars = func_get_args();
+    foreach($vars as $var) var_dump($var);
     echo '</pre>';
     exit;
 }
