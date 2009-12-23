@@ -1,6 +1,13 @@
 <?php
 class Filter
 {
+	static function request()
+	{
+		//过滤$_GET $_POST $_REQUEST请求
+		Filter::filter_array($_POST);
+		Filter::filter_array($_GET);
+		Filter::filter_array($_REQUEST);
+	}
 	public static function filter_var($var,$type)
 	{
 		switch($type)
