@@ -37,11 +37,6 @@ class Swoole extends ArrayObject
 	{
 		$this->env['runtime']['start'] = microtime(true);
 		$this->env['runtime']['mem'] = memory_get_usage();
-		
-		//过滤$_GET $_POST $_REQUEST请求
-		Filter::filter_array($_POST);
-		Filter::filter_array($_GET);
-		Filter::filter_array($_REQUEST);
 	}
 	/**
 	 * 自动导入模块

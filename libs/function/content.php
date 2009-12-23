@@ -3,8 +3,8 @@ require(LIBPATH."/module/fckeditor/fckeditor.php");
 function editor($input_name, $input_value,$height="480")
 {
 	$editor = new FCKeditor($input_name) ;
-	$editor->BasePath   = WEBROOT."/libs/module/fckeditor/"; //Ö¸¶¨±à¼­Æ÷Â·¾¶
-	$editor->ToolbarSet = "Default"; //±à¼­Æ÷¹¤¾ßÀ¸ÓÐBasic£¨»ù±¾¹¤¾ß£©,Default£¨ËùÓÐ¹¤¾ß£©Ñ¡Ôñ
+	$editor->BasePath   = WEBROOT."/libs/module/fckeditor/"; //æŒ‡å®šç¼–è¾‘å™¨è·¯å¾„
+	$editor->ToolbarSet = "Default"; //ç¼–è¾‘å™¨å·¥å…·æ æœ‰Basicï¼ˆåŸºæœ¬å·¥å…·ï¼‰,Defaultï¼ˆæ‰€æœ‰å·¥å…·ï¼‰é€‰æ‹©
 	$editor->Width      = "100%";
 	$editor->Height     = $height;
 	$editor->Value      = $input_value;
@@ -16,7 +16,7 @@ function editor($input_name, $input_value,$height="480")
 function upfile_success(filepath)
 {
 	var fck = FCKeditorAPI.GetInstance("content");
-	fck.InsertHtml("<img src='"+ filepath +"' />"); 
+	fck.InsertHtml("<img src='"+ filepath +"' />");
 }
 </script>
 <iframe src="/admin/upload_image.php" height="40" width="100%" frameborder="0" scrolling="no"></iframe>
@@ -77,7 +77,7 @@ function imageToLacal($data)
 			}
 			if(!file_exists($path))
 			{
-				//echo "½¨Á¢Ä¿Â¼".$path;
+				//echo "å»ºç«‹ç›®å½•".$path;
 				if(!file_exists(WEBPATH."/$option/".date('Y')))
 				{
 					mkdir(WEBPATH."/$option/".date('Y'),0777);
