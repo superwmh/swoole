@@ -143,12 +143,12 @@ class Model
 		return new RecordSet($this->db,$this->table,$this->primary,$this->select);
 	}
 	/**
-	 * 建立表，必须在Model类中，指定table_sql
-	 * @return unknown_type
+	 * 建立表，必须在Model类中，指定create_sql
+	 * @return None
 	 */
 	function createTable()
 	{
-		$this->db->query($this->table_sql);
+		$this->db->query($this->create_sql);
 	}
 	/**
 	 * 获取表状态

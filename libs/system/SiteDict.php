@@ -6,10 +6,11 @@ class SiteDict
 {
 	static $swoole;
 	static $cache_life = 600;
+	var $table = 'site_dict';
 	
-	function __construct($swoole)
+	function __construct()
 	{
-		self::$swoole = $swoole;
+		import('app.SwooleDict');
 	}
 	static function get($dictname)
 	{

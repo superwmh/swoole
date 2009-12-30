@@ -3,7 +3,7 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 {
 	if(empty($up_dir)) $up_dir = UPLOAD_DIR."/".date('Y').date("m")."/".date("d");
 	
-	$path=WEBPATH."/".$up_dir;
+	$path=WEBPATH.$up_dir;
 	if(!file_exists($path))
 	{
 		mkdir($path,0777,true);
