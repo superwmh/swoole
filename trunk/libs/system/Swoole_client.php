@@ -7,6 +7,21 @@
  */
 class Swoole_client
 {
+	/**
+	 * 跳转网址
+	 * @param $url
+	 * @return unknown_type
+	 */
+	static function goto($url,$mode=302)
+	{
+		header("Location: ".$url,$mode);
+		header("Connection: close");
+		exit;
+	}
+	/**
+	 * 获取客户端IP
+	 * @return unknown_type
+	 */
 	public static function getIP()
 	{
 		if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
@@ -21,6 +36,10 @@ class Swoole_client
 		$ip = "unknown";
 		return($ip);
 	}
+	/**
+	 * 获取客户端浏览器信息
+	 * @return unknown_type
+	 */
 	public static function getBrowser()
 	{
 		if( $Browser = self::matchbrowser( $_SERVER["HTTP_USER_AGENT"], "|(myie[^;^)^(]*)|i" ) );
@@ -38,6 +57,10 @@ class Swoole_client
 		else $Browser = '其它';
 		return $Browser;
 	}
+	/**
+	 * 获取客户端操作系统信息
+	 * @return unknown_type
+	 */
 	public static function getOS()
 	{
 		$os="";
