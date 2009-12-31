@@ -61,18 +61,15 @@ HTMLS;
 		exit;
 	}
 	
-	function warn($title,$content)
+	static function warn($title,$content)
 	{
 		echo '<b>Warning </b>:'.$title."<br/> \n";
 		echo $content;
 	}
 	
-	function debug($var)
+	static function debug($var)
 	{
-		echo "<pre>";
-		var_dump($var);
-		echo "</pre>";
-		exit;
+		debug($var);
 	}
 	/**
 	 * 以表格的形式显示一个2维数组
@@ -100,6 +97,15 @@ HTMLS;
 	static function pecho($str)
 	{
 		echo $str,"<br />\n";
+	}
+	/**
+	 * 调试数据库
+	 * @return unknown_type
+	 */
+	static function dbd()
+	{
+		global $php;
+		$php->db->debug = true;
 	}
 }
 ?>
