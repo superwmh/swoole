@@ -24,8 +24,14 @@ class SwooleDict extends Model
 	{
 		$get['kpath'] = $kpath;
 		$get['limit'] = 1;
-		$get['ckname'] = $kname;		
-		return $this->gets($get);
+		$get['ckname'] = $kname;
+		$res = 	$this->gets($get);
+		if(empty($res))
+		{
+			Error::pecho("Not found $kpath/$kname");
+			return false;
+		}
+		return $res[0];
 	}
 	
 	/**
