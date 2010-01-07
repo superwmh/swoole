@@ -12,7 +12,7 @@ class Swoole_client
 	 * @param $url
 	 * @return unknown_type
 	 */
-	static function goto($url,$mode=302)
+	static function redirect($url,$mode=302)
 	{
 		header("Location: ".$url,$mode);
 		header("Connection: close");
