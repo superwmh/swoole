@@ -23,10 +23,19 @@ function import_func($space_name)
 /**
 *生产一个model接口
 */
-function createModel($model_name)
+function createModel($model_name,$import=false)
 {
 	global $php;
-	return $php->model->$model_name;
+	if($import===false)
+	{
+		return $php->model->$model_name;
+	}
+	else
+	{
+		$model = explode('.',$model_name);
+		import($model_name);
+		return new $model[-1]($php);
+	}
 }
 
 /**
