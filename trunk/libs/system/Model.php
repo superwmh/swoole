@@ -260,7 +260,7 @@ class Record implements ArrayAccess
 	function __get($property)
 	{
 		if(array_key_exists($property,$this->_data)) return $this->_data[$property];
-		else die("Class Model no property: $property");
+		else Error::pecho("Record object no property: $property");
 	}
 
 	function __set($property,$value)
