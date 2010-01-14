@@ -21,19 +21,21 @@ class Error
 	 */
 	function info($msg,$content)
 	{
-		$html = <<<HTMLS
+		echo <<<HTMLS
 <html>
 <head>
 <title>$msg</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
-
+*{
+	font-family:		Consolas, Courier New, Courier, monospace;
+	font-size:			14px;
+	line-height:        180%;
+}
 body {
-background-color:	#fff;
-margin:				40px;
-font-family:		Lucida Grande, Verdana, Sans-serif;
-font-size:			12px;
-color:				#000;
+	background-color:	#fff;
+	margin:				40px;
+	color:				#000;
 }
 
 #content  {
@@ -53,11 +55,12 @@ margin: 			0 0 4px 0;
 <body>
 	<div id="content">
 		<h1>$msg</h1>
-		<p>$content</p>	</div>
-</body>
-</html>
+		<p>$content</p>
 HTMLS;
-		echo $html;
+		echo '<pre>';
+		debug_print_backtrace();
+		echo '</pre>';
+		echo '</div></body></html>';
 		exit;
 	}
 	

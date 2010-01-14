@@ -10,6 +10,7 @@ class Swoole extends ArrayObject
 	var $db;
 	var $tpl;
 	var $cache;
+	var $config;
 	
 	static $default_cache_life=600;
 	var $pagecache;
@@ -46,7 +47,15 @@ class Swoole extends ArrayObject
 	{
 		$autoload = func_get_args();
 		foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
-	}	
+	}
+	/**
+	 * 加载config数据
+	 * @return unknown_type
+	 */
+	function loadConfig()
+	{
+		$this->config = new SwooleConfig;
+	}
 	/**
 	 * 运行MVC处理模型
 	 * @param $url_processor
