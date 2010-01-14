@@ -7,6 +7,7 @@
 class SwooleDict extends Model
 {
 	var $table = 'swoole_dict';
+	var $if_cache = true;
 	
 	function igets($fid=0)
 	{
@@ -17,6 +18,7 @@ class SwooleDict extends Model
 	function pgets($kpath)
 	{
 		$gets['kpath'] = $kpath;
+		$gets['order'] = 'id';
 		return $this->gets($gets);
 	}
 	

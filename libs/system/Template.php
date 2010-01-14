@@ -58,7 +58,7 @@ class Template extends Smarty
 	
 	function push($data)
 	{
-		foreach($data as $key=>$value) $this->assign_by_ref($key,$value);
+		foreach($data as $key=>$value) $this->assign($key,$value);
 	}
 }
 ?>
