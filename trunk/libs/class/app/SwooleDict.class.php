@@ -12,6 +12,7 @@ class SwooleDict extends Model
 	function igets($fid=0)
 	{
 		$gets['fid'] = $fid;
+		$gets['order'] = 'id';
 		return $this->gets($gets);
 	}
 	

@@ -20,7 +20,9 @@ class SiteDict
 		$$dictname = self::$swoole->cache->get($cache_key);
 		if(empty($$dictname))
 		{
-			require(self::$data_dir.'/'.$dictname.'.php');
+			$data_file = self::$data_dir.'/'.$dictname.'.php';
+			if(!file_exists($data_file)) Error::info('SiteDict dict file not found!',"File <b>$data_file</b> not found!");
+			require($data_file);
 			self::$swoole->cache->set($cache_key,$$dictname,self::$cache_life);
 		}
 		return $$dictname;
