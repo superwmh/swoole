@@ -10,8 +10,8 @@ class Model
 	var $_data=array(); //数据库字段的具体值
 	var $db;
 	var $swoole;
-	var $primary="id";
 	
+	var $primary="id";	
 	var $foreignkey='catid';
 	
 	var $table="";
@@ -27,7 +27,6 @@ class Model
 		$this->db = $swoole->db;
 		$this->dbs = new SelectDB($swoole->db);
 		$this->swoole = $swoole;
-		//$this->fields = $db->query('describe '.$this->table)->fetchall();
 	}
 	
 	/**
@@ -195,6 +194,14 @@ class Model
 		}
 		if($get==='data') return $selectdb->getall();
 		elseif($get==='sql') return $selectdb->getsql();
+	}
+	/**
+	 * 获取表的字段描述
+	 * @return $fields
+	 */
+	function desc()
+	{
+		return $this->db->query('describe '.$this->table)->fetchall();
 	}
 }
 /**

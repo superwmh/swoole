@@ -44,5 +44,15 @@ class ProCsv
 		}
 		return $result;
 	}
+	
+	static function build_line($array)
+	{
+		$datas = array();
+		foreach($array as $k=>$v)
+		{
+			$datas[]=$k.self::$data_sep.$v;
+		}
+		return implode(self::$col_sep,$datas);
+	}
 }
 ?>
