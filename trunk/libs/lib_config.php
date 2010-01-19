@@ -11,8 +11,8 @@ define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
 $php = new Swoole;
 
 /**
-*函数的命名空间
-*/
+ *函数的命名空间
+ */
 function import_func($space_name)
 {
 	if($space_name{0}=='@') $func_file = WEBPATH.'/class/'.substr($space_name,1).'.func.php';
@@ -21,8 +21,8 @@ function import_func($space_name)
 }
 
 /**
-*生产一个model接口
-*/
+ *生产一个model接口
+ */
 function createModel($model_name,$import=false)
 {
 	global $php;
@@ -47,7 +47,7 @@ function import($lib_name)
 	if($file{0}=='@') $lib_file = WEBPATH.'/class/'.substr($file,1).'.class.php';
 	elseif($file{0}=='#') $lib_file = LIBPATH.'/class/swoole/'.substr($file,1).'.class.php';
 	else $lib_file = LIBPATH.'/class/'.$file.".class.php";
-	
+
 	if(file_exists($lib_file))
 	{
 		require_once($lib_file);
@@ -84,14 +84,14 @@ function create($name)
  */
 function session()
 {
-    if(!defined('SESSION_CACHE'))
-    {
-        session_start();
-        return true;
-    }
-    $session_cache = new Cache(SESSION_CACHE);
-    $mSess = new MSession($session_cache);
-    $mSess->initSess();
+	if(!defined('SESSION_CACHE'))
+	{
+		session_start();
+		return true;
+	}
+	$session_cache = new Cache(SESSION_CACHE);
+	$mSess = new MSession($session_cache);
+	$mSess->initSess();
 }
 /**
  * 导入插件
@@ -110,20 +110,50 @@ function loadPlugin($plugin_name)
  */
 function debug()
 {
-    echo '<pre>';
-    $vars = func_get_args();
-    foreach($vars as $var) var_dump($var);
-    echo '</pre>';
-    exit;
+	echo '<pre>';
+	$vars = func_get_args();
+	foreach($vars as $var) var_dump($var);
+	echo '</pre>';
+	exit;
 }
 /**
-*自动导入类
-*/
+ * 错误信息输出处理
+ */
+function swoole_error_handler($errno, $errstr, $errfile, $errline)
+{
+	$level = 'Error';
+	$info = '';
+	
+	switch ($errno)
+	{
+		case E_USER_ERROR:
+			$level = 'User Error';
+			break;
+		case E_USER_WARNING:
+			$level = 'Warnning';
+			break;
+		case E_USER_NOTICE:
+			$level = 'Notice';
+			break;
+		default:
+			break;
+	}
+	
+	$title = 'Swoole '.$level;
+	$info .= '<b>File:</b> '.$errfile."<br />\n";
+	$info .= '<b>Line:</b> '.$errline."<br />\n";
+	$info .= '<b>Info:</b> '.$errstr."<br />\n";
+	$info .= '<b>Code:</b> '.$errno."<br />\n";	
+	Error::info($title,$info);
+}
+/**
+ *自动导入类
+ */
 function __autoload($class_name)
 {
 	if(file_exists(LIBPATH.'/system/'.$class_name.'.php'))
-		require(LIBPATH.'/system/'.$class_name.'.php');
+	require(LIBPATH.'/system/'.$class_name.'.php');
 	elseif(file_exists(WEBPATH.'/class/'.$class_name.'.class.php'))
-		require(WEBPATH.'/class/'.$class_name.'.class.php');
+	require(WEBPATH.'/class/'.$class_name.'.class.php');
 }
 ?>

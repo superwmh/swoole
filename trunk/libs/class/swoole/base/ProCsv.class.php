@@ -15,18 +15,20 @@ class ProCsv
 	
 	static function parse_line($line)
 	{
+		$line = trim($line);
 		$result = array();
 		$datas = explode(self::$col_sep,$line);
 		foreach($datas as $data)
 		{
 			$d = self::parse_data($data);
-			$result[$d[0]] = $d[1];
+			$result[trim($d[0])] = trim($d[1]);
 		}
 		return $result;
 	}
 	
 	static function parse_data($data)
 	{
+		$data = trim($data);
 		return explode(self::$data_sep,$data);
 	}
 	
@@ -36,6 +38,7 @@ class ProCsv
 	 */
 	static function parse_text($text)
 	{
+		$text = trim($text);
 		$result = array();
 		$lines = explode(self::$row_sep,$text);
 		foreach($lines as $line)

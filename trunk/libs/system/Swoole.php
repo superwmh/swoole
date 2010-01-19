@@ -36,8 +36,11 @@ class Swoole extends ArrayObject
 	 */
 	private function __init()
 	{
+		#记录运行时间和内存占用情况
 		$this->env['runtime']['start'] = microtime(true);
 		$this->env['runtime']['mem'] = memory_get_usage();
+		#捕获错误信息
+		set_error_handler('swoole_error_handler');
 	}
 	/**
 	 * 自动导入模块
@@ -75,6 +78,10 @@ class Swoole extends ArrayObject
 			Error::info('MVC Error',"Controller <b>{$mvc['controller']}</b> not exist!");
 		}
 		else require($controller_path);
+		if(!class_exists($mvc['controller']))
+		{
+			Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");
+		}
 		$controller = new $mvc['controller']($this);		
 		if(!method_exists($controller,$mvc['view']))
 		{
