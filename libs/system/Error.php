@@ -30,7 +30,6 @@ class Error
 *{
 	font-family:		Consolas, Courier New, Courier, monospace;
 	font-size:			14px;
-	line-height:        180%;
 }
 body {
 	background-color:	#fff;
@@ -111,4 +110,3 @@ HTMLS;
 		$php->db->debug = true;
 	}
 }
-?>
