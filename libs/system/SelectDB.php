@@ -164,17 +164,17 @@ class SelectDB
 	
 	function join($table_name,$on)
 	{
-		$this->join="INNER JOIN {$table_name} ON {$on}";
+		$this->join.="INNER JOIN {$table_name} ON ({$on})";
 	}
 	
 	function leftjoin($table_name,$on)
 	{
-		$this->join="LEFT JOIN {$table_name} ON {$on}";
+		$this->join.="LEFT JOIN {$table_name} ON ({$on})";
 	}
 	
 	function rightjoin($table_name,$on)
 	{
-		$this->join="RIGHT JOIN {$table_name} ON {$on}";
+		$this->join.="RIGHT JOIN {$table_name} ON ({$on})";
 	}
 	
 	function pagesize($pagesize)

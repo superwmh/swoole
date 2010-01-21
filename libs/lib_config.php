@@ -136,7 +136,7 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
 			$level = 'Notice';
 			break;
 		default:
-			break;
+			return;
 	}
 	
 	$title = 'Swoole '.$level;
