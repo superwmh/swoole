@@ -345,7 +345,7 @@ class SelectDB
 
 	public function count()
 	{
-		$sql=trim("select count(*) as cc from {$this->table} {$this->where}");
+		$sql=trim("select count(*) as cc from {$this->table} {$this->join} {$this->where} {$this->group}");
 		$res=$this->db->query($sql)->fetch();
 		return $res['cc'];
 	}
