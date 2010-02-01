@@ -9,6 +9,11 @@ class SwooleDict extends Model
 	var $table = 'swoole_dict';
 	var $if_cache = true;
 	
+	function iget($id)
+	{
+		return $this->get($id)->get();
+	}
+	
 	function igets($fid=0)
 	{
 		$gets['fid'] = $fid;
