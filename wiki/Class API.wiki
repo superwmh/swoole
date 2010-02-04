@@ -1,0 +1,8 @@
+#labels 类库
+<h2>1、System类</h2>
+直接可以引用的到，已autoload
+<h2>2、libs/class 外部扩展类</h2>
+根目录下的类可以直接引用，可以通过 import('package.package.classname')来引用
+php文件名必须为name.class.php
+<h2>3、libs/class/swoole 系统标准类</h2>
+通过import('#package.package.classname')来引用
