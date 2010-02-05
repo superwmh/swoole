@@ -21,6 +21,7 @@ class ProCsv
 		foreach($datas as $data)
 		{
 			$d = self::parse_data($data);
+			if(empty($d[0])) continue;
 			$result[trim($d[0])] = trim($d[1]);
 		}
 		return $result;

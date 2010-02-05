@@ -104,9 +104,10 @@ HTMLS;
 	 * 调试数据库
 	 * @return unknown_type
 	 */
-	static function dbd()
+	static function dbd($bool = true)
 	{
 		global $php;
-		$php->db->debug = true;
+		if($bool) $php->db->debug = true;
+		else $php->db->debug = false;
 	}
 }
