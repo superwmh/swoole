@@ -362,6 +362,12 @@ class RecordSet implements Iterator
 	{
 		return $this->_list;
 	}
+	
+	function params($params)
+	{
+		$this->db_select->put($params);
+	}
+	
 	function filter($where)
 	{
 		$this->db_select->where($where);
@@ -374,7 +380,7 @@ class RecordSet implements Iterator
 	
 	function fetch($field='')
 	{
-		
+		return $this->db_select->getone($field);
 	}
 	
 	function fetchall()

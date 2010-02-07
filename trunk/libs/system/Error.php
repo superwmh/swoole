@@ -110,4 +110,10 @@ HTMLS;
 		if($bool) $php->db->debug = true;
 		else $php->db->debug = false;
 	}
+	static function tpld($bool = true)
+	{
+		global $php;
+		if($bool) $php->tpl->debugging = true;
+		else $php->tpl->debugging = false;
+	}
 }
