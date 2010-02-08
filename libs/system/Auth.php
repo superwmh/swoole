@@ -2,6 +2,8 @@
 /**
  * 用户验证类
  * @author Han Tianfeng
+ * @package SwooleSystem
+ * @subpackage Login
  */
 class Auth
 {

@@ -1,5 +1,9 @@
 <?php
-// Controller的基类
+/**
+ * Controller的基类，控制器基类
+ * @package SwooleSystem
+ * @subpackage MVC
+ */
 class Controller
 {
 	var $swoole;

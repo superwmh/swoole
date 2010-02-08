@@ -1,24 +1,22 @@
 <?php
-/**
- * 功能:    自主实现基于Memcache存储的 Session 功能
- * 描述:    这个类就是实现Session的功能，基本上是通过
- *          设置客户端的Cookie来保存SessionID，
- *          然后把用户的数据保存在服务器端，最后通过
- *          Cookie中的Session Id来确定一个数据是否是用户的，
- *          然后进行相应的数据操作
- *
- *          本方式适合Memcache内存方式存储Session数据的方式，
- *          同时如果构建分布式的Memcache服务器，
- *          能够保存相当多缓存数据，并且适合用户量比较多并发比较大的情况
- *
- */
 if(!defined('SESSION_LIFETIME')) define('SESSION_LIFETIME',3600);
 if(!defined('SESSION_LEFTTIME')) define('SESSION_DOMAIN',@$_ENV['HOST']);
 
 /**
  * 会话控制类
- * @author Administrator
+ * 功能:自主实现基于Memcache存储的 Session 功能
+ * 描述:这个类就是实现Session的功能，基本上是通过
+ *    设置客户端的Cookie来保存SessionID，
+ *    然后把用户的数据保存在服务器端，最后通过
+ *    Cookie中的Session Id来确定一个数据是否是用户的，
+ *    然后进行相应的数据操作
+ *
+ *    本方式适合Memcache内存方式存储Session数据的方式，
+ *    同时如果构建分布式的Memcache服务器，
+ *    能够保存相当多缓存数据，并且适合用户量比较多并发比较大的情况
+ * @author Tianfeng.Han
  * @package SwooleSystem
+ * @package Login
  */
 class MSession
 {   

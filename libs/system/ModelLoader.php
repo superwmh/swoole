@@ -1,4 +1,11 @@
 <?php
+/**
+ * 模型加载器
+ * 产生一个模型的接口对象
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage MVC
+ */
 class ModelLoader
 {
 	private $swoole = null;

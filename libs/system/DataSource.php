@@ -1,4 +1,13 @@
 <?php
+/**
+ * 数据源系统基类
+ * 通过一个数据描述符，来获取数据
+ * 可以从数据库、文本、缓存系统、字典等数据源得到数据
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage database
+ *
+ */
 class DataSource
 {
 	var $swoole;

@@ -1,4 +1,11 @@
 <?php
+/**
+ * 用于读取配置文件
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage base
+ *
+ */
 class SwooleConfig implements ArrayAccess
 {
 	private $_data;

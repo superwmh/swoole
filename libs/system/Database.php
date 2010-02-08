@@ -1,14 +1,41 @@
 <?php
+/**
+ * 数据库基类
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage database
+ *
+ */
+
+/**
+ * Database Driver接口
+ * 数据库驱动类的接口
+ * @author Tianfeng.Han
+ *
+ */
 interface IDatabase
 {
 	function query($sql);
 	function Insert_ID();
 }
+/**
+ * Database Driver接口
+ * 数据库结果集的接口，提供2种接口
+ * fetch 获取单条数据
+ * fetch 获取全部数据到数组
+ * @author Tianfeng.Han
+ */
 interface IDbRecord
 {
 	function fetch();
 	function fetchall();
 }
+/**
+ * Database类，处理数据库连接和基本的SQL组合
+ * 提供4种接口，query  insert update delete
+ * @author Administrator
+ *
+ */
 class Database
 {
 	var $debug = false;

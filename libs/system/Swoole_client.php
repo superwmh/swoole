@@ -1,9 +1,10 @@
 <?php
 /**
  * 客户端工具
+ * 获取客户端IP、操作系统、浏览器，以及HTTP操作等功能
  * @author Administrator
  * @package SwooleSystem
- *
+ * @subpackage tools
  */
 class Swoole_client
 {

@@ -1,4 +1,11 @@
 <?php
+/**
+ * 视图类
+ * 提供一个简单试图封装
+ * @package SwooleSystem
+ * @author Tianfeng.Han
+ * @subpackage MVC
+ */
 class View extends ArrayObject
 {
 	protected $_var        =  array();

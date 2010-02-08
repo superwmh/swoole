@@ -1,4 +1,11 @@
 <?php
+/**
+ * 插件加载器
+ * 加载一个Swoole插件
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage base
+ */
 class PluginLoader
 {
 	private $swoole;
