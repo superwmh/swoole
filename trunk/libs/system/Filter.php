@@ -1,4 +1,12 @@
 <?php
+/**
+ * 过滤类
+ * 用于过滤数组或者变量中的不安全字符，以及HTML标签
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage request_filter
+ *
+ */
 class Filter
 {
 	static function request()

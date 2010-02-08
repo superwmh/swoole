@@ -3,7 +3,7 @@
  * 查询数据库的封装类，基于底层数据库封装类，实现SQL生成器
  * @author Tianfeng.Han
  * @package SwooleSystem
- *
+ * @subpackage dabase
  */
 class SelectDB
 {

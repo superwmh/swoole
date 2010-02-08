@@ -1,4 +1,11 @@
 <?php
+/**
+ * 缓存数组映射模式
+ * 可以像访问数组一样读取缓存
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage base
+ */
 class SwooleEnv implements ArrayAccess
 {
 	static $default_cache_life = 600;

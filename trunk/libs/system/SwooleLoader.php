@@ -1,4 +1,11 @@
 <?php
+/**
+ * Swoole库加载器
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage base
+ *
+ */
 class SwooleLoader
 {
 	static $swoole;

@@ -3,7 +3,7 @@
  * Model类，ORM基础类，提供对某个数据库表的接口
  * @author Administrator
  * @package SwooleSystem
- *
+ * @subpackage MVC
  */
 class Model
 {
@@ -333,7 +333,13 @@ class Record implements ArrayAccess
 		unset($this->_data[$keyname]);
 	}
 }
-
+/**
+ * 数据结果集，由Record组成
+ * 通过foreach遍历，可以产生单条的Record对象，对每条数据进行操作
+ * @author Administrator
+ * @package SwooleSystem
+ * @subpackage MVC
+ */
 class RecordSet implements Iterator
 {
 	var $_list=array();
@@ -358,31 +364,50 @@ class RecordSet implements Iterator
 		$this->db_select->order($this->primary." desc");
 		if(!empty($limit)) $this->db_select->limit($limit);
 	}
+	/**
+	 * 获取得到的数据
+	 */
 	function get()
 	{
 		return $this->_list;
 	}
-	
+	/**
+	 * 制定查询的参数，再调用数据之前进行
+	 * 参数为SQL SelectDB的put语句
+	 * @param unknown_type $params
+	 */
 	function params($params)
 	{
 		$this->db_select->put($params);
 	}
-	
+	/**
+	 * 过滤器语法，参数为SQL SelectDB的where语句
+	 * @param unknown_type $params
+	 */
 	function filter($where)
 	{
 		$this->db_select->where($where);
 	}
-	
+	/**
+	 * 过滤器语法，参数为SQL SelectDB的orwhere语句
+	 * @param unknown_type $params
+	 */
 	function orfilter($where)
 	{
 		$this->db_select->orwhere($where);
 	}
-	
+	/**
+	 * 获取一条数据
+	 * 参数可以制定返回的字段
+	 * @param $field
+	 */
 	function fetch($field='')
 	{
 		return $this->db_select->getone($field);
 	}
-	
+	/**
+	 * 获取全部数据
+	 */
 	function fetchall()
 	{
 		return $this->db_select->getall();

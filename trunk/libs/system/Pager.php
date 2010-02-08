@@ -1,29 +1,10 @@
 <?php
 /**
- * filename: ext_page.class.php
- * @package:phpbean
- * @author :feifengxlq<feifengxlq#gmail.com>
- * @copyright :Copyright 2006 feifengxlq
- * @license:version 2.0
- * @create:2006-5-31
- * @modify:2006-6-1
- * @modify:feifengxlq 2006-11-4
- * description:超强分页类，四种分页模式，默认采用类似baidu,google的分页风格。
- * 2.0增加功能：支持自定义风格，自定义样式，同时支持PHP4和PHP5,
- * to see detail,please visit http://www.phpobject.net/blog/read.php
- * example:
- * 模式四种分页模式：
- require_once('../libs/classes/page.class.php');
- $page=new page(array('total'=>1000,'perpage'=>20));
- echo 'mode:1<br>'.$page->show();
- echo '<hr>mode:2<br>'.$page->show(2);
- echo '<hr>mode:3<br>'.$page->show(3);
- echo '<hr>mode:4<br>'.$page->show(4);
- 开启AJAX：
- $ajaxpage=new page(array('total'=>1000,'perpage'=>20,'ajax'=>'ajax_page','page_name'=>'test'));
- echo 'mode:1<br>'.$ajaxpage->show();
- 采用继承自定义分页显示模式：
- demo:[url=http://www.phpobject.net/blog]http://www.phpobject.net/blog[/url]
+ * 分页类
+ * 根据提供的数据，产生分页代码
+ * @author Han Tianfeng
+ * @package SwooleSystem
+ * @subpackage HTML
  */
 class Pager
 {

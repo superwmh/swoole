@@ -1,4 +1,12 @@
 <?php
+/**
+ * 表单处理器
+ * 用于生成HTML表单项
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage HTML
+ *
+ */
 class Form
 {
 	/**

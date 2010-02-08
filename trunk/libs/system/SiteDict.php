@@ -1,7 +1,13 @@
 <?php
 global $php;
 SiteDict::$swoole = $php;
-
+/**
+ * 字典处理器，依赖于缓存系统
+ * 读取/写入来自于文件系统的一个数据，并写入缓存
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage dict
+ */
 class SiteDict
 {
 	static $swoole;
@@ -13,6 +19,10 @@ class SiteDict
 	{
 		#import('app.SwooleDict');
 	}
+	/**
+	 * 读取字典内容
+	 * @param $dictname
+	 */
 	static function get($dictname)
 	{
 		if(!self::$swoole->cache) Error::info('SiteDict Cache Error','Please load Cache!');
@@ -27,6 +37,10 @@ class SiteDict
 		}
 		return $$dictname;
 	}
+	/**
+	 * 写入字典内容
+	 * @param $dictname
+	 */
 	static function set($dictname,$dict)
 	{
 		if(!self::$swoole->cache) Error::info('SiteDict Cache Error','Please load Cache!');
@@ -35,6 +49,10 @@ class SiteDict
 		$cache_key = 'sitedict_'.$dictname;
 		self::$swoole->cache->delete($cache_key);
 	}
+	/**
+	 * 删除字典内容
+	 * @param $dictname
+	 */
 	static function delete($dictname)
 	{
 		$cache_key = 'sitedict_'.$dictname;

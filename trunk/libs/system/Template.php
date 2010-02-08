@@ -1,5 +1,13 @@
 <?php
 require(LIBPATH."/module/smarty/Smarty.class.php");
+/**
+ * Smarty模板系统封装类
+ * 提供模板引擎类，可以访问到MVC结构，增加了pagecache静态页面缓存的功能
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage template
+ *
+ */
 class Template extends Smarty
 {
 	var $if_pagecache = false;

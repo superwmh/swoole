@@ -1,4 +1,13 @@
 <?php
+/**
+ * 通用试图类
+ * 产生一个简单的请求控制，解析的结构，一般用于后台管理系统
+ * 简单模拟List  delete  modify  add 4项操作
+ * @author Tianfeng.Han
+ * @package SwooleSystem
+ * @subpackage MVC
+ *
+ */
 class GeneralView
 {
 	protected $swoole;

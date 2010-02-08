@@ -1,7 +1,9 @@
 <?php
 /**
  * Swoole错误类
+ * 错误输出、数据调试、中断程序运行
  * @package SwooleSystem
+ * @subpackage Error
  * @author Tianfeng.Han
  *
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * 缓存制造类
+ * 缓存制造类，缓存基类
  * @author Tianfeng.Han
  * @package SwooleSystem
  * @subpackage cache
