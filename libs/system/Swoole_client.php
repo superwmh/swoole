@@ -90,7 +90,7 @@ class Swoole_client
 		if ($os=='') $os = "Unknown";
 		return $os;
 	}
-	public static function matchbrowser( $Agent, $Patten )
+	private static function matchbrowser( $Agent, $Patten )
 	{
 		if( preg_match( $Patten, $Agent, $Tmp ) )
 		{
@@ -100,6 +100,10 @@ class Swoole_client
 		{
 			return false;
 		}
+	}
+	static function request_method()
+	{
+		return $_SERVER['REQUEST_METHOD'];
 	}
 }
 ?>
