@@ -23,10 +23,10 @@ class SwooleDict extends Model
 		return $this->get($id)->get();
 	}
 	
-	function igets($fid=0)
+	function igets($fid=0,$order = 'id')
 	{
 		$gets['fid'] = $fid;
-		$gets['order'] = 'id';
+		$gets['order'] = $order;
 		return $this->gets($gets);
 	}
 	

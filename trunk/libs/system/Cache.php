@@ -10,6 +10,7 @@ class Cache
 {
     var $uri;
     var $cache;
+    static $memcache_compress = null;
     
     function __construct($cache_url)
     {
@@ -59,7 +60,7 @@ class Cache
     function set($key,$value,$expire=600)
     {
         if($this->uri['scheme']=='memcache')
-            $this->cache->set($key,$value,0,$expire);
+            $this->cache->set($key,$value,self::$memcache_compress,$expire);
         else
             $this->cache->set($key,$value,$expire);
         return true;
