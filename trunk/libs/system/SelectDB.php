@@ -135,7 +135,8 @@ class SelectDB
 	 */
 	function limit($limit)
 	{
-		$this->limit="limit ".$limit;
+		if(!empty($limit)) $this->limit="limit ".$limit;
+		else $this->limit = '';
 	}
 	/**
 	 * 指定排序方式
@@ -144,12 +145,14 @@ class SelectDB
 	 */
 	function order($order)
 	{
-		$this->order="order by $order";
+		if(!empty($order)) $this->order="order by $order";
+		else $this->order = '';
 	}
 
 	function group($group)
 	{
-		$this->group = "group by $group";
+		if(!empty($group)) $this->group = "group by $group";
+		else $this->group = '';
 	}
 
 	function in($field,$ins)

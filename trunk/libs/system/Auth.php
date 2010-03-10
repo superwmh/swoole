@@ -12,6 +12,8 @@ class Auth
 	static $username = 'username';
 	static $password = 'password';
 	static $session_prefix = '';
+	//static $password_field = 'username,password';
+	static $password_hash = 'sha1';
 	static $cookie_life = 2592000;
 	
 	var $db = '';
@@ -22,6 +24,10 @@ class Auth
 		if($table=='') $this->table = TABLE_PREFIX.'_user';
 		else $this->table = $table;
 		$this->db = $db;
+	}
+	function saveUserinfo($key='userinfo')
+	{
+		$_SESSION[self::$session_prefix.$key] = $this->user;
 	}
 	function setSession($key)
 	{
@@ -89,11 +95,16 @@ class Auth
 	 * 产生一个密码串，连接用户名和密码，并使用sha1产生散列
 	 * @param $username
 	 * @param $password
-	 * @return $password_string 40位的散列
+	 * @return $password_string 密码的散列
 	 */
 	public static function mkpasswd($username,$password)
 	{
-		return sha1($username.$password);
+		//sha1 用户名+密码
+		if(self::$password_hash=='sha1') return sha1($username.$password);
+		//md5 用户名+密码
+		elseif(self::$password_hash=='md5') return md5($username.$password);
+		elseif(self::$password_hash=='sha1_single') return sha1($password);
+		elseif(self::$password_hash=='md5_single') return md5($password);
 	}
 	
 	public static function login_require()

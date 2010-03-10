@@ -48,6 +48,31 @@ class ProCsv
 		}
 		return $result;
 	}
+	/**
+	 * 解析函数格式，类似于 Max(a,b)
+	 * @return unknown_type
+	 */
+	static function parse_func($str,$param)
+	{
+		$str = trim($str);
+		$_func = explode('(',$str,2);		
+		
+		//不是函数形式的，返回false
+		if(empty($_func)) return false;
+		
+		//实际要调用的函数名称
+		$func = $_func[0];
+		$func_arg = explode(';',substr($_func[1],0,strlen($_func[1])-1));
+				
+		//实际要传的参数
+		$arg = array();
+		foreach($func_arg as $a)
+		{
+			if(isset($param[$a])) $arg[] = $param[$a];
+			else $arg[] = null;
+		}
+		return call_user_func($func,$arg);
+	}
 	
 	static function build_line($array)
 	{

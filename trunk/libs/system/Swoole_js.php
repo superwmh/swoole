@@ -23,6 +23,7 @@ class Swoole_js
 	
 	static function js_back($msg,$go=-1)
 	{
+		if(!is_numeric($go)) $go=-1;
 		self::echojs("alert('$msg');\nhistory.go($go);\n");
 	}
 	static function js_alert($msg)
