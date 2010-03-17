@@ -16,6 +16,11 @@ class Filter
 		Filter::filter_array($_GET);
 		Filter::filter_array($_REQUEST);
 	}
+	static function safe(&$content)
+	{
+		Filter::deslash($content);
+		$content = html_entity_decode($content);
+	}
 	public static function filter_var($var,$type)
 	{
 		switch($type)

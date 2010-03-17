@@ -1,7 +1,12 @@
 <?php
 function smarty_function_getall($params, &$smarty)
 {
-	$record_name = $params['_name'];	
+	$record_name = $params['_name'];
+	if(!isset($params['from']))
+	{
+		echo 'No table name!';
+		return false;
+	}
 	if(!array_key_exists($record_name,$smarty->_tpl_vars)):
 		global $php;
 		$select = new SelectDB($php->db);

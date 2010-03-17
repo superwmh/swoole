@@ -389,6 +389,14 @@ class RecordSet implements Iterator
 		$this->db_select->where($where);
 	}
 	/**
+	 * 增加过滤条件，$field = $value
+	 * @return unknown_type
+	 */
+	function eq($field,$value)
+	{
+		$this->db_select->equal($field,$value);
+	}
+	/**
 	 * 过滤器语法，参数为SQL SelectDB的orwhere语句
 	 * @param unknown_type $params
 	 */

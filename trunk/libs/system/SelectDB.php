@@ -67,6 +67,25 @@ class SelectDB
 		$this->$what = '';
 	}
 	/**
+	 * 字段等于某个值，支持子查询，$where可以是对象
+	 * @param $field
+	 * @param $where
+	 * @return unknown_type
+	 */
+	function equal($field,$_where)
+	{
+		if($_where instanceof SelectDB)
+		{
+			$where = $field.'=('.$_where->getsql().')';
+		}
+		else
+		{
+			if(is_numeric($_where)) $where = "$field=$_where";
+			else $where = "$field='$_where'";
+		}
+		$this->where($where);
+	}
+	/**
 	 * 指定表名，可以使用table1,table2
 	 * @param $table_name
 	 * @return None
@@ -274,7 +293,7 @@ class SelectDB
 
 	private function _call($method,$param)
 	{
-		if($method=='update' or $method=='delete' or $method=='insert') continue;
+		if($method=='update' or $method=='delete' or $method=='insert') return false;
 		if(strpos($method,'_')!==0)
 		{
 			if(method_exists($this,$method))
