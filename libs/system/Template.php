@@ -22,6 +22,10 @@ class Template extends Smarty
 		$this->left_delimiter = "{{";
 		$this->right_delimiter = "}}";
 	}
+	function set_template_dir($dir)
+	{
+		$this->templates_dir = WEBPATH."/$dir";
+	}
 	function pagecache()
 	{
 		$pagecache = new Swoole_pageCache($this->cache_life);		

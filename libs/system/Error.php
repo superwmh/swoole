@@ -70,6 +70,31 @@ HTMLS;
 		echo '<b>Warning </b>:'.$title."<br/> \n";
 		echo $content;
 	}
+	/**
+	 * 调试Session
+	 * @return unknown_type
+	 */
+	static function sessd()
+	{
+		echo '<pre>';
+		echo '<h1>Session Data:</h1><hr />';		
+		var_dump($_SESSION);
+		echo '<h1>Cookies Data:</h1><hr />';		
+		var_dump($_COOKIE);
+		echo '</pre>';
+	}
+	
+	static function reqd()
+	{
+		echo '<pre>';
+		echo '<h1>Server Data:</h1><hr />';		
+		var_dump($_SERVER); 
+		echo '<h1>ENV Data:</h1><hr />';		
+		var_dump($_ENV);
+		echo '<h1>REQUEST Data:</h1><hr />';		
+		var_dump($_REQUEST);
+		echo '</pre>';
+	}
 	
 	static function debug($var)
 	{
