@@ -12,16 +12,16 @@ class Swoole extends ArrayObject
 	var $tpl;
 	var $cache;
 	var $config;
-	
+
 	static $default_cache_life=600;
 	var $pagecache;
-	
+
 	var $load;
 	var $model;
 	var $plugin;
 	var $genv;
 	var $env;
-	
+
 	function __construct()
 	{
 		$this->__init();
@@ -29,7 +29,13 @@ class Swoole extends ArrayObject
 		$this->load = new SwooleLoader($this);
 		$this->model = new ModelLoader($this);
 		$this->plugin = new PluginLoader($this);
-		$this->genv = new SwooleEnv($this);		
+		$this->genv = new SwooleEnv($this);
+	}
+	function __release()
+	{
+		if($this->db instanceof Database) $this->db->close();
+		unset($this->tpl);
+		unset($this->cache);
 	}
 	/**
 	 * 初始化环境
@@ -83,7 +89,7 @@ class Swoole extends ArrayObject
 		{
 			Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");
 		}
-		$controller = new $mvc['controller']($this);		
+		$controller = new $mvc['controller']($this);
 		if(!method_exists($controller,$mvc['view']))
 		{
 			header("HTTP/1.1 404 Not Found");
@@ -104,7 +110,7 @@ class Swoole extends ArrayObject
 		}
 		else echo call_user_func(array($controller,$mvc['view']));
 	}
-	
+
 	function runAjax()
 	{
 		if(empty($_GET['method'])) return;
@@ -115,13 +121,13 @@ class Swoole extends ArrayObject
 			exit;
 		}
 		$data = call_user_func($method);
-		
+
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 		header('Content-type: application/json');
-		
+
 		$method = $_GET['method'];
-		$data = call_user_func($method);	
+		$data = call_user_func($method);
 		if(DBCHARSET!='utf8')
 		{
 			import_func('array');
@@ -129,7 +135,7 @@ class Swoole extends ArrayObject
 		}
 		echo json_encode($data);
 	}
-	
+
 	function runView($pagecache=false)
 	{
 		if($pagecache)
@@ -149,7 +155,7 @@ class Swoole extends ArrayObject
 					$this->tpl->assign($key,$param);
 				$cache->create($this->tpl->fetch($view.'.html'));
 				$this->tpl->display($view.'.html');
-			}			
+			}
 		}
 		else
 		{
@@ -160,7 +166,7 @@ class Swoole extends ArrayObject
 			$this->tpl->display($view.'.html');
 		}
 	}
-	
+
 	function runAdmin($admin_do)
 	{
 		require(LIBPATH."/admin/$admin_do.admin.php");

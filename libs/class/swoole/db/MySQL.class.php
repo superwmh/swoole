@@ -9,11 +9,22 @@ class MySQL implements IDatabase
 {
 	var $debug = false;
 	var $conn = null;
+	var $config;
+
 	function __construct($db_config)
 	{
-		$this->conn = mysql_connect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
-		mysql_select_db($db_config['dbname'],$this->conn);
-		if($db_config['ifsetname']) mysql_query('set names '.$db_config['charset'],$this->conn);
+        $this->config = $db_config;
+	}
+	function connect()
+	{
+		$db_config = &$this->config;
+		if(isset($db_config['persistent']) and $db_config['persistent'])
+            $this->conn = mysql_pconnect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
+        else
+            $this->conn = mysql_connect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
+
+        mysql_select_db($db_config['dbname'],$this->conn);
+        if($db_config['ifsetname']) mysql_query('set names '.$db_config['charset'],$this->conn);
 	}
 	/**
 	 * 执行一个SQL语句
@@ -45,12 +56,12 @@ class MySQLRecord implements IDbRecord
 	{
 		$this->result = $result;
 	}
-	
+
     function fetch()
     {
     	return mysql_fetch_assoc($this->result);
     }
-    
+
     function fetchall()
     {
     	$data = array();
