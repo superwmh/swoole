@@ -16,6 +16,8 @@
 interface IDatabase
 {
 	function query($sql);
+	function connect();
+	function close();
 	function Insert_ID();
 }
 /**
@@ -44,7 +46,7 @@ class Database
 	var $_db = null;
 	var $db_apt = null;
 	var $db_driver = array('PdoDB','MySQL','MySQL2','AdoDB');
-	
+
 	function __construct($db_config,$driver='PdoDB')
 	{
 		if(!in_array($driver,$this->db_driver))
@@ -88,7 +90,7 @@ class Database
 	 */
 	public function delete($id,$table,$where='id')
 	{
-		if(func_num_args()<2) Error::info('SelectDB param error','Delete must have 2 paramers ($id,$table) !'); 
+		if(func_num_args()<2) Error::info('SelectDB param error','Delete must have 2 paramers ($id,$table) !');
 		$this->db_apt->init();
 		$this->db_apt->from($table);
 		$this->write_times +=1;
@@ -104,11 +106,11 @@ class Database
 	 */
 	public function update($id,$data,$table,$where='id')
 	{
-		if(func_num_args()<3) Error::info('SelectDB param error','Update must have 3 paramers ($id,$data,$table) !'); 
+		if(func_num_args()<3) Error::info('SelectDB param error','Update must have 3 paramers ($id,$data,$table) !');
 		$this->db_apt->init();
 		$this->db_apt->from($table);
 		$this->db_apt->where("$where='$id'");
-		$this->write_times +=1;		
+		$this->write_times +=1;
 		return $this->db_apt->update($data);
 	}
 	/**
@@ -122,7 +124,7 @@ class Database
 	{
 		$this->db_apt->init();
 		$this->db_apt->from($table);
-		$this->db_apt->where("$primary='$id'");		
+		$this->db_apt->where("$primary='$id'");
 		return $this->db_apt->getone();
 	}
 	/**

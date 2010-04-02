@@ -7,9 +7,22 @@
  */
 class MySQL2 extends mysqli implements IDatabase
 {
-	function __construct($db_config)
+	var $debug = false;
+    var $conn = null;
+    var $config;
+
+    function __construct($db_config)
+    {
+        $this->config = $db_config;
+    }
+
+	function connect($db_config)
 	{
-		parent::connect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
+		$db_config = &$this->config;
+		if(isset($db_config['persistent']) and $db_config['persistent'])
+		    parent::pconnect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
+		else
+			parent::connect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
 		if($db_config['ifsetname']) parent::query('set names '.$db_config['charset']);
 	}
 	/**
@@ -43,7 +56,7 @@ class MySQLiRecord implements IDbRecord
 	{
 		$this->result = $result;
 	}
-	
+
     function fetch()
     {
     	if(empty($this->result))
@@ -53,7 +66,7 @@ class MySQLiRecord implements IDbRecord
     	}
     	return $this->result->fetch_assoc();
     }
-    
+
     function fetchall()
     {
    		if(empty($this->result))

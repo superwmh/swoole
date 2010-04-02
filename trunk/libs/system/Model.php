@@ -10,25 +10,25 @@ class Model
 	var $_data=array(); //数据库字段的具体值
 	var $db;
 	var $swoole;
-	
-	var $primary="id";	
+
+	var $primary="id";
 	var $foreignkey='catid';
-	
+
 	var $table="";
 	var $fields;
 	var $select='*';
-	
+
 	var $create_sql='';
-	
+
 	var $if_cache = false;
-	
+
 	function __construct($swoole)
 	{
 		$this->db = $swoole->db;
 		$this->dbs = new SelectDB($swoole->db);
 		$this->swoole = $swoole;
 	}
-	
+
 	/**
 	 * 获取主键$primary_key为$object_id的一条记录对象(Record Object)
 	 * 如果参数为空的话，则返回一条空白的Record，可以赋值，产生一条新的记录
@@ -37,7 +37,7 @@ class Model
 	 */
 	public final function get($object_id=0,$where='')
 	{
-		return new Record($object_id,$this->db,$this->table,$this->primary,$where);
+		return new Record($object_id,$this->db,$this->table,$this->primary,$where,$this->select);
 	}
 	/**
 	 * 获取表的一段数据，查询的参数由$params指定
@@ -223,7 +223,7 @@ class Record implements ArrayAccess
 	var $_current_id=0;
 	var $_currend_key;
 
-	function __construct($id,$db,$table,$primary,$where='')
+	function __construct($id,$db,$table,$primary,$where='',$select='*')
 	{
 		$this->db=$db;
 		$this->_current_id=$id;
@@ -232,7 +232,7 @@ class Record implements ArrayAccess
 		if(empty($where)) $where=$primary;
 		if(!empty($this->_current_id))
 		{
-			$res=$this->db->query('select * from '.$this->table.' where '.$where."='$id' limit 1");
+			$res=$this->db->query("select $select from ".$this->table.' where '.$where."='$id' limit 1");
 			$this->_data=$res->fetch();
 			if(!empty($this->_data)) $this->change=1;
 		}
@@ -304,6 +304,11 @@ class Record implements ArrayAccess
 		}
 		return true;
 	}
+	function update()
+	{
+		unset($this->_data[$this->primary]);
+		$this->db->update($this->_current_id,$this->_change,$this->table,$this->primary);
+	}
 	/**
 	 * 删除数据库中的此条记录
 	 * @return unknown_type
@@ -343,11 +348,11 @@ class Record implements ArrayAccess
 class RecordSet implements Iterator
 {
 	var $_list=array();
-	
+
 	var $table='';
 	var $db;
 	var $db_select;
-	
+
 	var $primary="";
 
 	var $_current_id=0;
@@ -362,7 +367,6 @@ class RecordSet implements Iterator
 		$this->db_select->primary = $primary;
 		$this->db_select->select($select);
 		$this->db_select->order($this->primary." desc");
-		if(!empty($limit)) $this->db_select->limit($limit);
 	}
 	/**
 	 * 获取得到的数据
@@ -420,7 +424,7 @@ class RecordSet implements Iterator
 	{
 		return $this->db_select->getall();
 	}
-	
+
 	function __call($method,$argv)
 	{
 		return call_user_func_array(array($this->db_select,$method),$argv);

@@ -52,6 +52,11 @@ class SwooleDict extends Model
 			if(empty($res))
 			{
 				Error::pecho("Not found $kpath/$kname");
+				$de = debug_backtrace();
+				foreach($de as $d)
+				{
+					echo $d['file'],':',$d['line'],"\n<br />";
+				}
 				return false;
 			}
 			if($this->if_cache) $this->cache->set($path,$res[0],$this->expire);

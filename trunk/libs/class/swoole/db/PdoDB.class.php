@@ -13,7 +13,11 @@ class PdoDB extends PDO
 		$dsn=$db_config['dbms'].":host=".$db_config['host'].";dbname=".$db_config['dbname'];
 		try
 		{
-			parent::__construct($dsn, $db_config['user'], $db_config['password']);
+
+			if(isset($db_config['persistent']) and $db_config['persistent'])
+				parent::__construct($dsn, $db_config['user'],$db_config['password'],array(ATTR_PERSISTENT=>true));
+			else
+			    parent::__construct($dsn, $db_config['user'],$db_config['password']);
 			if($db_config['ifsetname']) parent::query('set names '.$db_config['charset']);
 			$this->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 		}
@@ -21,6 +25,10 @@ class PdoDB extends PDO
 		{
 			die("Error: " . $e->__toString() . "<br/>");
 		}
+	}
+	function connect()
+	{
+
 	}
 	/**
 	 * 执行一个SQL语句
@@ -39,6 +47,14 @@ class PdoDB extends PDO
 	function Insert_ID()
 	{
 		return $this->lastInsertId();
+	}
+	/**
+	 * 关闭连接，释放资源
+	 * @return unknown_type
+	 */
+	function close()
+	{
+		unset($this);
 	}
 }
 ?>
