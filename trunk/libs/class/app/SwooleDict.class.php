@@ -11,37 +11,37 @@ class SwooleDict extends Model
 	var $_data;
 	var $if_cache = false;
 	var $expire = 0;
-	
+
 	function setCache($cache)
 	{
 		$this->cache = $cache;
 		$this->if_cache = true;
 	}
-	
+
 	function iget($id)
 	{
 		return $this->get($id)->get();
 	}
-	
+
 	function igets($fid=0,$order = 'id')
 	{
 		$gets['fid'] = $fid;
 		$gets['order'] = $order;
 		return $this->gets($gets);
 	}
-	
-	function pgets($kpath)
+
+	function pgets($kpath,$order='id')
 	{
 		$gets['kpath'] = $kpath;
-		$gets['order'] = 'id';
+		$gets['order'] = $order;
 		return $this->gets($gets);
 	}
-	
+
 	function pget($kpath,$kname)
 	{
 		$path = "$kpath/$kname";
 		if($this->if_cache) $cache_data = $this->cache->get($path);
-		else $cache_data = false;		
+		else $cache_data = false;
 		if($cache_data) return $cache_data;
 		else
 		{
@@ -63,7 +63,7 @@ class SwooleDict extends Model
 			return $res[0];
 		}
 	}
-	
+
 	/**
 	 * KEY查询方式，找出一个项
 	 * @param $keyid
@@ -72,7 +72,7 @@ class SwooleDict extends Model
 	function kget($keyid)
 	{
 		if($this->if_cache) $cache_data = $this->cache->get($keyid);
-		else $cache_data = false;	
+		else $cache_data = false;
 		if($cache_data) return $cache_data;
 		else
 		{
@@ -81,7 +81,7 @@ class SwooleDict extends Model
 			$data = $this->gets($get);
 			if($this->if_cache) $this->cache->set($keyid,$data[0],$this->expire);
 			return $data[0];
-		}	
+		}
 	}
 	/**
 	 * KEY查询方式，找出多个子项

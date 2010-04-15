@@ -10,7 +10,7 @@ class PluginLoader
 {
 	private $swoole;
 	private $plugins = array();
-	
+
 	function __construct($swoole)
 	{
 		$this->swoole = $swoole;
@@ -40,7 +40,7 @@ class PluginLoader
 	 * @param $plugin_name
 	 * @return unknown_type
 	 */
-	function load($plugin_name)
+	function load($plugin_name,$plugin_param = null)
 	{
 		$path = WEBPATH.'/swoole_plugin/'.$plugin_name.'/Swoole.plugin.php';
 		if(file_exists($path))
