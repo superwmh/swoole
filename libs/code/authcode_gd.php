@@ -1,16 +1,16 @@
 <?php
 require('../lib_config.php');
 session();
-//生成验证码图片 
+//生成验证码图片
 $authnum = '';
-header("Content-type: image/PNG"); 
+header("Content-type: image/PNG");
 srand((double)microtime()*1000000);//播下一个生成随机数字的种子，以方便下面随机数生成的使用
 
 //session_start();//将随机数存入session中
 $_SESSION['authcode']="";
 $im = imagecreate(50,20) or die("Cant's initialize new GD image stream!"); //制定图片背景大小
 $black = ImageColorAllocate($im, 0,0,0); //设定三种颜色
-$white = ImageColorAllocate($im, 255,255,255); 
+$white = ImageColorAllocate($im, 255,255,255);
 $gray = ImageColorAllocate($im, 235,235,235);
 
 imagefill($im,0,0,$gray); //采用区域填充法，设定(0,0)
@@ -31,10 +31,10 @@ imagestring($im, 8, 8, 4, $authnum, $black);
 //如果 font 是 1，2，3，4 或 5，则使用内置字体
 
 for($i=0;$i<40;$i++) //加入干扰象素
-{ 
+{
 	$randcolor = ImageColorallocate($im,rand(50,100),rand(50,100),rand(50,100));
-	imagesetpixel($im, rand()%70 , rand()%30 , $randcolor); 
-} 
+	imagesetpixel($im, rand()%70 , rand()%30 , $randcolor);
+}
 ImagePNG($im);
 ImageDestroy($im);
 ?>

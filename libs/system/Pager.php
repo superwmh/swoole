@@ -20,7 +20,7 @@ class Pager
 	var $next_bar='>>';//下一分页条
 	var $format_left='';
 	var $format_right='';
-	var $is_ajax=false;//是否支持AJAX分页模式 
+	var $is_ajax=false;//是否支持AJAX分页模式
 
 	/**
 	 * private
@@ -213,7 +213,7 @@ class Pager
 	 */
 	function render($mode=2)
 	{
-		$pager_html = "<div id='pager'>";
+		$pager_html = "<div class='pager'>";
 		switch ($mode)
 		{
 			case '1':
