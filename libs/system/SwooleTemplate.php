@@ -9,18 +9,18 @@
  */
 class SwooleTemplate extends ArrayObject
 {
-	var $templates_dir;
+	public $templates_dir;
 	
-	var $in_content='';
-	var $out_content='';
-	var $c_content='';
+	public $in_content='';
+	public $out_content='';
+	public $c_content='';
 		
-	var $pattern;
+	public $pattern;
 	
-	var $db;
+	public $db;
 	
-	var $fields;
-	var $fields_full;
+	public $fields;
+	public $fields_full;
 	
 	const FILTER_DIR = '/taglib/filter/';
 	

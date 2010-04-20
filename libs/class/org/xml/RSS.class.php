@@ -4,10 +4,10 @@ define("FEEDCREATOR_VERSION", "FeedCreator 1.7.2");
 
 class FeedItem extends HtmlDescribable {
 
-	var $title, $description, $link;
-	var $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator;
-	var $date;
-	var $additionalElements = Array();
+	public $title, $description, $link;
+	public $author, $authorEmail, $image, $category, $comments, $guid, $source, $creator;
+	public $date;
+	public $additionalElements = Array();
 }
 
 
@@ -21,12 +21,12 @@ class FeedImage extends HtmlDescribable {
 	/**
 	 * Mandatory attributes of an image.
 	 */
-	var $title, $url, $link;
+	public $title, $url, $link;
 	
 	/**
 	 * Optional attributes of an image.
 	 */
-	var $width, $height, $description;
+	public $width, $height, $description;
 }
 
 
@@ -39,12 +39,12 @@ class HtmlDescribable {
 	/**
 	 * Indicates whether the description field should be rendered in HTML.
 	 */
-	var $descriptionHtmlSyndicated;
+	public $descriptionHtmlSyndicated;
 	
 	/**
 	 * Indicates whether and to how many characters a description should be truncated.
 	 */
-	var $descriptionTruncSize;
+	public $descriptionTruncSize;
 	
 	/**
 	 * Returns a formatted description field, depending on descriptionHtmlSyndicated and
@@ -72,13 +72,13 @@ class FeedHtmlField {
 	/**
 	 * Mandatory attributes of a FeedHtmlField.
 	 */
-	var $rawFieldContent;
+	public $rawFieldContent;
 	
 	/**
 	 * Optional attributes of a FeedHtmlField.
 	 * 
 	 */
-	var $truncSize, $syndicateHtml;
+	public $truncSize, $syndicateHtml;
 	
 	/**
 	 * Creates a new instance of FeedHtmlField.
@@ -127,7 +127,7 @@ class FeedHtmlField {
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
 class UniversalFeedCreator extends FeedCreator {
-	var $_feed;
+	public $_feed;
 	
 	function _setFormat($format) {
 		switch (strtoupper($format)) {
@@ -257,25 +257,25 @@ class FeedCreator extends HtmlDescribable {
 	/**
 	 * Mandatory attributes of a feed.
 	 */
-	var $title, $description, $link;
+	public $title, $description, $link;
 	
 	
 	/**
 	 * Optional attributes of a feed.
 	 */
-	var $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays;
+	public $syndicationURL, $image, $language, $copyright, $pubDate, $lastBuildDate, $editor, $editorEmail, $webmaster, $category, $docs, $ttl, $rating, $skipHours, $skipDays;
 
 	/**
 	* The url of the external xsl stylesheet used to format the naked rss feed.
 	* Ignored in the output when empty.
 	*/
-	var $xslStyleSheet = "";
+	public $xslStyleSheet = "";
 	
 	
 	/**
 	 * @access private
 	 */
-	var $items = Array();
+	public $items = Array();
  	
 	
 	/**
@@ -283,13 +283,13 @@ class FeedCreator extends HtmlDescribable {
 	 * @since 1.4
 	 * @access private
 	 */
-	var $contentType = "application/xml";
+	public $contentType = "application/xml";
 	
 	/**
 	 * This feed's character encoding.
 	 * @since 1.6.1
 	 **/
-	var $encoding = "UTF-8";
+	public $encoding = "UTF-8";
 	
 	/**
 	 * Any additional elements to include as an assiciated array. All $key => $value pairs
@@ -299,7 +299,7 @@ class FeedCreator extends HtmlDescribable {
 	 * if $value contains markup. This may be abused to embed tags not implemented by
 	 * the FeedCreator class used.
 	 */
-	var $additionalElements = Array();
+	public $additionalElements = Array();
    
     
 	/**
@@ -495,7 +495,7 @@ class FeedCreator extends HtmlDescribable {
  * Usually, you won't need to use this.
  */
 class FeedDate {
-	var $unix;
+	public $unix;
 	
 	/**
 	 * Creates a new instance of FeedDate representing a given date.
@@ -676,7 +676,7 @@ class RSSCreator091 extends FeedCreator {
 	 * Stores this RSS feed's version number.
 	 * @access private
 	 */
-	var $RSSVersion;
+	public $RSSVersion;
 
 	function RSSCreator091() {
 		$this->_setRSSVersion("0.91");
@@ -1097,36 +1097,36 @@ class OPMLCreator extends FeedCreator {
  */
 class HTMLCreator extends FeedCreator {
 
-	var $contentType = "text/html";
+	public $contentType = "text/html";
 	
 	/**
 	 * Contains HTML to be output at the start of the feed's html representation.
 	 */
-	var $header;
+	public $header;
 	
 	/**
 	 * Contains HTML to be output at the end of the feed's html representation.
 	 */
-	var $footer ;
+	public $footer ;
 	
 	/**
 	 * Contains HTML to be output between entries. A separator is only used in 
 	 * case of multiple entries.
 	 */
-	var $separator;
+	public $separator;
 	
 	/**
 	 * Used to prefix the stylenames to make sure they are unique 
 	 * and do not clash with stylenames on the users' page.
 	 */
-	var $stylePrefix;
+	public $stylePrefix;
 	
 	/**
 	 * Determines whether the links open in a new window or not.
 	 */
-	var $openInNewWindow = true;
+	public $openInNewWindow = true;
 	
-	var $imageAlign ="right";
+	public $imageAlign ="right";
 	
 	/**
 	 * In case of very simple output you may want to get rid of the style tags,
@@ -1135,7 +1135,7 @@ class HTMLCreator extends FeedCreator {
 	 * and when it is non-empty, ONLY the styleless output is printed, the rest is ignored
 	 * in the function createFeed().
 	 */
-	var $stylelessOutput ="";
+	public $stylelessOutput ="";
 
 	/**
 	 * Writes the HTML.
@@ -1242,7 +1242,7 @@ class HTMLCreator extends FeedCreator {
  * @author Pascal Van Hecke
  */
 class JSCreator extends HTMLCreator {
-	var $contentType = "text/javascript";
+	public $contentType = "text/javascript";
 	
 	/**
 	 * writes the javascript

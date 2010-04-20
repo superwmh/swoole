@@ -7,7 +7,7 @@
  */
 class PdoDB extends PDO
 {
-	var $debug = false;
+	public $debug = false;
 	function __construct($db_config)
 	{
 		$dsn=$db_config['dbms'].":host=".$db_config['host'].";dbname=".$db_config['dbname'];

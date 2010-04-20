@@ -1,23 +1,23 @@
 <?php
 class AdminMulti
 {
-	var $action = 'list';
+	public $action = 'list';
 	
-	var $php;
+	public $php;
 	
-	var $table = 'urls';
-	var $category_table = 'urlscate';
+	public $table = 'urls';
+	public $category_table = 'urlscate';
 	
-	var $fields = 'id,title,url,addtime';
-	var $fields_array = array();
+	public $fields = 'id,title,url,addtime';
+	public $fields_array = array();
 	
-	var $app_config = array('product'=>'id,name,tid,tidname,tidname,url,content,image,postdate',
+	public $app_config = array('product'=>'id,name,tid,tidname,tidname,url,content,image,postdate',
 							'news'=>'id,title,tid,tidname,tidname,url,content,image,postdate');
 	
-	var $offset = 0;
-	var $pagesize = 8;
+	public $offset = 0;
+	public $pagesize = 8;
 	
-	var $app;
+	public $app;
 	
 	function __construct($php)
 	{

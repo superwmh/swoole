@@ -18,7 +18,7 @@ class Excel{
      * @access private
      * @var string
      */
-    var $header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?\>
+    public $header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?\>
 <Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"
  xmlns:x=\"urn:schemas-microsoft-com:office:excel\"
  xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"
@@ -32,7 +32,7 @@ class Excel{
      * @access private
      * @var string
      */
-    var $footer = "</Workbook>";
+    public $footer = "</Workbook>";
 
     /**
      * Document lines (rows in an array)
@@ -40,7 +40,7 @@ class Excel{
      * @access private
      * @var array
      */
-    var $lines = array ();
+    public $lines = array ();
 
     /**
      * Worksheet title
@@ -50,7 +50,7 @@ class Excel{
      * @access private 
      * @var string
      */
-    var $worksheet_title = "Table1";
+    public $worksheet_title = "Table1";
 
     /**
      * Add a single row to the $document string

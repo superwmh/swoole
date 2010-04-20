@@ -1,25 +1,25 @@
 <?php
 class Admin
 {
-	var $action = 'list';
+	public $action = 'list';
 	
-	var $php;
+	public $php;
 	
-	var $table = 'urls';
-	var $category_table = 'urlscate';
+	public $table = 'urls';
+	public $category_table = 'urlscate';
 	
-	var $fields = 'id,title,url,addtime';
-	var $fields_array = array();
+	public $fields = 'id,title,url,addtime';
+	public $fields_array = array();
 	
-	var $app_config = array('ad'=>'id,title,url,image,catid,catname,name,types,addtime',
+	public $app_config = array('ad'=>'id,title,url,image,catid,catname,name,types,addtime',
 							'flink'=>'id,title,url,image,addtime',
 							'special'=>'id,title,catname,catid,image,content,addtime',
 							'news'=>'id,title,content,image,addtime');
 	
-	var $offset = 0;
-	var $pagesize = 10;
+	public $offset = 0;
+	public $pagesize = 10;
 	
-	var $app;
+	public $app;
 	
 	function __construct($php)
 	{

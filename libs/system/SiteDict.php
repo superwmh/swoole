@@ -13,7 +13,7 @@ class SiteDict
 	static $swoole;
 	static $cache_life = 600;
 	static $data_dir = DICTPATH;
-	var $table = 'site_dict';
+	public $table = 'site_dict';
 	
 	function __construct()
 	{

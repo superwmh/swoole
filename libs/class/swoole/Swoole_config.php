@@ -1,8 +1,8 @@
 <?php
 class Swoole_config
 {
-    var $string;
-    var $configs = array();
+    public $string;
+    public $configs = array();
     const ROW_SG = "\n";
     const COL_SG = ':';
     

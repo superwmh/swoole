@@ -7,37 +7,37 @@
  */
 class SelectDB
 {
-	var $table='';
-	var $primary='id';
-	var $select='*';
-	var $sql='';
-	var $limit='';
-	var $where='';
-	var $order='';
-	var $group='';
-	var $join='';
+	public $table='';
+	public $primary='id';
+	public $select='*';
+	public $sql='';
+	public $limit='';
+	public $where='';
+	public $order='';
+	public $group='';
+	public $join='';
 
-	var $if_join = false;
-	var $if_add_tablename = false;
+	public $if_join = false;
+	public $if_add_tablename = false;
 
-	var $page_size = 10;
-	var $num = 0;
-	var $pages = 0;
-	var $page = 0;
-	var $pager = null;
+	public $page_size = 10;
+	public $num = 0;
+	public $pages = 0;
+	public $page = 0;
+	public $pager = null;
 
-	var $auto_cache = false;
-	var $cache_life = 600;
-	var $cache_prefix = 'selectdb';
+	public $auto_cache = false;
+	public $cache_life = 600;
+	public $cache_prefix = 'selectdb';
 
-	var $RecordSet;
+	public $RecordSet;
 
-	var $is_execute = 0;
+	public $is_execute = 0;
 
-	var $result_filter = array();
+	public $result_filter = array();
 
-	var $call_by = 'func';
-	var $db;
+	public $call_by = 'func';
+	public $db;
 
 	function __construct($db)
 	{

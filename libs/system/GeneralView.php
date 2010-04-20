@@ -11,8 +11,8 @@
 class GeneralView
 {
 	protected $swoole;
-	var $action = 'list';
-	var $app_name;
+	public $action = 'list';
+	public $app_name;
 	
 	function __construct($swoole)
 	{

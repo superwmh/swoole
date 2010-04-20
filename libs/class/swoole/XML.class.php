@@ -1,8 +1,8 @@
 <?php
 class XMLElement implements ArrayAccess
 {
-	var $xml_object;
-	var $xml_property;
+	public $xml_object;
+	public $xml_property;
 	
 	function __construct($element=null)
 	{
@@ -36,7 +36,7 @@ class XMLElement implements ArrayAccess
 
 class XML extends XMLElement
 {
-	var $xml;
+	public $xml;
 	
 	function __construct($xml_file)
 	{

@@ -21,51 +21,51 @@
  */
 class ThumbHandler
 {
-    var $src_img;// 源文件
-    var $dst_img;// 目标文件
-    var $h_src; // 图片资源句柄
-    var $h_dst;// 新图句柄
-    var $h_mask;// 水印句柄
-    var $img_create_quality = 100;// 图片生成质量
-    var $img_display_quality = 100;// 图片显示质量,默认为75
-    var $img_scale = 0;// 图片缩放比例
-    var $src_w = 0;// 原图宽度
-    var $src_h = 0;// 原图高度
-    var $dst_w = 0;// 新图总宽度
-    var $dst_h = 0;// 新图总高度
-    var $fill_w;// 填充图形宽
-    var $fill_h;// 填充图形高
-    var $start_x;// 新图绘制起始横坐标
-    var $start_y;// 新图绘制起始纵坐标
-    var $end_x;// 新图绘制结束横坐标
-    var $end_y;// 新图绘制结束纵坐标
-    var $mask_word;// 水印文字
-    var $mask_img;// 水印图片
-    var $mask_pos_x = 0;// 水印横坐标
-    var $mask_pos_y = 0;// 水印纵坐标
-    var $mask_offset_x = 5;// 水印横向偏移
-    var $mask_offset_y = 5;// 水印纵向偏移
-    var $font_w;// 水印字体宽
-    var $font_h;// 水印字体高
-    var $mask_w;// 水印宽
-    var $mask_h;// 水印高
-    var $mask_font_color = "#ffffff";// 水印文字颜色
-    var $mask_font = 2;// 水印字体
-    var $font_size;// 尺寸
-    var $mask_position = 0;// 水印位置
-    var $mask_img_pct = 50;// 图片合并程度,值越大，合并程序越低
-    var $mask_txt_pct = 50;// 文字合并程度,值越小，合并程序越低
-    var $img_border_size = 0;// 图片边框尺寸
-    var $img_border_color;// 图片边框颜色
-	var $_flip_x=0;// 水平翻转次数
-	var $_flip_y=0;// 垂直翻转次数
+    public $src_img;// 源文件
+    public $dst_img;// 目标文件
+    public $h_src; // 图片资源句柄
+    public $h_dst;// 新图句柄
+    public $h_mask;// 水印句柄
+    public $img_create_quality = 100;// 图片生成质量
+    public $img_display_quality = 100;// 图片显示质量,默认为75
+    public $img_scale = 0;// 图片缩放比例
+    public $src_w = 0;// 原图宽度
+    public $src_h = 0;// 原图高度
+    public $dst_w = 0;// 新图总宽度
+    public $dst_h = 0;// 新图总高度
+    public $fill_w;// 填充图形宽
+    public $fill_h;// 填充图形高
+    public $start_x;// 新图绘制起始横坐标
+    public $start_y;// 新图绘制起始纵坐标
+    public $end_x;// 新图绘制结束横坐标
+    public $end_y;// 新图绘制结束纵坐标
+    public $mask_word;// 水印文字
+    public $mask_img;// 水印图片
+    public $mask_pos_x = 0;// 水印横坐标
+    public $mask_pos_y = 0;// 水印纵坐标
+    public $mask_offset_x = 5;// 水印横向偏移
+    public $mask_offset_y = 5;// 水印纵向偏移
+    public $font_w;// 水印字体宽
+    public $font_h;// 水印字体高
+    public $mask_w;// 水印宽
+    public $mask_h;// 水印高
+    public $mask_font_color = "#ffffff";// 水印文字颜色
+    public $mask_font = 2;// 水印字体
+    public $font_size;// 尺寸
+    public $mask_position = 0;// 水印位置
+    public $mask_img_pct = 50;// 图片合并程度,值越大，合并程序越低
+    public $mask_txt_pct = 50;// 文字合并程度,值越小，合并程序越低
+    public $img_border_size = 0;// 图片边框尺寸
+    public $img_border_color;// 图片边框颜色
+	public $_flip_x=0;// 水平翻转次数
+	public $_flip_y=0;// 垂直翻转次数
 	
-    var $img_type;// 文件类型
+    public $img_type;// 文件类型
 	
-	var $error = '';
+	public $error = '';
 
     // 文件类型定义,并指出了用于生成和输出图片的函数
-    var $all_type = array(
+    public $all_type = array(
         "jpg"  => array("create"=>"ImageCreateFromjpeg","output"=>"imagejpeg"),
         "gif"  => array("create"=>"ImageCreateFromGIF" ,"output"=>"imagegif"),
         "png"  => array("create"=>"imagecreatefrompng" ,"output"=>"imagepng"),

@@ -9,6 +9,67 @@
  */
 class Filter
 {
+	static function input($source,$name,$check_type=null,$options=null)
+	{
+		$source = strtolower($source);
+		switch($source)
+		{
+			case 'get':
+				$input_type = INPUT_GET;
+				break;
+			case 'post':
+				$input_type = INPUT_POST;
+				break;
+			case 'cookie':
+				$input_type = INPUT_COOKIE;
+				break;
+			case 'env':
+				$input_type = INPUT_ENV;
+				break;
+			case 'SERVER':
+				$input_type = INPUT_SERVER;
+				break;
+			case 'SESSION':
+				$input_type = INPUT_SESSION;
+				break;
+			case 'REQUEST':
+				$input_type = INPUT_REQUEST;
+				break;
+			default:
+				$input_type = INPUT_REQUEST;
+				break;
+		}
+
+		$check_type = strtolower($check_type);
+		switch($check_type)
+		{
+			case 'int':
+				$check = FILTER_VALIDATE_INT;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_BOOLEAN;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_FLOAT;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_REGEXP;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_URL;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_EMAIL;
+				break;
+			case 'int':
+				$check = FILTER_VALIDATE_IP;
+				break;
+			default:
+				$check = FILTER_DEFAULT;
+				break;
+		}
+		return filter_input($input_type,$name,$check,$options);
+	}
 	static function request()
 	{
 		//过滤$_GET $_POST $_REQUEST请求
@@ -35,7 +96,7 @@ class Filter
 				return false;
 		}
 	}
-	
+
 	public static function filter_array(&$array,$allow_html=false)
 	{
 		foreach($array as &$string)
@@ -53,16 +114,16 @@ class Filter
 				self::filter_array($string);
 			}
 			else
-				self::addslash($string);
+			self::addslash($string);
 		}
 	}
-	
+
 	public static function addslash(&$string)
 	{
 		if(!get_magic_quotes_gpc())
-			$string = addslashes($string);
+		$string = addslashes($string);
 	}
-	
+
 	public static function deslash(&$string)
 	{
 		$string = stripslashes($string);

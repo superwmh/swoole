@@ -1,8 +1,8 @@
 <?php
 class Search
 {
-	var $db;
-	var $index_table='search_index';
+	public $db;
+	public $index_table='search_index';
 	
 	static $encode = 'base64_encode';	
 	static $autodis = true;

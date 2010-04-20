@@ -1,18 +1,18 @@
 <?php
 class ContentAdmin
 {
-	var $app;
-	var $app_config;
-	var $app_model;
-	var $swoole;
+	public $app;
+	public $app_config;
+	public $app_model;
+	public $swoole;
 	
-	var $base_url;
-	var $category;
+	public $base_url;
+	public $category;
 	
-	var $fields_array;
+	public $fields_array;
 	
-	var $offset = 0;
-	var $pagesize = 8;
+	public $offset = 0;
+	public $pagesize = 8;
 	
 	function __construct($swoole)
 	{

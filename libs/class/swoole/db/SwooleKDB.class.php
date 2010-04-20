@@ -16,14 +16,14 @@
  */
 class SwooleKDB
 {
-    var $_data = array();
-    var $cache;
-    var $db_prefix;
-    var $roots;
-    var $default_expires = 600;
+    public $_data = array();
+    public $cache;
+    public $db_prefix;
+    public $roots;
+    public $default_expires = 600;
 
-    var $db;
-    var $table_name = 'swoolekdb';
+    public $db;
+    public $table_name = 'swoolekdb';
     /**
      * 构造函数，参数为数据库对象，cache的url
      * @param $db

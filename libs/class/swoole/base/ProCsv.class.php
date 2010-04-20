@@ -5,8 +5,8 @@ class ProCsv
 	static $col_sep = ",";
 	static $data_sep = ':';
 
-	var $data;
-	var $text;
+	public $data;
+	public $text;
 
 	function __construct($text)
 	{
