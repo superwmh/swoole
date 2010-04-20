@@ -9,7 +9,7 @@
  */
 class Error
 {
-	var $error_info = array('101'=>'',
+	public $error_info = array('101'=>'',
 							'102'=>'');
 	function except($error_id)
 	{

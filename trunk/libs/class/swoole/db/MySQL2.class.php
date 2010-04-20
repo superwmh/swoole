@@ -7,9 +7,9 @@
  */
 class MySQL2 extends mysqli implements IDatabase
 {
-	var $debug = false;
-    var $conn = null;
-    var $config;
+	public $debug = false;
+    public $conn = null;
+    public $config;
 
     function __construct($db_config)
     {
@@ -51,7 +51,7 @@ class MySQL2 extends mysqli implements IDatabase
 }
 class MySQLiRecord implements IDbRecord
 {
-	var $result;
+	public $result;
 	function __construct($result)
 	{
 		$this->result = $result;

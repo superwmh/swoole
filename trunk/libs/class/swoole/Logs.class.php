@@ -6,9 +6,9 @@
  */
 class Logs
 {
-	var $file;
-	var $_date_format='Y-m-d H:i:s';
-	var $newline;
+	public $file;
+	public $_date_format='Y-m-d H:i:s';
+	public $newline;
 	
 	function __construct($filename)
 	{

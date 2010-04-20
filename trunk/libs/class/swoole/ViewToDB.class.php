@@ -1,15 +1,15 @@
 <?php
 class ViewToDB extends SwooleObject
 {
-	var $templates_dir;
+	public $templates_dir;
 	
-	var $in_content='';
-	var $out_content='';
-	var $c_content='';
+	public $in_content='';
+	public $out_content='';
+	public $c_content='';
 		
-	var $pattern;
+	public $pattern;
 	
-	var $db;
+	public $db;
 	
 	function __construct($db)
 	{

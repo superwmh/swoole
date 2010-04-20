@@ -9,8 +9,8 @@
  */
 class Key
 {
-    var $key = '';
-    var $keys = array();
+    public $key = '';
+    public $keys = array();
     
     function __construct($key)
     {

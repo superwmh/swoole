@@ -10,7 +10,7 @@ class IpLocation {
 	 * @var resource
 	 */
 
-	var $fp;
+	public $fp;
 
 	/**
 	 * 第一条IP记录的偏移地址 
@@ -18,7 +18,7 @@ class IpLocation {
 	 * @var int
 	 */
 
-	var $firstip;
+	public $firstip;
 
 	/**
 	 * 最后一条IP记录的偏移地址 
@@ -26,7 +26,7 @@ class IpLocation {
 	 * @var int
 	 */
 
-	var $lastip;
+	public $lastip;
 
 	/**
 	 * IP记录的总条数（不包含版本信息记录） 
@@ -34,7 +34,7 @@ class IpLocation {
 	 * @var int
 	 */
 
-	var $totalip;
+	public $totalip;
 
 	/**
 	 * 返回读取的长整型数 

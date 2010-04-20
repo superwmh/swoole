@@ -7,7 +7,7 @@
  */
 class Auth
 {
-	var $table = '';
+	public $table = '';
 	static $login_url = '/login.php?';
 	static $username = 'username';
 	static $password = 'password';
@@ -15,10 +15,10 @@ class Auth
 	//static $password_field = 'username,password';
 	static $password_hash = 'sha1';
 	static $cookie_life = 2592000;
-	
-	var $db = '';
-	var $user;
-	
+
+	public $db = '';
+	public $user;
+
 	function __construct($db,$table='')
 	{
 		if($table=='') $this->table = TABLE_PREFIX.'_user';
@@ -106,7 +106,7 @@ class Auth
 		elseif(self::$password_hash=='sha1_single') return sha1($password);
 		elseif(self::$password_hash=='md5_single') return md5($password);
 	}
-	
+
 	public static function login_require()
 	{
 		$check = false;

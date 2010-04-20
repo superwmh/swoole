@@ -1,10 +1,10 @@
 <?php
 class CategoryAdmin
 {
-	var $app;
-	var $app_config;
-	var $app_model;
-	var $swoole;
+	public $app;
+	public $app_config;
+	public $app_model;
+	public $swoole;
 	
 	function __construct($swoole)
 	{

@@ -2,8 +2,8 @@
 //Swoole_pageCache，页面缓存类
 class Swoole_pageCache
 {
-	var $cache_dir;
-	var $expire;
+	public $cache_dir;
+	public $expire;
 	
 	function __construct($expire=3600,$cache_dir='')
 	{

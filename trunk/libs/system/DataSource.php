@@ -10,8 +10,8 @@
  */
 class DataSource
 {
-	var $swoole;
-	var $ds_uri;
+	public $swoole;
+	public $ds_uri;
 	
 	function __construct($swoole,$dsn)
 	{

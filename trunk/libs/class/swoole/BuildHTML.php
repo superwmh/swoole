@@ -1,7 +1,7 @@
 <?php 
 class BuildHTML
 {
-	var $swoole;
+	public $swoole;
 	
 	function __construct($swoole)
 	{

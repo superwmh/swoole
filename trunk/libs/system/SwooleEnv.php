@@ -9,8 +9,8 @@
 class SwooleEnv implements ArrayAccess
 {
 	static $default_cache_life = 600;
-	var $cache_prefix = 'swoole_env_';
-	var $swoole;
+	public $cache_prefix = 'swoole_env_';
+	public $swoole;
 	
 	function __construct($swoole)
 	{

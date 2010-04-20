@@ -8,19 +8,19 @@
  */
 class Swoole extends ArrayObject
 {
-	var $db;
-	var $tpl;
-	var $cache;
-	var $config;
+	public $db;
+	public $tpl;
+	public $cache;
+	public $config;
 
 	static $default_cache_life=600;
-	var $pagecache;
+	public $pagecache;
 
-	var $load;
-	var $model;
-	var $plugin;
-	var $genv;
-	var $env;
+	public $load;
+	public $model;
+	public $plugin;
+	public $genv;
+	public $env;
 
 	function __construct()
 	{

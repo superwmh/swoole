@@ -6,10 +6,10 @@
  */
 class Controller
 {
-	var $swoole;
-	var $view;
-	var $is_ajax = false;
-	var $if_filter = true;
+	public $swoole;
+	public $view;
+	public $is_ajax = false;
+	public $if_filter = true;
 	
 	protected $model;
 	

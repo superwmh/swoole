@@ -10,8 +10,8 @@ require(LIBPATH."/module/smarty/Smarty.class.php");
  */
 class Template extends Smarty
 {
-	var $if_pagecache = false;
-	var $cache_life = 3600;
+	public $if_pagecache = false;
+	public $cache_life = 3600;
 	
 	function __construct()
 	{

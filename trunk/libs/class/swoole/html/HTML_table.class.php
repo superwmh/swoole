@@ -1,13 +1,13 @@
 <?php
 class HTML_table
 {
-	var $rows;
-	var $cols;
-	var $data;
-	var $head;
-	var $attrs;
+	public $rows;
+	public $cols;
+	public $data;
+	public $head;
+	public $attrs;
 	
-	var $html;
+	public $html;
 	
 	function __construct($data = null,$attrs = null)
 	{

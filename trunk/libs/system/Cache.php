@@ -8,17 +8,17 @@
  */
 class Cache
 {
-    var $uri;
-    var $cache;
+    public $uri;
+    public $cache;
     static $memcache_compress = null;
-    
+
     function __construct($cache_url)
     {
         $this->uri = parse_url($cache_url);
         if(!isset($this->uri['scheme'])) Error::info('Config.php Error','Cache url error!');
         $this->cache = $this->get_cache();
     }
-    
+
     /**
      * 获取缓存对象
      * @param $scheme
@@ -39,7 +39,7 @@ class Cache
                 return;
         }
     }
-    
+
     /**
      * 获取键的值
      * @param $key
@@ -49,7 +49,7 @@ class Cache
     {
     	return $this->cache->get($key);
     }
-    
+
     /**
      * 设置键值
      * @param $key--键名
@@ -65,7 +65,7 @@ class Cache
             $this->cache->set($key,$value,$expire);
         return true;
     }
-    
+
     /**
      * 删除键值
      * @param $key
@@ -73,9 +73,9 @@ class Cache
      */
     function delete($key)
     {
-        $this->cache->delete($key);   
+        $this->cache->delete($key);
     }
-    
+
     function __call($method,$params)
     {
         return call_user_func_array(array($this->cache,$method),$params);

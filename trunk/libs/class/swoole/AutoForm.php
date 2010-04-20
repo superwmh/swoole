@@ -7,10 +7,10 @@
  */
 class AutoForm
 {
-	var $fields;
-	var $field_types;
-	var $data;
-	var $forms;
+	public $fields;
+	public $field_types;
+	public $data;
+	public $forms;
 	const MAX_TEXT_SIZE = 50;
 	const TEXT_FIELD_ROW = 20;
 	const CHAR_FIELD_ROW = 3;

@@ -1,8 +1,8 @@
 <?php
 class AdminBase
 {
-	var $swoole;
-	var $model;
+	public $swoole;
+	public $model;
 	static $model_name;
 	
 	function __construct($swoole)

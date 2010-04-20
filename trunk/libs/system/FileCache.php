@@ -9,10 +9,10 @@
  */
 class FileCache
 {
-	var $_vd=array();
-	var $onchange=0;
-	var $res;
-	var $autosave = false;
+	public $_vd=array();
+	public $onchange=0;
+	public $res;
+	public $autosave = false;
 	
 	function __construct($file)
 	{

@@ -40,12 +40,12 @@ interface IDbRecord
  */
 class Database
 {
-	var $debug = false;
-	var $read_times = 0;
-	var $write_times = 0;
-	var $_db = null;
-	var $db_apt = null;
-	var $db_driver = array('PdoDB','MySQL','MySQL2','AdoDB');
+	public $debug = false;
+	public $read_times = 0;
+	public $write_times = 0;
+	public $_db = null;
+	public $db_apt = null;
+	public $db_driver = array('PdoDB','MySQL','MySQL2','AdoDB');
 
 	function __construct($db_config,$driver='PdoDB')
 	{

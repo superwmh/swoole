@@ -11,29 +11,29 @@ class Pager
 	/**
 	 * config ,public
 	 */
-	var $page_name="page";//page标签，用来控制url页。比如说xxx.php?PB_page=2中的PB_page
-	var $next_page='>';//下一页
-	var $pre_page='<';//上一页
-	var $first_page='First';//首页
-	var $last_page='Last';//尾页
-	var $pre_bar='<<';//上一分页条
-	var $next_bar='>>';//下一分页条
-	var $format_left='';
-	var $format_right='';
-	var $is_ajax=false;//是否支持AJAX分页模式
+	public $page_name="page";//page标签，用来控制url页。比如说xxx.php?PB_page=2中的PB_page
+	public $next_page='>';//下一页
+	public $pre_page='<';//上一页
+	public $first_page='First';//首页
+	public $last_page='Last';//尾页
+	public $pre_bar='<<';//上一分页条
+	public $next_bar='>>';//下一分页条
+	public $format_left='';
+	public $format_right='';
+	public $is_ajax=false;//是否支持AJAX分页模式
 
 	/**
 	 * private
 	 *
 	 */
-	var $pagebarnum=10;//控制记录条的个数。
-	var $totalpage=0;//总页数
-	var $total=0;
-	var $ajax_action_name='';//AJAX动作名
-	var $nowindex=1;//当前页
-	var $url="";//url地址头
-	var $offset=0;
-	var $style;
+	public $pagebarnum=10;//控制记录条的个数。
+	public $totalpage=0;//总页数
+	public $total=0;
+	public $ajax_action_name='';//AJAX动作名
+	public $nowindex=1;//当前页
+	public $url="";//url地址头
+	public $offset=0;
+	public $style;
 
 	/**
 	 * constructor构造函数

@@ -7,20 +7,20 @@
  */
 class Model
 {
-	var $_data=array(); //数据库字段的具体值
-	var $db;
-	var $swoole;
+	public $_data=array(); //数据库字段的具体值
+	public $db;
+	public $swoole;
 
-	var $primary="id";
-	var $foreignkey='catid';
+	public $primary="id";
+	public $foreignkey='catid';
 
-	var $table="";
-	var $fields;
-	var $select='*';
+	public $table="";
+	public $fields;
+	public $select='*';
 
-	var $create_sql='';
+	public $create_sql='';
 
-	var $if_cache = false;
+	public $if_cache = false;
 
 	function __construct($swoole)
 	{
@@ -212,16 +212,16 @@ class Model
  */
 class Record implements ArrayAccess
 {
-	var $_data = array();
-	var $_change;
-	var $db;
+	public $_data = array();
+	public $_change;
+	public $db;
 
-	var $primary="id";
-	var $table="";
+	public $primary="id";
+	public $table="";
 
-	var $change=0;
-	var $_current_id=0;
-	var $_currend_key;
+	public $change=0;
+	public $_current_id=0;
+	public $_currend_key;
 
 	function __construct($id,$db,$table,$primary,$where='',$select='*')
 	{
@@ -347,15 +347,15 @@ class Record implements ArrayAccess
  */
 class RecordSet implements Iterator
 {
-	var $_list=array();
+	public $_list=array();
 
-	var $table='';
-	var $db;
-	var $db_select;
+	public $table='';
+	public $db;
+	public $db_select;
 
-	var $primary="";
+	public $primary="";
 
-	var $_current_id=0;
+	public $_current_id=0;
 
 	function __construct($db,$table,$primary,$select)
 	{

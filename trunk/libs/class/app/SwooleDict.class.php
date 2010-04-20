@@ -6,11 +6,11 @@
  */
 class SwooleDict extends Model
 {
-	var $table = 'swoole_dict';
-	var $cache;
-	var $_data;
-	var $if_cache = false;
-	var $expire = 0;
+	public $table = 'swoole_dict';
+	public $cache;
+	public $_data;
+	public $if_cache = false;
+	public $expire = 0;
 
 	function setCache($cache)
 	{
