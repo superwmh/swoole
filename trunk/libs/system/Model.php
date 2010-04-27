@@ -91,6 +91,11 @@ class Model
 	 */
 	public final function sets($data,$params)
 	{
+		if(empty($params))
+		{
+			throw new Exception("Model sets params is empty!");
+			return false;
+		}
 		$selectdb = new SelectDB($this->db);
 		$selectdb->from($this->table);
 		$selectdb->put($params);
@@ -115,7 +120,12 @@ class Model
      */
     public final function dels($params)
     {
-        $selectdb = new SelectDB($this->db);
+        if(empty($params))
+        {
+            throw new Exception("Model dels params is empty!");
+            return false;
+        }
+    	$selectdb = new SelectDB($this->db);
         $selectdb->from($this->table);
 		$selectdb->put($params);
         $selectdb->delete();
