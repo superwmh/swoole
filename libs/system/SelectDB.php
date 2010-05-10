@@ -112,6 +112,7 @@ class SelectDB
 	 */
 	function where($where)
 	{
+		//$where = str_replace(' or ','',$where);
 		if($this->where=="")
 		{
 			$this->where="where ".$where;
@@ -218,6 +219,7 @@ class SelectDB
 	{
 		$this->num = $this->count();
 		$offset=($this->page-1)*$this->page_size;
+		if($offset<0) $offset=0;
 		if($this->num%$this->page_size>0)
 		$this->pages=intval($this->num/$this->page_size)+1;
 		else
