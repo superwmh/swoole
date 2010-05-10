@@ -42,6 +42,22 @@ class Swoole_tools
 		$time = date('s',$seconds)-date('s',$timestamp);
 		return $time.'秒前';
 	}
+	static function url_merge($key,$value,$ignore=null)
+	{
+		$url = array();
+        $urls = $_GET;
+        $urls = array_merge($_GET,array_combine(explode(',',$key),explode(',',$value)));
+        if($ignore!==null)
+        {
+            $ignores = explode(',',$ignore);
+            foreach($ignores as $ig) unset($urls[$ig]);
+        }
+        foreach($urls as $k=>$v)
+        {
+            $url[] = $k.'='.urlencode($v);
+        }
+        return $_SERVER['PHP_SELF'].'?'.implode('&',$url);
+	}
 	static function array_fullness($array)
 	{
 		$nulls = 0;

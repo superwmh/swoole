@@ -3,15 +3,8 @@ function smarty_function_url($params)
 {
 	if(isset($params['key']) and isset($params['value']))
 	{
-        $url = array();
-		$urls = $_GET;
-        $urls[$params['key']] = $params['value'];
-        foreach($urls as $k=>$v)
-        {
-        	if($v=='' or $v=='') continue;
-        	$url[] = $k.'='.urlencode($v);
-        }
-        return $_SERVER['PHP_SELF'].'?'.implode('&',$url);
+        if(isset($params['ignore'])) return Swoole_tools::url_merge($params['key'],$params['value'],$params['ignore']);
+        else return Swoole_tools::url_merge($params['key'],$params['value']);
 	}
 	else echo "url merge error!";
 }
