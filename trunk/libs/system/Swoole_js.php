@@ -32,7 +32,7 @@ class Swoole_js
 	}
     static function js_alert_close($msg)
     {
-        echo "<script language='javascript'>alert('$msg');</script>";
+        echo "<script language='javascript'>alert('$msg');window.close();</script>";
     }
     static function js_parent_reload($msg)
     {
