@@ -14,12 +14,12 @@ class Filter
 
 	function __construct($mode='deny',$error_url=false)
 	{
-        $this->mode = $mode;
-        self::$error_url = $error_url;
+		$this->mode = $mode;
+		self::$error_url = $error_url;
 	}
 	function post($param)
 	{
-        $this->_check($_POST,$param);
+		$this->_check($_POST,$param);
 	}
 	function get($param)
 	{
@@ -38,115 +38,45 @@ class Filter
 	function _check(&$data,$param)
 	{
 		foreach($param as $k=>$p)
-        {
-        	if(!isset($data[$k]))
-        	{
-        		if(isset($p['require']) and $p['require']) self::raise('param require');
-                else continue;
-        	}
+		{
+			if(!isset($data[$k]))
+			{
+				if(isset($p['require']) and $p['require']) self::raise('param require');
+				else continue;
+			}
 
-        	if(isset($p['type']))
-        	{
-        		$data[$k] = Validate::$p['type']($data[$k]);
-        		if($data[$k]===false) self::raise();
+			if(isset($p['type']))
+			{
+				$data[$k] = Validate::$p['type']($data[$k]);
+				if($data[$k]===false) self::raise();
 
-        		//最小值参数
-        		if(isset($p['min']) and is_numeric($data[$k]) and $data[$k]<$p['min']) self::raise('num too small');
-        		//最大值参数
-        		if(isset($p['max']) and is_numeric($data[$k]) and $data[$k]>$p['max']) self::raise('num too big');
+				//最小值参数
+				if(isset($p['min']) and is_numeric($data[$k]) and $data[$k]<$p['min']) self::raise('num too small');
+				//最大值参数
+				if(isset($p['max']) and is_numeric($data[$k]) and $data[$k]>$p['max']) self::raise('num too big');
 
-        		//最小值参数
-                if(isset($p['short']) and is_string($data[$k]) and mb_strlen($data[$k])<$p['short']) self::raise('string too short');
-                //最大值参数
-                if(isset($p['long']) and is_string($data[$k]) and mb_strlen($data[$k])>$p['long']) self::raise('string too long');
+				//最小值参数
+				if(isset($p['short']) and is_string($data[$k]) and mb_strlen($data[$k])<$p['short']) self::raise('string too short');
+				//最大值参数
+				if(isset($p['long']) and is_string($data[$k]) and mb_strlen($data[$k])>$p['long']) self::raise('string too long');
 
-                //自定义的正则表达式
-                if($p['type']=='regx' and isset($p['regx']) and preg_match($p['regx'],$data[$k])===false) self::raise();
-        	}
-        }
-        //如果为拒绝模式，所有不在过滤参数$param中的键值都将被删除
-        if($this->mode=='deny')
-        {
-        	 $allow = array_keys($param);
-        	 $have = array_keys($data);
-        	 foreach($have as $ha) if(!in_array($ha,$allow)) unset($data[$ha]);
-        }
+				//自定义的正则表达式
+				if($p['type']=='regx' and isset($p['regx']) and preg_match($p['regx'],$data[$k])===false) self::raise();
+			}
+		}
+		//如果为拒绝模式，所有不在过滤参数$param中的键值都将被删除
+		if($this->mode=='deny')
+		{
+			$allow = array_keys($param);
+			$have = array_keys($data);
+			foreach($have as $ha) if(!in_array($ha,$allow)) unset($data[$ha]);
+		}
 	}
 	static function raise($text=false)
 	{
 		if(self::$error_url) Swoole_client::redirect(self::$error_url);
 		if($text) exit($text);
 		else exit('Web input param error!');
-	}
-	function _filter_int($data)
-	{
-		return (int)$data;
-	}
-	function _filter_float($data)
-	{
-		return (float)$data;
-	}
-
-	static function input($source,$name,$check_type=null,$options=null)
-	{
-		$source = strtolower($source);
-		switch($source)
-		{
-			case 'get':
-				$input_type = INPUT_GET;
-				break;
-			case 'post':
-				$input_type = INPUT_POST;
-				break;
-			case 'cookie':
-				$input_type = INPUT_COOKIE;
-				break;
-			case 'env':
-				$input_type = INPUT_ENV;
-				break;
-			case 'SERVER':
-				$input_type = INPUT_SERVER;
-				break;
-			case 'SESSION':
-				$input_type = INPUT_SESSION;
-				break;
-			case 'REQUEST':
-				$input_type = INPUT_REQUEST;
-				break;
-			default:
-				$input_type = INPUT_REQUEST;
-				break;
-		}
-
-		$check_type = strtolower($check_type);
-		switch($check_type)
-		{
-			case 'int':
-				$check = FILTER_VALIDATE_INT;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_BOOLEAN;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_FLOAT;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_REGEXP;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_URL;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_EMAIL;
-				break;
-			case 'int':
-				$check = FILTER_VALIDATE_IP;
-				break;
-			default:
-				$check = FILTER_DEFAULT;
-				break;
-		}
-		return filter_input($input_type,$name,$check,$options);
 	}
 	static function request()
 	{
@@ -159,6 +89,66 @@ class Filter
 	{
 		Filter::deslash($content);
 		$content = html_entity_decode($content);
+	}
+	static function removeXSS($val)
+	{
+		// remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
+		// this prevents some character re-spacing such as <java\0script>
+		// note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
+		$val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+
+		// straight replacements, the user should never need these since they're normal characters
+		// this prevents like <IMG SRC=@avascript:alert('XSS')>
+		$search = 'abcdefghijklmnopqrstuvwxyz';
+		$search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$search .= '1234567890!@#$%^&*()';
+		$search .= '~`";:?+/={}[]-_|\'\\';
+		for ($i = 0; $i < strlen($search); $i++)
+		{
+			// ;? matches the ;, which is optional
+			// 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
+
+			// @ @ search for the hex values
+			$val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
+			// @ @ 0{0,7} matches '0' zero to seven times
+			$val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
+		}
+
+		// now the only remaining whitespace attacks are \t, \n, and \r
+		$ra1 = Array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
+		$ra2 = Array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
+		$ra = array_merge($ra1, $ra2);
+
+		$found = true; // keep replacing as long as the previous round replaced something
+		while ($found == true)
+		{
+			$val_before = $val;
+			for ($i = 0; $i < sizeof($ra); $i++)
+			{
+				$pattern = '/';
+				for ($j = 0; $j < strlen($ra[$i]); $j++)
+				{
+					if ($j > 0)
+					{
+						$pattern .= '(';
+						$pattern .= '(&#[xX]0{0,8}([9ab]);)';
+						$pattern .= '|';
+						$pattern .= '|(&#0{0,8}([9|10|13]);)';
+						$pattern .= ')*';
+					}
+					$pattern .= $ra[$i][$j];
+				}
+				$pattern .= '/i';
+				$replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag
+				$val = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+				if ($val_before == $val)
+				{
+					// no replacements were made, so exit the loop
+					$found = false;
+				}
+			}
+		}
+		return $val;
 	}
 	public static function filter_var($var,$type)
 	{
@@ -185,14 +175,16 @@ class Filter
 				{
 					self::filter_array($string);
 				}
-				else $string = htmlspecialchars($string,ENT_QUOTES);
+				else
+				{
+					$string = htmlspecialchars($string,ENT_QUOTES);
+				}
 			}
 			if(is_array($string))
 			{
 				self::filter_array($string);
 			}
-			else
-			self::addslash($string);
+			else self::addslash($string);
 		}
 	}
 
