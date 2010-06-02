@@ -87,8 +87,10 @@ class Filter
 	}
 	static function safe(&$content)
 	{
+		if(DBCHARSET=='utf8') $charset = 'utf-8';
+        else $charset = DBCHARSET;
 		Filter::deslash($content);
-		$content = html_entity_decode($content);
+		$content = html_entity_decode($content,ENT_QUOTES,$charset);
 	}
 	static function removeXSS($val)
 	{
@@ -177,7 +179,9 @@ class Filter
 				}
 				else
 				{
-					$string = htmlspecialchars($string,ENT_QUOTES);
+					if(DBCHARSET=='utf8') $charset = 'utf-8';
+					else $charset = DBCHARSET;
+					$string = htmlspecialchars($string,ENT_QUOTES,$charset);
 				}
 			}
 			if(is_array($string))

@@ -322,48 +322,44 @@ class Image
 		unset( $ground_info );
 		imagedestroy ( $ground_im );
 	}
-	static function authcode()
+	/**
+	 * 生成验证码使用GD
+	 * @param $img_width
+	 * @param $img_height
+	 * @return unknown_type
+	 */
+	static function authcode_gd($img_width=80,$img_height=30)
 	{
-		//生成验证码图片
+		session_start();
 		$authnum = '';
-		header("Content-type: image/PNG");
-		srand((double)microtime()*1000000);//播下一个生成随机数字的种子，以方便下面随机数生成的使用
-
-		//session_start();//将随机数存入session中
-		$_SESSION['authcode']="";
-		$im = imagecreate(50,20) or die("Cant's initialize new GD image stream!"); //制定图片背景大小
-		$black = ImageColorAllocate($im, 0,0,0); //设定三种颜色
-		$white = ImageColorAllocate($im, 255,255,255);
-		$gray = ImageColorAllocate($im, 235,235,235);
-
-		imagefill($im,0,0,$gray); //采用区域填充法，设定(0,0)
-
-		//生成数字和字母混合的验证码方法
-		$ychar="0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
-		$list=explode(",",$ychar);
-		for($i=0;$i<4;$i++){
-			$randnum=rand(0,35);
-			$authnum.=$list[$randnum];
+		srand(microtime() * 100000);
+		for($Tmpa=0;$Tmpa<4;$Tmpa++)
+		{
+			$authnum.=dechex(rand(0,15));
 		}
 		$authnum = strtoupper($authnum);;
-		//while(($authnum=rand()%100000)<10000); //生成随机的五们数
-		//将五位整数验证码绘入图片
-		$_SESSION['authcode']= $authnum;
-		imagestring($im, 8, 8, 4, $authnum, $black);
-		// 用 col 颜色将字符串 s 画到 image 所代表的图像的 x，y座标处（图像的左上角为 0, 0）。
-		//如果 font 是 1，2，3，4 或 5，则使用内置字体
+		$_SESSION['authcode'] = $authnum;
 
-		for($i=0;$i<40;$i++) //加入干扰象素
+		$aimg = imageCreate($img_width,$img_height);       //生成图片
+		ImageColorAllocate($aimg, 255,255,255);            //图片底色，ImageColorAllocate第1次定义颜色PHP就认为是底色了
+
+		//下面该生成雪花背景了，其实就是在图片上生成一些符号
+		for($i=1; $i<=128; $i++)
 		{
-			$randcolor = ImageColorallocate($im,rand(50,100),rand(50,100),rand(50,100));
-			imagesetpixel($im, rand()%70 , rand()%30 , $randcolor);
+			imageString($aimg,1,mt_rand(1,$img_width),mt_rand(1,$img_height),"*",imageColorAllocate($aimg,mt_rand(200,255),mt_rand(200,255),mt_rand(200,255)));
+			//其实也不是雪花，就是生成＊号而已。为了使它们看起来"杂乱无章、5颜6色"，就得在1个1个生成它们的时候，让它们的位置、颜色，甚至大小都用随机数，rand()或mt_rand都可以完成。
 		}
-		ImagePNG($im);
-		ImageDestroy($im);
+		for($i=0;$i<strlen($_SESSION['authcode']);$i++)
+		{
+			imageString($aimg, mt_rand(8,12),$i*$img_width/4+mt_rand(1,8),mt_rand(1,$img_height/4), $_SESSION['authcode'][$i],imageColorAllocate($aimg,mt_rand(0,100),mt_rand(0,150),mt_rand(0,200)));
+		}
+		header("Content-type: image/png");    //告诉浏览器，下面的数据是图片
+		ImagePng($aimg);                      //生成png格式
+		ImageDestroy($aimg);
 	}
-	static function authcode2()
+	static function authcode_im()
 	{
-		session();
+		if(empty($_SESSION)) session_start();
 		$authnum = '';
 		srand((double)microtime()*1000000);
 		$_SESSION['authcode']="";
@@ -422,5 +418,54 @@ class Image
 		//header( "Content-Type: image/{$Imagick->getImageFormat()}" );
 		echo $Imagick->getImageBlob( );
 	}
+	/**
+	 * 生成验证码，使用TTF字体
+	 * @param $font
+	 * @param $img_width
+	 * @param $img_height
+	 * @return unknown_type
+	 */
+	static function authcode_ttf($font,$img_width=80,$img_height=30)
+	{
+		if(empty($_SESSION)) session_start();
+		session_register("login_check_number");
+		$nmsg='';
+
+		srand(microtime() * 100000);
+		for($Tmpa=0;$Tmpa<4;$Tmpa++)
+		{
+			$nmsg.=dechex(rand(0,15));
+		}
+		$_SESSION['login_check_number'] = strtoupper($nmsg);
+		$aimg = imageCreate($img_width,$img_height);       //生成图片
+		ImageColorAllocate($aimg, 255,255,255);            //图片底色，ImageColorAllocate第1次定义颜色PHP就认为是底色了
+
+		//下面该生成雪花背景了，其实就是在图片上生成一些符号
+		for ($i=1; $i<=128; $i++)
+		{
+			$randcolor = ImageColorallocate($aimg,rand(50,100),rand(50,100),rand(50,100));
+			imagesetpixel($aimg, rand()%70 , rand()%30 , $randcolor);
+		}
+
+		//为了区别于背景，这里的颜色不超过200，上面的不小于200
+		for ($i=0;$i<strlen($_SESSION['login_check_number']);$i++)
+		{
+			$x = $i*$img_width/4+mt_rand(1,8);
+			$y = $img_height-5;
+			$color = imageColorAllocate($aimg,mt_rand(0,100),mt_rand(0,150),mt_rand(0,200));
+
+			$angle = mt_rand(0,30);
+			if(rand(0,1)==1) $angle = -$angle;
+
+			$code = $_SESSION['login_check_number'][$i];
+			$li_x = mt_rand(1,$img_width);
+			$li_y = mt_rand(1,$img_height);
+			imageline($aimg, $li_x,$li_y,$li_x+rand(10,$img_width/2),$li_y+rand(10,$img_height/2),$color);
+			imagettftext($aimg,18,$angle,$x,$y,$color,$font,$code);
+
+		}
+		Header("Content-type: image/png");    //告诉浏览器，下面的数据是图片
+		ImagePng($aimg);                      //生成png格式
+		ImageDestroy($aimg);
+	}
 }
-?>
