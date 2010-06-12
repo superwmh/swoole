@@ -21,6 +21,7 @@ class Pager
 	public $format_left='';
 	public $format_right='';
 	public $is_ajax=false;//是否支持AJAX分页模式
+	public $page_tpl = '';
 
 	/**
 	 * private
@@ -311,7 +312,8 @@ class Pager
 	 */
 	function _get_url($pageno=1)
 	{
-		return $this->url.$pageno;
+		if(empty($this->page_tpl)) return $this->url.$pageno;
+		else return sprintf($this->page_tpl,$pageno);
 	}
 
 	/**
