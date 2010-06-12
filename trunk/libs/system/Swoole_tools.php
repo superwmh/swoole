@@ -137,5 +137,22 @@ class Swoole_tools
 		$now_age = $full_age + 1;
 		return $now_age;
 	}
+	/**
+	 * 发送一个UDP包
+	 * @return unknown_type
+	 */
+	static function sendUDP($server_ip,$server_port,$data,$timeout=30)
+	{
+		$client = stream_socket_client("udp://$server_ip:$server_port",$errno,$errstr,$timeout);
+		if(!$client)
+		{
+			echo "ERROR: $errno - $errstr<br />\n";
+		}
+		else
+		{
+			fwrite($client,$data);
+			fclose($client);
+		}
+	}
 }
 ?>

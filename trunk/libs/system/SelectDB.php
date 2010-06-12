@@ -80,8 +80,8 @@ class SelectDB
 		}
 		else
 		{
-			if(is_numeric($_where)) $where = "$field=$_where";
-			else $where = "$field='$_where'";
+			if(is_numeric($_where)) $where = "`$field`=$_where";
+			else $where = "`$field`='$_where'";
 		}
 		$this->where($where);
 	}
@@ -130,7 +130,7 @@ class SelectDB
 	 */
 	function like($field,$like)
 	{
-		$this->where("{$field} like '{$like}'");
+		$this->where("`{$field}` like '{$like}'");
 	}
 	/**
 	 * 使用or连接的条件
@@ -177,27 +177,27 @@ class SelectDB
 
 	function in($field,$ins)
 	{
-		$this->where("$field in ({$ins})");
+		$this->where("`$field` in ({$ins})");
 	}
 
 	function notin($field,$ins)
 	{
-		$this->where("$field not in ({$ins})");
+		$this->where("`$field` not in ({$ins})");
 	}
 
 	function join($table_name,$on)
 	{
-		$this->join.="INNER JOIN {$table_name} ON ({$on})";
+		$this->join.="INNER JOIN `{$table_name}` ON ({$on})";
 	}
 
 	function leftjoin($table_name,$on)
 	{
-		$this->join.="LEFT JOIN {$table_name} ON ({$on})";
+		$this->join.="LEFT JOIN `{$table_name}` ON ({$on})";
 	}
 
 	function rightjoin($table_name,$on)
 	{
-		$this->join.="RIGHT JOIN {$table_name} ON ({$on})";
+		$this->join.="RIGHT JOIN `{$table_name}` ON ({$on})";
 	}
 
 	function pagesize($pagesize)
@@ -212,7 +212,7 @@ class SelectDB
 
 	function id($id)
 	{
-		$this->where("{$this->primary} = '$id'");
+		$this->where("`{$this->primary}` = '$id'");
 	}
 
 	function paging()
@@ -232,6 +232,11 @@ class SelectDB
 	{
 		$filter_list = explode(',',$filter_func);
 		$this->result_filter = array_merge($$this->result_filter,$filter_list);
+	}
+
+	static function quote(&$sql)
+	{
+		$sql = str_replace("'","&#039;",$sql);
 	}
 
 	function getsql($ifreturn=true)
@@ -305,14 +310,13 @@ class SelectDB
 			}
 			else
 			{
+				self::quote($param);
 				if($this->call_by=='func')
 				$this->where($method.'="'.$param.'"');
 				elseif($this->call_by=='smarty')
 				{
-					if(strpos($param,'$')===false)
-					$this->where($method."='".$param."'");
-					else
-					$this->where($method."='{".$param."}'");
+					if(strpos($param,'$')===false)	$this->where($method."='".$param."'");
+					else $this->where($method."='{".$param."}'");
 				}
 				else
 				Error::info('Error: SelectDB 错误的参数',"<pre>参数$method=$param</pre>");
@@ -373,14 +377,18 @@ class SelectDB
 		$res=$this->db->query($sql)->fetch();
 		return $res['cc'];
 	}
-
+    /**
+     * 执行插入操作
+     * @param $data
+     * @return unknown_type
+     */
 	function insert($data)
 	{
 		$field="";
 		$values="";
 		foreach($data as $key => $value)
 		{
-			$value = str_replace("'","\'",$value);
+			self::quote($value);
 			$field=$field."$key,";
 			$values=$values."'$value',";
 		}
@@ -394,7 +402,7 @@ class SelectDB
 		$update="";
 		foreach($data as $key=>$value)
 		{
-			$value = str_replace("'","\'",$value);
+			self::quote($value);
 			if($value!='' and $value{0}=='`') $update=$update."$key=$value,";
 			else $update=$update."$key='$value',";
 		}
