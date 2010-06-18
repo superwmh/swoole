@@ -7,6 +7,9 @@
  */
 class SelectDB
 {
+	static $error_call='';
+	static $allow_regx = '#^([a-z0-9\(\)\._=\-\+\*\`\s\'\",]+)$#i';
+
 	public $table='';
 	public $primary='id';
 	public $select='*';
@@ -80,8 +83,7 @@ class SelectDB
 		}
 		else
 		{
-			if(is_numeric($_where)) $where = "`$field`=$_where";
-			else $where = "`$field`='$_where'";
+			$where = "`$field`='$_where'";
 		}
 		$this->where($where);
 	}
@@ -130,6 +132,7 @@ class SelectDB
 	 */
 	function like($field,$like)
 	{
+		self::sql_safe($field);
 		$this->where("`{$field}` like '{$like}'");
 	}
 	/**
@@ -155,7 +158,12 @@ class SelectDB
 	 */
 	function limit($limit)
 	{
-		if(!empty($limit)) $this->limit="limit ".$limit;
+		if(!empty($limit))
+		{
+			$_limit = explode(',',$limit,2);
+			if(count($_limit)==2) $this->limit='limit '.(int)$_limit[0].','.(int)$_limit[1];
+			else $this->limit="limit ".(int)$limit;
+		}
 		else $this->limit = '';
 	}
 	/**
@@ -165,13 +173,21 @@ class SelectDB
 	 */
 	function order($order)
 	{
-		if(!empty($order)) $this->order="order by $order";
+		if(!empty($order))
+		{
+			self::sql_safe($order);
+			$this->order="order by $order";
+		}
 		else $this->order = '';
 	}
 
 	function group($group)
 	{
-		if(!empty($group)) $this->group = "group by $group";
+		if(!empty($group))
+		{
+			self::sql_safe($group);
+			$this->group = "group by $group";
+		}
 		else $this->group = '';
 	}
 
@@ -202,12 +218,12 @@ class SelectDB
 
 	function pagesize($pagesize)
 	{
-		$this->page_size = $pagesize;
+		$this->page_size = (int)$pagesize;
 	}
 
 	function page($page)
 	{
-		$this->page = $page;
+		$this->page = (int)$page;
 	}
 
 	function id($id)
@@ -237,6 +253,16 @@ class SelectDB
 	static function quote(&$sql)
 	{
 		$sql = str_replace("'","&#039;",$sql);
+	}
+
+	static function sql_safe($sql_sub)
+	{
+		if(!preg_match(self::$allow_regx,$sql_sub))
+		{
+			echo $sql_sub;
+			if(self::$error_call==='') die('Access deny!');
+			else call_user_func(self::$error_call);
+		}
 	}
 
 	function getsql($ifreturn=true)
@@ -377,11 +403,11 @@ class SelectDB
 		$res=$this->db->query($sql)->fetch();
 		return $res['cc'];
 	}
-    /**
-     * 执行插入操作
-     * @param $data
-     * @return unknown_type
-     */
+	/**
+	 * 执行插入操作
+	 * @param $data
+	 * @return unknown_type
+	 */
 	function insert($data)
 	{
 		$field="";

@@ -32,7 +32,6 @@ class Pager
 	public $total=0;
 	public $ajax_action_name='';//AJAX动作名
 	public $nowindex=1;//当前页
-	public $url="";//url地址头
 	public $offset=0;
 	public $style;
 
@@ -60,7 +59,6 @@ class Pager
 		if((!is_int($perpage))||($perpage<=0))$this->error(__FUNCTION__,$perpage.' is not a positive integer!');
 		if(!empty($array['page_name']))$this->set('page_name',$array['page_name']);//设置pagename
 		$this->_set_nowindex($nowindex);//设置当前页
-		$this->_set_url($url);//设置链接地址
 		$this->totalpage=ceil($total/$perpage);
 		$this->total = $total;
 		$this->offset=($this->nowindex-1)*$perpage;
@@ -250,43 +248,6 @@ class Pager
 	}
 	/*----------------private function (私有方法)-----------------------------------------------------------*/
 	/**
-	 * 设置url头地址
-	 * @param: String $url
-	 * @return boolean
-	 */
-	function _set_url($url="")
-	{
-		if(!empty($url)){
-			//手动设置
-			$this->url=$url.((stristr($url,'?'))?'&':'?').$this->page_name."=";
-		}
-		else
-		{
-			//自动获取
-			$last = stristr($_SERVER['REQUEST_URI'],'?')?'&':'?';
-			$this->url = $_SERVER['REQUEST_URI'].$last;
-			if(stristr($_SERVER['QUERY_STRING'],$this->page_name.'='))
-			{
-				//地址存在页面参数
-				$this->url=str_replace($this->page_name.'='.$this->nowindex,'',$_SERVER['REQUEST_URI']);
-				if($last=='?' or $last=='&')
-				{
-					$this->url.=$this->page_name."=";
-				}
-				else
-				{
-					$this->url.=$last.$this->page_name."=";
-				}
-			}
-			else
-			{
-				//
-				$this->url=$_SERVER['REQUEST_URI'].$last.$this->page_name.'=';
-			}//end if
-		}//end if
-	}
-
-	/**
 	 * 设置当前页面
 	 *
 	 */
@@ -312,7 +273,7 @@ class Pager
 	 */
 	function _get_url($pageno=1)
 	{
-		if(empty($this->page_tpl)) return $this->url.$pageno;
+		if(empty($this->page_tpl)) return Swoole_tools::url_merge('page',$pageno,'mvc');
 		else return sprintf($this->page_tpl,$pageno);
 	}
 
