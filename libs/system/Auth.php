@@ -12,9 +12,10 @@ class Auth
 	static $username = 'username';
 	static $password = 'password';
 	static $session_prefix = '';
-	//static $password_field = 'username,password';
+	static $mk_password = 'username,password';
 	static $password_hash = 'sha1';
 	static $cookie_life = 2592000;
+	static $session_destroy = false;
 
 	public $db = '';
 	public $user;
@@ -24,14 +25,17 @@ class Auth
 		if($table=='') $this->table = TABLE_PREFIX.'_user';
 		else $this->table = $table;
 		$this->db = $db;
+		$_SESSION[self::$session_prefix.'save_key'] = array();
 	}
 	function saveUserinfo($key='userinfo')
 	{
 		$_SESSION[self::$session_prefix.$key] = $this->user;
+		$_SESSION[self::$session_prefix.'save_key'][] = self::$session_prefix.$key;
 	}
 	function setSession($key)
 	{
 		$_SESSION[$key] = $this->user[$key];
+		$_SESSION[self::$session_prefix.'save_key'][] = self::$session_prefix.$key;
 	}
 	/**
 	 * 登录
@@ -85,11 +89,21 @@ class Auth
 	 */
 	static function logout()
 	{
-		if(isset($_SESSION[self::$session_prefix.'isLogin']))
+		/**
+		 * 如果设置为true，退出登录时，销毁所有Session
+		 */
+		if(self::$session_destroy)
 		{
 			session_destroy();
-			if(isset($_COOKIE[self::$session_prefix.'password'])) setcookie(self::$session_prefix.'password','',0,'/');
+			return true;
 		}
+		unset($_SESSION[self::$session_prefix.'isLogin']);
+		unset($_SESSION[self::$session_prefix.'user_id']);
+
+        if(!empty($_SESSION[self::$session_prefix.'save_key'])) foreach($_SESSION[self::$session_prefix.'save_key'] as $sk) unset($_SESSION[$sk]);
+		unset($_SESSION[self::$session_prefix.'save_key']);
+        if(isset($_COOKIE[self::$session_prefix.'password'])) setcookie(self::$session_prefix.'password','',0,'/');
+
 	}
 	/**
 	 * 产生一个密码串，连接用户名和密码，并使用sha1产生散列
