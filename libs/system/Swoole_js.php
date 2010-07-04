@@ -1,4 +1,5 @@
 <?php
+if(DBCHARSET=='utf8') echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 class Swoole_js
 {
 	static $head="<script language=\"javascript\">\n";
@@ -30,20 +31,22 @@ class Swoole_js
 	{
 		echo "<script language='javascript'>alert('$msg');</script>";
 	}
-    static function js_alert_close($msg)
-    {
-        echo "<script language='javascript'>alert('$msg');window.close();</script>";
-    }
-    static function js_parent_reload($msg)
-    {
-        echo "<script language='javascript'>alert(\"$msg\");";
-        echo "window.parent.location.reload();</script>";
-    }
 	static function js_goto($msg,$url)
 	{
 		echo "<script language='javascript'>alert(\"$msg\");";
 		echo "window.location.href=\"$url\";</script>";
 	}
+
+	static function js_parent_reload($msg)
+	{
+        echo "<script language='javascript'>alert(\"$msg\");";
+        echo "window.parent.location.reload();</script>";
+	}
+    static function js_alert_close($msg)
+    {
+        echo "<script language='javascript'>alert('$msg');";
+        echo "window.self.close();</script>";
+    }
 
 	static function js_confirm($msg,$true,$false)
 	{
