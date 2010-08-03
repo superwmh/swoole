@@ -2,7 +2,7 @@
 /**
  * 通用试图类
  * 产生一个简单的请求控制，解析的结构，一般用于后台管理系统
- * 简单模拟List  delete  modify  add 4项操作
+ * 简单模拟List  delete  modify  add 4项操
  * @author Tianfeng.Han
  * @package SwooleSystem
  * @subpackage MVC
@@ -39,7 +39,106 @@ class GeneralView
 			}
 		}
 	}
-	
+
+	function handle_entity_list($config)
+	{
+		if(!isset($config['model'])) die('参数错误！');
+		$_model = createModel($config['model']);
+
+		if(isset($_GET['del']))
+		{
+			$del = (int)$_GET['del'];
+			$_model->del($del);
+			Swoole_js::js_back('删除成功！');
+		}
+		else
+		{
+			if(empty($config['tpl'])) $config['tpl'] = LIBPATH.'/data/tpl/admin_entity_list.html';
+			$gets['page'] = empty($_GET['page'])?1:$_GET['page'];
+			$gets['pagesize'] = 10;
+			$pager=null;
+			$list = $_model->gets($gets,$pager);
+
+			$pager = array('total'=>$pager->total,'render'=>$pager->render());
+			$this->swoole->tpl->assign('pager',$pager);
+			$this->swoole->tpl->assign('list',$list);
+			$this->swoole->tpl->display($config['tpl']);
+		}
+	}
+    function handle_entity_op($config)
+    {
+        if(!isset($config['model'])) die('参数错误！');
+        $_model = createModel($config['model']);
+
+    	if($_POST['job']=='push')
+        {
+            $digg = (int)$_POST['push'];
+            $set['digest'] = $digg;
+            $get['in'] = array('id',implode(',',$_POST['ids']));
+            $_model->sets($set,$get);
+            Swoole_js::js_parent_reload('推荐成功');
+        }
+    }
+	function handle_entity_add($config)
+	{
+		if(!isset($config['model'])) die('参数错误！');
+		if(empty($config['tpl.add'])) $config['tpl.add'] = LIBPATH.'/data/tpl/admin_entity_add.html';
+        if(empty($config['tpl.modify'])) $config['tpl.modify'] = LIBPATH.'/data/tpl/admin_entity_modify.html';
+
+		$_model = createModel($config['model']);
+
+		if($_POST)
+		{
+			$this->proc_upfiles();
+			if(!empty($_POST['id']))
+			{
+				//如果得到id，说明提交的是修改的操作
+				$id = $_POST['id'];
+				if($_model->set($_POST['id'],$_POST))
+				{
+					Swoole_js::js_back('修改成功',-2);
+					exit;
+				}
+				else
+				{
+					Swoole_js::js_back('修改失败',-1);
+					exit;
+				}
+			}
+			else
+			{
+				//如果没得到id，说明提交的是添加操作
+				if(empty($_POST['title']))
+				{
+					Swoole_js::js_back('标题不能为空！');
+					exit;
+				}
+				$id = $_model->put($_POST);
+				Swoole_js::js_back('添加成功');
+				exit;
+			}
+		}
+		else
+		{
+			$this->swoole->plugin->load('fckeditor');
+			if(isset($_GET['id']))
+			{
+				$id = $_GET['id'];
+				$news = $_model->get($id)->get();
+				$editor = editor("content",$news['content'],480);
+				$this->swoole->tpl->assign('editor',$editor);
+				$this->swoole->tpl->assign('news',$news);
+				$this->swoole->tpl->display($config['tpl.modify']);
+			}
+			else
+			{
+				$editor = editor("content","",480);
+				$this->swoole->tpl->assign('editor',$editor);
+				$this->swoole->tpl->display($config['tpl.add']);
+			}
+		}
+	}
+
 	function handle_entity_center($config)
 	{
 		if(!isset($config['model']) or !isset($config['name'])) die('参数错误！');
@@ -49,7 +148,7 @@ class GeneralView
 		if(empty($config['tpl.list'])) $config['tpl.list'] = LIBPATH.'/data/tpl/admin_entity_center_list.html';
 		if(isset($config['limit']) and $config['limit']===true) $this->swoole->tpl->assign('limit',true);
 		else $this->swoole->tpl->assign('limit',false);
-		
+
 		if(isset($_GET['add']))
 		{
 			if(!empty($_POST['name']))
@@ -57,7 +156,7 @@ class GeneralView
 				$data['name'] = trim($_POST['name']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
-				
+
 				#增加
 				if(empty($_POST['id']))
 				{
@@ -68,7 +167,7 @@ class GeneralView
 				else
 				{
 					$_model->set((int)$_POST['id'],$data);
-					Swoole_js::js_back('增加成功！');	
+					Swoole_js::js_back('增加成功！');
 				}
 			}
 			else
@@ -79,7 +178,7 @@ class GeneralView
 					$this->swoole->tpl->assign('data',$data);
 				}
 				$this->swoole->tpl->display($config['tpl.add']);
-			}			
+			}
 		}
 		else
 		{
@@ -87,10 +186,10 @@ class GeneralView
 			{
 				$del_id = intval($_GET['del']);
 				$_model->del($del_id);
-				Swoole_js::js_back('删除成功！');						
+				Swoole_js::js_back('删除成功！');
 			}
 			//Error::dbd();
-			$get['fid']  = empty($_GET['fid'])?0:(int)$_GET['fid'];						
+			$get['fid']  = empty($_GET['fid'])?0:(int)$_GET['fid'];
 			$get['page'] = empty($_GET['page'])?1:(int)$_GET['page'];
 			$get['pagesize'] = 15;
 			$pager = null;
@@ -100,7 +199,7 @@ class GeneralView
 			$this->swoole->tpl->display($config['tpl.list']);
 		}
 	}
-	
+
 	function handle_catelog_center($config)
 	{
 		if(!isset($config['model']) or !isset($config['name'])) die('参数错误！');
@@ -110,7 +209,7 @@ class GeneralView
 		if(empty($config['tpl.list'])) $config['tpl.list'] = LIBPATH.'/data/tpl/admin_catelog_center_list.html';
 		if(isset($config['limit']) and $config['limit']===true) $this->swoole->tpl->assign('limit',true);
 		else $this->swoole->tpl->assign('limit',false);
-		
+
 		if(isset($_GET['add']))
 		{
 			if(!empty($_POST['name']))
@@ -118,7 +217,7 @@ class GeneralView
 				$data['name'] = trim($_POST['name']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
-				
+
 				#增加
 				if(empty($_POST['id']))
 				{
@@ -129,7 +228,7 @@ class GeneralView
 				else
 				{
 					$_model->set((int)$_POST['id'],$data);
-					Swoole_js::js_back('增加成功！');	
+					Swoole_js::js_back('增加成功！');
 				}
 			}
 			else
@@ -140,7 +239,7 @@ class GeneralView
 					$this->swoole->tpl->assign('data',$data);
 				}
 				$this->swoole->tpl->display($config['tpl.add']);
-			}			
+			}
 		}
 		else
 		{
@@ -148,10 +247,10 @@ class GeneralView
 			{
 				$del_id = intval($_GET['del']);
 				$_model->del($del_id);
-				Swoole_js::js_back('删除成功！');						
+				Swoole_js::js_back('删除成功！');
 			}
 			//Error::dbd();
-			$get['fid']  = empty($_GET['fid'])?0:(int)$_GET['fid'];						
+			$get['fid']  = empty($_GET['fid'])?0:(int)$_GET['fid'];
 			$get['page'] = empty($_GET['page'])?1:(int)$_GET['page'];
 			$get['pagesize'] = 15;
 			$pager = null;
