@@ -46,8 +46,7 @@ class SiteDict
 		if(!self::$swoole->cache) Error::info('SiteDict Cache Error','Please load Cache!');
 		$filename = self::$data_dir.'/'.$dictname.'.php';
 		file_put_contents($filename,"<?php\n\${$dictname}=".var_export($dict,true).';');
-		$cache_key = 'sitedict_'.$dictname;
-		self::$swoole->cache->delete($cache_key);
+		self::delete($dictname);
 	}
 	/**
 	 * 删除字典内容
