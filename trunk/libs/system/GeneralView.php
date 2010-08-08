@@ -228,7 +228,7 @@ class GeneralView
 				else
 				{
 					$_model->set((int)$_POST['id'],$data);
-					Swoole_js::js_back('增加成功！');
+					Swoole_js::js_back('修改成功！');
 				}
 			}
 			else
