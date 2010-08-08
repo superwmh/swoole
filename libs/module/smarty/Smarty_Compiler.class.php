@@ -1189,7 +1189,7 @@ class Smarty_Compiler extends Smarty {
 		if($this->db=='')
 		{
 			global $php;
-			$php->load->get('db');
+			$php->autoload('db');
 			$this->db = $php->db;
 			$output.= "global \$php;\n";
 		}
@@ -1197,6 +1197,10 @@ class Smarty_Compiler extends Smarty {
 		$select = new SelectDB($this->db);
 		$select->call_by = 'smarty';
 //		if(!array_key_exists('limit',$attrs) and !array_key_exists('page',$attrs)) $attrs['limit']=10;
+
+        $attrs['select'] = str_replace('"','',$attrs['select']);
+        $attrs['select'] = str_replace("'",'',$attrs['select']);
+        
 		$select->put($attrs);
 
 		$output .= "\$sql=\"".$select->getsql()."\";\n";	

@@ -40,9 +40,10 @@ body {
 	  <td colspan="3" align="left">
 	  <span class="sub">
 	  {{if empty($smarty.get.fid)}}
-	  <input type="button" onclick="$goto('/admin/admin_school.php?action={{$act_name}}&add')" value="增加专业大类" class="btn">
+	  <input type="button" onclick="$goto('?action={{$act_name}}&add')" value="增加一级分类" class="btn">
 	  {{else}}
 	  <input type="button" onclick="history.back()" value="返回上级" class="btn">
+	  <input type="button" onclick="$goto('?action={{$act_name}}&add&fid={{$smarty.get.fid}}')" value="增加小分类" class="btn">
 	  {{/if}}
 	  </span>
 	  &nbsp;</td>
@@ -63,7 +64,7 @@ body {
 			href="op_product.php?op=down&id={{$list[ol].id}}&tid={{$list[ol.index_next].id|default:0}}"
 			target="op">下降</a></td>-->
 		<td>
-		<a href="/admin/admin_school.php?action={{$act_name}}&add&id={{$list[ol].id}}">编辑</a>
+		<a href="?action={{$act_name}}&add&id={{$list[ol].id}}">编辑</a>
 		<a href="?action={{$act_name}}&del={{$list[ol].id}}" onclick="return confirm('您确定删除吗？')">删除</a>&nbsp;&nbsp;&nbsp;		
 		{{if empty($smarty.get.fid)}}<a href="?action={{$act_name}}&amp;add&amp;fid={{$list[ol].id}}">增加子栏目</a>{{/if}}</td>
 	</tr>
