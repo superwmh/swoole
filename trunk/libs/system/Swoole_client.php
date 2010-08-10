@@ -20,6 +20,15 @@ class Swoole_client
 		exit;
 	}
 	/**
+	 * 发送下载声明
+	 * @return unknown_type
+	 */
+	static function download($mime,$filename)
+	{
+        header("Content-type: $mime");
+        header("Content-Disposition: attachment; filename=$filename");
+	}
+	/**
 	 * 获取客户端IP
 	 * @return unknown_type
 	 */

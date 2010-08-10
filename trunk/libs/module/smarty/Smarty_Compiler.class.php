@@ -500,12 +500,12 @@ class Smarty_Compiler extends Smarty {
                     	case 'section':
                     		$this->_push_tag('section');
                     		return $this->_compile_section_start($tag_args);
-                    		
+
                     	//htf
                     	case 'db':
                     		$this->_push_tag('db');
                     		return $this->_compile_db_start($tag_args);
-                    	                    	
+
                     	case 'cms':
                     		$this->_push_tag('cms');
                     		return $this->_compile_cms_start($tag_args);
@@ -522,12 +522,12 @@ class Smarty_Compiler extends Smarty {
                     		return "<?php endif; ?>";
                     		else
                     		return "<?php endfor; endif; ?>";
-                    	
+
                     	//htf
                     	case '/db':
                     		$_open_tag = $this->_pop_tag('db');
                     		return "<?php endfor; ?>";
-                    	
+
                     	case '/cms':
                     		$_open_tag = $this->_pop_tag('cms');
                     		return "<?php endforeach; ?>";
@@ -1164,7 +1164,7 @@ class Smarty_Compiler extends Smarty {
 
             return $output;
 	}
-	
+
 	//htf here
 	/**
 	 * Compile {db ...} tag
@@ -1179,12 +1179,12 @@ class Smarty_Compiler extends Smarty {
 		foreach($attrs as &$attr):
 			$attr = str_replace("'",'',$attr);
 		endforeach;
-		
+
 		if (empty($attrs['from'])) {
 			$this->_syntax_error("missing db_select table name", E_USER_ERROR, __FILE__, __LINE__);
 		}
 		if(!array_key_exists('_name',$attrs)) $attrs['_name']='records';
-		
+
 		$output = "<?php \n";
 		if($this->db=='')
 		{
@@ -1193,7 +1193,7 @@ class Smarty_Compiler extends Smarty {
 			$this->db = $php->db;
 			$output.= "global \$php;\n";
 		}
-		
+
 		$select = new SelectDB($this->db);
 		$select->call_by = 'smarty';
 //		if(!array_key_exists('limit',$attrs) and !array_key_exists('page',$attrs)) $attrs['limit']=10;
@@ -1203,19 +1203,19 @@ class Smarty_Compiler extends Smarty {
         
 		$select->put($attrs);
 
-		$output .= "\$sql=\"".$select->getsql()."\";\n";	
+		$output .= "\$sql=\"".$select->getsql()."\";\n";
 		$output .= "\$this->_tpl_vars['{$attrs['_name']}']=\$php->db->query(\$sql)->fetchall();\n";
 		$output .= '$'.$attrs['_name'].'_count = count($this->_tpl_vars["'.$attrs['_name'].'"]);'."\n";
-		
-		
+
+
 		$output .= 'for($'.$attrs['_name'].'_i=0;$'.$attrs['_name'].'_i<$'.$attrs['_name'].'_count;$'.$attrs['_name'].'_i++):'."\n";
-		
+
         $output .= '$this->_records["'.$attrs['_name'].'"]["index"]=$'.$attrs['_name'].'_i;'."\n";
         $output .= '$this->_records["'.$attrs['_name'].'"]["first"]= $'.$attrs['_name'].'_i==0;'."\n";
         $output .= '$this->_records["'.$attrs['_name'].'"]["last"]= $'.$attrs['_name'].'_i==($'.$attrs['_name'].'_count-1);'."\n";
-        
+
         $output .= '$this->_sections["'.$attrs['_name'].'"]["index"]=$'.$attrs['_name'].'_i;'."\n";
-        
+
         $output .= "?>\n";
         return $output;
 	}
@@ -1232,28 +1232,28 @@ class Smarty_Compiler extends Smarty {
 	function _compile_cms_start($tag_args)
 	{
 		$attrs = $this->_parse_attrs($tag_args);
-		
+
 		foreach($attrs as &$attr):
 			$attr = str_replace("'",'',$attr);
 		endforeach;
-		
+
 		if(empty($attrs['get'])) $attrs['get'] = 'category';
 		if(empty($attrs['name'])) $result_name = 'result';
 		else $result_name = $attrs['name'];
 		if(empty($attrs['key'])) $key_name = 'index';
 		else $key_name = $attrs['key'];
 		if(empty($attrs['func'])) $attrs['func'] = "get";
-		
+
 		if(!($this->swoole instanceof Swoole))
 		{
 			global $php;
 			$this->swoole = $php;
 		}
-		
+
 		$output = "<?php \n";
 		if($this->db=='')
 		{
-			$this->swoole->load->get('db');		
+			$this->swoole->load->get('db');
 			$this->db = $this->swoole->db;
 			$output.= "global \$php;\n";
 		}
@@ -1262,20 +1262,20 @@ class Smarty_Compiler extends Smarty {
 			$this->cms = $this->swoole->createModel('CMS');
 			$this->cms->smarty = $this;
 			$this->cms->swoole = $this->swoole;
-		}	
-		
+		}
+
 		$sql = $this->cms->get($attrs);
 
 		$output .= "\$$result_name = \$php->db->query(\"$sql\")->fetchall();\n";
 		$output .= "foreach(\$$result_name as \${$result_name}_key=>\${$result_name}_value): \n";
 		$output .= "\$this->_tpl_vars['{$result_name}'] = \${$result_name}_value;\n";
 		$output .= "\$this->_tpl_vars['{$key_name}'] = \${$result_name}_key;\n";
-        
+
         $output .= "?>\n";
         return $output;
 	}
 	//end htf
-	
+
 	/**
 	 * Compile {foreach ...} tag.
 	 *
@@ -2168,7 +2168,7 @@ class Smarty_Compiler extends Smarty {
 						$_var = $this->_parse_var_props(substr($indexes[0], 1));
 						$compiled_ref = "\$this->_sections[$_var]";
 						break;
-					
+
 					//htf here
 					case 'db':
 						array_shift($indexes);
