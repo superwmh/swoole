@@ -24,6 +24,9 @@ class Swoole extends ArrayObject
 
 	function __construct()
 	{
+		if(!defined('DEBUG')) define('DEBUG','off');
+		if(DEBUG=='off') error_reporting(0);
+		else error_reporting(E_ALL);
 		$this->__init();
 		parent::__construct();
 		$this->load = new SwooleLoader($this);
@@ -47,7 +50,7 @@ class Swoole extends ArrayObject
 		$this->env['runtime']['start'] = microtime(true);
 		$this->env['runtime']['mem'] = memory_get_usage();
 		#捕获错误信息
-		set_error_handler('swoole_error_handler');
+		if(DEBUG=='on') set_error_handler('swoole_error_handler');
 	}
 	/**
 	 * 自动导入模块

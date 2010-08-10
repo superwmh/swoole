@@ -5,6 +5,7 @@
  * @author 韩天峰
  */
 define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
+define("NL","<br />\n");
 /**
  * 产生类库的全局变量
  */
@@ -123,7 +124,7 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
 {
 	$level = 'Error';
 	$info = '';
-	
+
 	switch ($errno)
 	{
 		case E_USER_ERROR:
@@ -138,12 +139,12 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
 		default:
 			return;
 	}
-	
+
 	$title = 'Swoole '.$level;
 	$info .= '<b>File:</b> '.$errfile."<br />\n";
 	$info .= '<b>Line:</b> '.$errline."<br />\n";
 	$info .= '<b>Info:</b> '.$errstr."<br />\n";
-	$info .= '<b>Code:</b> '.$errno."<br />\n";	
+	$info .= '<b>Code:</b> '.$errno."<br />\n";
 	Error::info($title,$info);
 }
 /**
