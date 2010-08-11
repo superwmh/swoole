@@ -154,6 +154,7 @@ class GeneralView
 			if(!empty($_POST['name']))
 			{
 				$data['name'] = trim($_POST['name']);
+				$data['keywords'] = trim($_POST['keywords']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
 
@@ -217,7 +218,7 @@ class GeneralView
 				$data['name'] = trim($_POST['name']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
-
+                $data['keywords'] = trim($_POST['keywords']);
 				#增加
 				if(empty($_POST['id']))
 				{
