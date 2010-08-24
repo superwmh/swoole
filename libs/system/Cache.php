@@ -10,7 +10,7 @@ class Cache
 {
     public $uri;
     public $cache;
-    static $memcache_compress = null;
+    static $memcache_compress = 1;
 
     function __construct($cache_url)
     {

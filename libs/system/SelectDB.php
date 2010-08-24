@@ -415,7 +415,7 @@ class SelectDB
 		foreach($data as $key => $value)
 		{
 			self::quote($value);
-			$field=$field."$key,";
+			$field=$field."`$key`,";
 			$values=$values."'$value',";
 		}
 		$field=substr($field,0,-1);
@@ -429,10 +429,9 @@ class SelectDB
 		foreach($data as $key=>$value)
 		{
 			self::quote($value);
-			if($value!='' and $value{0}=='`') $update=$update."$key=$value,";
-			else $update=$update."$key='$value',";
+			if($value!='' and $value{0}=='`') $update=$update."`$key`=$value,";
+			else $update=$update."`$key`='$value',";
 		}
-
 		$update = substr($update,0,-1);
 		return $this->db->query("update {$this->table} set $update {$this->where} {$this->limit}");
 	}
