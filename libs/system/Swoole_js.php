@@ -5,19 +5,19 @@ class Swoole_js
 	static $head="<script language=\"javascript\">\n";
 	static $foot="</script>\n";
 
-	public function echojs($js)
+	static public function echojs($js)
 	{
 		echo self::$head;
 		echo $js;
 		echo self::$foot;
 	}
 
-	public function alert($str)
+	static public function alert($str)
 	{
 		self::echojs("alert(\"$str\");");
 	}
 
-	public function location($url)
+	static public function location($url)
 	{
 		self::echojs("location.href='$url';");
 	}
