@@ -72,21 +72,25 @@ class Validate
 	{
 		filter_var($var, FILTER_SANITIZE_STRING);
 	}
-	static function chinese()
+	static function chinese($str)
 	{
 		return preg_match("/^[\x{4e00}-\x{9fa5}]+$/u",$str);
 	}
-	static function realstring()
+	static function realstring($str)
 	{
 		return preg_match('/^[".chr(0xa1)."-".chr(0xff)." | a-z | 0-9 | A-Z| \@\.\_\]\[\!]+$/',$str);
 	}
-	static function chinese_gb()
+	static function chinese_gb($str)
 	{
 		return preg_match('/^[".chr(0xa1)."-".chr(0xff)." ]+$/',$str);
 	}
-	static function tel()
+	static function tel($str)
 	{
-
+        return preg_match('/\d{3})-(\d{8})([0-9\-]*)|(\d{4})-(\d{7})([0-9\-]*)$/',$str);
+	}
+	static function word($str)
+	{
+		return (bool)preg_match('/^([a-zA-Z_]*)$/',$str);
 	}
 	static function date($value)
 	{
@@ -135,6 +139,11 @@ class Validate
 	{
         return eregi("^[1-9][0-9][0-9][0-9]-[0-9]+-[0-9]+ [0-9]{1,2}(:[0-9]{1,2}){1,2}$", $value);
 	}
+	/**
+	 * 检查是否ASSIC码
+	 * @param $value
+	 * @return unknown_type
+	 */
 	static function assic($value) {
 		$len = strlen($value);
 		for ($i = 0; $i < $len; $i++) {
