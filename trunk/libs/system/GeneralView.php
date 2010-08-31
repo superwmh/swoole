@@ -65,25 +65,25 @@ class GeneralView
 			$this->swoole->tpl->display($config['tpl']);
 		}
 	}
-    function handle_entity_op($config)
-    {
-        if(!isset($config['model'])) die('参数错误！');
-        $_model = createModel($config['model']);
+	function handle_entity_op($config)
+	{
+		if(!isset($config['model'])) die('参数错误！');
+		$_model = createModel($config['model']);
 
-    	if($_POST['job']=='push')
-        {
-            $digg = (int)$_POST['push'];
-            $set['digest'] = $digg;
-            $get['in'] = array('id',implode(',',$_POST['ids']));
-            $_model->sets($set,$get);
-            Swoole_js::js_parent_reload('推荐成功');
-        }
-    }
+		if($_POST['job']=='push')
+		{
+			$digg = (int)$_POST['push'];
+			$set['digest'] = $digg;
+			$get['in'] = array('id',implode(',',$_POST['ids']));
+			$_model->sets($set,$get);
+			Swoole_js::js_parent_reload('推荐成功');
+		}
+	}
 	function handle_entity_add($config)
 	{
 		if(!isset($config['model'])) die('参数错误！');
 		if(empty($config['tpl.add'])) $config['tpl.add'] = LIBPATH.'/data/tpl/admin_entity_add.html';
-        if(empty($config['tpl.modify'])) $config['tpl.modify'] = LIBPATH.'/data/tpl/admin_entity_modify.html';
+		if(empty($config['tpl.modify'])) $config['tpl.modify'] = LIBPATH.'/data/tpl/admin_entity_modify.html';
 
 		$_model = createModel($config['model']);
 
@@ -261,10 +261,10 @@ class GeneralView
 			$this->swoole->tpl->display($config['tpl.list']);
 		}
 	}
-    /**
-     * 列表删除
-     * @return unknown_type
-     */
+	/**
+	 * 列表删除
+	 * @return unknown_type
+	 */
 	function list_del()
 	{
 
@@ -277,21 +277,49 @@ class GeneralView
 	{
 
 	}
-    /**
-     * 增加
-     * @return unknown_type
-     */
+	/**
+	 * 增加
+	 * @return unknown_type
+	 */
 	function add()
 	{
 
 	}
-    /**
-     * 批量操作
-     * @return unknown_type
-     */
+	/**
+	 * 批量操作
+	 * @return unknown_type
+	 */
 	function lot()
 	{
 
+	}
+
+	function handle_attachment($config)
+	{
+		if(!isset($config['entity']) or !isset($config['attach']) or !isset($config['entity_id'])) die('参数错误！');
+		$_mm = createModel($config['entity']);
+		$_ma = createModel($config['attach']);
+
+		$this->swoole->tpl->assign('config',$config);
+		if($_POST)
+		{
+			$_ma->put($_POST);
+		}
+		if(isset($_GET['del']))
+		{
+			$dels['id'] = (int) $_GET['del'];
+			$dels['aid'] = $config['entity_id'];
+			$dels['limit'] = 1;
+			$_ma->dels($dels);
+		}
+		$get['aid'] = $config['entity_id'];
+		$get['pagesize'] = 16;
+		$get['page'] = empty($get['page'])?1:(int)$get['page'];
+		$list = $_ma->gets($get,$pager);
+		$this->swoole->tpl->assign('list',$list);
+		$this->swoole->tpl->assign('pager', array('total'=>$pager->total,'render'=>$pager->render()));
+		if(empty($config['tpl.list'])) $config['tpl.list'] = LIBPATH.'/data/tpl/admin_attachment.html';
+		$this->swoole->tpl->display($config['tpl.list']);
 	}
 }
 ?>
