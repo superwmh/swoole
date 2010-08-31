@@ -468,4 +468,11 @@ class Image
 		ImagePng($aimg);                      //生成png格式
 		ImageDestroy($aimg);
 	}
+	static function thumb_name($file_name,$insert='thumb')
+	{
+	    $dirname = dirname($file_name);
+		$file_name = basename($file_name);
+		$extend =explode("." , $file_name);
+		return $dirname.'/'.$extend[0].'_'.$insert.'.'.$extend[count($extend)-1];
+	}
 }
