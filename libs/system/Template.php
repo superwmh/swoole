@@ -12,13 +12,12 @@ class Template extends Smarty
 {
 	public $if_pagecache = false;
 	public $cache_life = 3600;
-	
+
 	function __construct()
 	{
-		//$this->templates_dir = WEBPATH."/templates";
 		$this->compile_dir = WEBPATH."/cache/templates_c";
 		$this->config_dir = WEBPATH."/configs";
-		$this->cache_dir = WEBPATH."/cache/tmp";
+		$this->cache_dir = WEBPATH."/cache/pagecache";
 		$this->left_delimiter = "{{";
 		$this->right_delimiter = "}}";
 	}
@@ -26,9 +25,14 @@ class Template extends Smarty
 	{
 		$this->templates_dir = WEBPATH."/$dir";
 	}
+	function set_cache($time=3600)
+	{
+		$tpl->caching = 1;
+		$tpl->cache_lifetime = $time;
+	}
 	function pagecache()
 	{
-		$pagecache = new Swoole_pageCache($this->cache_life);		
+		$pagecache = new Swoole_pageCache($this->cache_life);
 		if($pagecache->isCached()) $pagecache->load();
 		else return false;
 		return true;
@@ -48,7 +52,7 @@ class Template extends Smarty
 		}
 		else parent::display($template,$cache_id,$complile_id);
 	}
-	
+
 	/**
 	 * 生成静态页面
 	 * @param $template
@@ -67,7 +71,7 @@ class Template extends Smarty
 		file_put_contents($path.'/'.$filename,$content);
 		return true;
 	}
-	
+
 	function push($data)
 	{
 		foreach($data as $key=>$value) $this->assign($key,$value);
