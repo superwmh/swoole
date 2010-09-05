@@ -154,6 +154,7 @@ class GeneralView
 			if(!empty($_POST['name']))
 			{
 				$data['name'] = trim($_POST['name']);
+				$data['pagename'] = trim($_POST['pagename']);
 				$data['keywords'] = trim($_POST['keywords']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
@@ -161,6 +162,7 @@ class GeneralView
 				#增加
 				if(empty($_POST['id']))
 				{
+					unset($_POST['id']);
 					$_model->put($data);
 					Swoole_js::js_back('增加成功！');
 				}
@@ -216,6 +218,7 @@ class GeneralView
 			if(!empty($_POST['name']))
 			{
 				$data['name'] = trim($_POST['name']);
+				$data['pagename'] = trim($_POST['pagename']);
 				$data['fid'] = intval($_POST['fid']);
 				$data['intro'] = trim($_POST['intro']);
                 $data['keywords'] = trim($_POST['keywords']);
