@@ -19,13 +19,8 @@ function smarty_function_getall($params, &$smarty)
 		if(array_key_exists('page',$params))
 		{
 			$select->paging();
-			$start=10*intval($params['page']/10);
-			if($select->pages>10 and $params['page']<$start) $smarty->assign("more",1);
-			$smarty->assign("start",$start);
-			$smarty->assign("end",$select->pages-$start);
-			$smarty->assign("pages",$select->pages);
-			$smarty->assign("pagesize",$select->page_size);
-			$smarty->assign("num",$select->num);
+            $pager = $select->pager;            
+			$smarty->assign("pager",array('total'=>$pager->total,'render'=>$pager->render()));
 		}
 		$records = $select->getall();
 		$smarty->_tpl_vars[$record_name] = $records;
