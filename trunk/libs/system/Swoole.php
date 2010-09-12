@@ -98,6 +98,9 @@ class Swoole extends ArrayObject
 			header("HTTP/1.1 404 Not Found");
 			Error::info('MVC Error!'.$this->view,"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
 		}
+		if(empty($mvc['param'])) $param = array();
+		else $param = $mvc['param'];
+		
 		if($controller->is_ajax)
 		{
 			header('Cache-Control: no-cache, must-revalidate');
@@ -111,7 +114,7 @@ class Swoole extends ArrayObject
 			}
 			echo json_encode($data);
 		}
-		else echo call_user_func(array($controller,$mvc['view']));
+		else echo call_user_func(array($controller,$mvc['view']),$param);
 	}
 
 	function runAjax()

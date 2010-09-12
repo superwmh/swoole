@@ -7,6 +7,11 @@
  */
 class Swoole_tools
 {
+	static public $url_key_join = '=';
+	static public $url_param_join = '&';
+	static public $url_prefix = '';
+	static public $url_add_end = '';
+	
 	static function howLongAgo($datetime)
 	{
 		$timestamp = strtotime($datetime);
@@ -54,10 +59,37 @@ class Swoole_tools
         }
         foreach($urls as $k=>$v)
         {
-            $url[] = $k.'='.urlencode($v);
+            if(!empty($k)) $url[] = $k.self::$url_key_join.urlencode($v);
         }
-        return $_SERVER['PHP_SELF'].'?'.implode('&',$url);
+        if(self::$url_prefix=='') $prefix = $_SERVER['PHP_SELF'].'?';
+        else $prefix = self::$url_prefix;
+        
+        return $prefix.implode(self::$url_param_join,$url).self::$url_add_end;
 	}
+	
+	static function url_parse_into($url,&$request)
+	{
+		$url = str_replace(self::$url_add_end,'',$url);
+		if(self::$url_key_join==self::$url_param_join)
+		{
+			$urls = explode(self::$url_param_join,$url);
+			$c = intval(count($urls)/2);
+			for($i=0;$i<$c;$i++)
+			{
+				$request[$urls[$i*2]] = $urls[$i*2+1]; 
+			}
+		}
+		else
+		{
+			$urls = explode(self::$url_param_join,$url);
+			foreach($urls as $u)
+			{
+				$us = explode(self::$url_key_join,$u);
+				$request[$us[0]] = $us[1];
+			}
+		}
+	}
+	
 	static function array_fullness($array)
 	{
 		$nulls = 0;
