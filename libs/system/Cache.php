@@ -76,6 +76,11 @@ class Cache
         $this->cache->delete($key);
     }
 
+    function save()
+    {
+    	if($this->uri['scheme']=='file') $this->cache->save();
+    }
+
     function __call($method,$params)
     {
         return call_user_func_array(array($this->cache,$method),$params);

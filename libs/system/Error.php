@@ -136,7 +136,9 @@ HTMLS;
 		if(!is_array($array)) self::warn('Error Debug!','Not is a array!');
 		foreach($array as $k=>$v)
 		{
-			echo $k,': ',$v,"<br />";
+			echo $k,': ';
+			var_dump($v);
+			echo BL;
 		}
 	}
 	static function pecho($str)

@@ -11,6 +11,7 @@ class Swoole extends ArrayObject
 	public $db;
 	public $tpl;
 	public $cache;
+	public $event;
 	public $config;
 
 	static $default_cache_life=600;

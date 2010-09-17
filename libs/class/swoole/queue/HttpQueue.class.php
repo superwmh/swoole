@@ -13,13 +13,11 @@ class HttpQueue implements IQueue
 
 	function __construct($config)
 	{
-		if(!empty($config['host'])) $this->host = $config['host'];
-		if(!empty($config['port'])) $this->port = $config['port'];
-		if(!empty($config['debug'])) $this->debug = $config['debug'];
+		if(!empty($config['server_url'])) $this->host = $config['server_url'];
 		if(!empty($config['name'])) $this->name = $config['name'];
 		if(!empty($config['charset'])) $this->charset = $config['charset'];
 
-		$this->base = "http://{$this->host}:{$this->port}/?charset={$this->charset}&name={$this->name}";
+		$this->base = "{$this->server_url}/?charset={$this->charset}&name={$this->name}";
 
 		if(extension_loaded('curl'))
 		{
