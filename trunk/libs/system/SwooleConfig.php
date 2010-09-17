@@ -6,25 +6,31 @@
  * @subpackage base
  *
  */
-class SwooleConfig implements ArrayAccess
+class SwooleConfig
 {
 	private $_data;
-	
+	private $_file;
+
+	function __construct($config_file)
+	{
+	  // $this->_file = $config_file;
+	   //require $config_file;
+	   //$this->_data = $config;
+	}
+
 	function __get($key)
 	{
 		return $this->offsetGet($key);
 	}
-	function offsetSet($key,$value){}
-	function offsetUnset($key){}
-	function offsetExists($key){}
-	function offsetGet($key)
+
+	function __set($key,$value)
 	{
-		if(!isset($this->_data[$key]))
-		{
-			SiteDict::$data_dir = APPSPATH.'/configs';
-			$this->_data[$key] = SiteDict::get('config_'.$key);
-		}		
-		return $this->_data[$key];
+		$this->_data[$key] = $value;
+	}
+
+	function save()
+	{
+
 	}
 }
 ?>

@@ -18,10 +18,10 @@ class CacheQueue implements IQueue
 		global $php;
 		if(!empty($config['name'])) $this->name = $config['name'];
 		if(!empty($config['prefix'])) $this->prefix = $config['prefix'];
-		if(empty($config['cache_url']))	$this->cache = $php->cache;
+		if(empty($config['server_url'])) $this->cache = $php->cache;
 		else
 		{
-			$this->cache = new Cache($config['cache_url']);
+			$this->cache = new Cache($config['server_url']);
 		}
 		$this->init();
 	}
@@ -40,7 +40,9 @@ class CacheQueue implements IQueue
 	function put($data)
 	{
 		$this->cache->set($this->cache_prefix.$this->end_id,$data,self::$cache_lifetime);
-		$this->cache->set($this->cache_prefix.'end',$this->end_id+1,self::$cache_lifetime);
+		$this->end_id += 1;
+		$this->cache->set($this->cache_prefix.'end',$this->end_id,self::$cache_lifetime);
+		$this->cache->save();
 		return true;
 	}
 
@@ -51,7 +53,9 @@ class CacheQueue implements IQueue
 		else
 		{
 			$this->cache->delete($this->cache_prefix.$this->start_id);
-			$this->cache->set($this->cache_prefix.'start',$this->start_id+1,self::$cache_lifetime);
+			$this->start_id += 1;
+			$this->cache->set($this->cache_prefix.'start',$this->start_id,self::$cache_lifetime);
+			$this->cache->save();
             return $data;
 		}
 	}
