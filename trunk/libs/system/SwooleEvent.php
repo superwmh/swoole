@@ -59,8 +59,15 @@ class SwooleEvent
 		    $event = $this->_queue->get();
 			if($event)
 			{
-				call_user_func_array($event[0],array_slice($event,1));
-				if($log_file) $filelog->info('Raise a event,type '.$event[0]);
+				if(!isset($this->_handles[$params[0]]) or !function_exists($params[0]))
+	            {
+	                if(empty($handle)) Error::info('SwooleEvent Error','Event handle not found!');
+	            }
+	            else
+	            {
+	            	call_user_func_array($event[0],array_slice($event,1));
+                    if($log_file) $filelog->info('Raise a event,type '.$event[0]);
+	            }
 			}
 		    else
 		    {
