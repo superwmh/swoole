@@ -66,9 +66,10 @@ class Swoole extends ArrayObject
 	 * 加载config数据
 	 * @return unknown_type
 	 */
-	function loadConfig()
+	function loadConfig($static = true)
 	{
-		$this->config = new SwooleConfig;
+		if($static) $this->config = new ArrayObject;
+		else $this->config = new SwooleConfig;
 	}
 	/**
 	 * 运行MVC处理模型

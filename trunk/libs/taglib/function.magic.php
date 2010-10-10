@@ -6,9 +6,7 @@
  */
 function smarty_function_magic($params, &$smarty)
 {
-	global $php;
-	$magic = new Magic($php);
-	$func = $params['func'];
-	return $magic->$func($params);
+	if(empty($params['func'])) exit(new Error(509));
+	return call_user_func($params['func'],$params);
 }
 ?>

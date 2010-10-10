@@ -1253,7 +1253,7 @@ class Smarty_Compiler extends Smarty {
 		$output = "<?php \n";
 		if($this->db=='')
 		{
-			$this->swoole->load->get('db');
+			$this->swoole->autoload('db');
 			$this->db = $this->swoole->db;
 			$output.= "global \$php;\n";
 		}
