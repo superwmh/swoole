@@ -11,6 +11,8 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 
 	$mime=$_FILES[$name]['type'];
 	$filetype= file_gettype($mime);
+	if($filetype=='bin') $filetype = file_ext($_FILES[$name]['name']);
+
 	if($filetype==false)
 	{
 		echo "File Type Error!";
@@ -19,7 +21,6 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 	elseif(!empty($access))
 	{
 		$access_type = explode(',',$access);
-		if($filetype=='bin') $filetype = file_ext($_FILES[$name]['name']);
 		if(!in_array($filetype,$access_type))
 		{
 			echo "File Type '$filetype' not allow upload!";
@@ -39,29 +40,11 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 		return false;
 	}
 }
-
 function file_gettype($mime)
 {
-	$file_types  = array(
-		'image/pjpeg' => 'jpg',
-		'image/jpeg'  => 'jpg',
-		'image/jpeg'  => 'jpg',
-		'image/gif'   => 'gif',
-		'image/X-PNG' => 'png',
-		'image/PNG'   => 'png',
-		'image/png'   => 'png',
-		'image/x-png' => 'png',
-		'image/JPG'   => 'jpg',
-		'image/GIF'   => 'gif',
-		'image/bmp'   => 'bmp',
-		'image/bmp'   => 'BMP',
-		'application/x-rar-compressed' => 'rar',
-		'application/octet-stream' => 'bin',//flash上传的格式，二进制
-		'application/zip' => 'zip',
-		'application/x-zip-compressed' => 'zip',
-		'application/msword' => 'doc');
-	if(!array_key_exists($mime,$file_types)) return false;
-	else return $file_types[$mime];
+    require LIBPATH.'/data/mimes.php';
+	if(isset($mimes[$mime])) return $mimes[$mime];
+	else return false;
 }
 function file_ext($file)
 {

@@ -1,0 +1,20 @@
+<?php
+$mimes  = array(
+        'image/pjpeg' => 'jpg',
+        'image/jpeg'  => 'jpg',
+        'image/jpeg'  => 'jpg',
+        'image/gif'   => 'gif',
+        'image/X-PNG' => 'png',
+        'image/PNG'   => 'png',
+        'image/png'   => 'png',
+        'image/x-png' => 'png',
+        'image/JPG'   => 'jpg',
+        'image/GIF'   => 'gif',
+        'image/bmp'   => 'bmp',
+        'image/bmp'   => 'BMP',
+        'application/x-rar-compressed' => 'rar',
+        'application/x-gzip' => 'gz',
+        'application/octet-stream' => 'bin',//flash上传的格式，二进制
+        'application/zip' => 'zip',
+        'application/x-zip-compressed' => 'zip',
+        'application/msword' => 'doc');
