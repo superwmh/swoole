@@ -2,7 +2,7 @@
 function file_upload($name,$up_dir=null,$access='',$filename=null)
 {
 	if(empty($up_dir)) $up_dir = UPLOAD_DIR."/".date('Y').date("m")."/".date("d");
-	
+
 	$path=WEBPATH.$up_dir;
 	if(!file_exists($path))
 	{
@@ -10,8 +10,6 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 	}
 
 	$mime=$_FILES[$name]['type'];
-	
-		
 	$filetype= file_gettype($mime);
 	if($filetype==false)
 	{
@@ -21,9 +19,9 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 	elseif(!empty($access))
 	{
 		$access_type = explode(',',$access);
-		if($filetype=='bin') $filetype = $access_type[0];
+		if($filetype=='bin') $filetype = file_ext($_FILES[$name]['name']);
 		if(!in_array($filetype,$access_type))
-		{	
+		{
 			echo "File Type '$filetype' not allow upload!";
 			return false;
 		}
@@ -45,14 +43,14 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 function file_gettype($mime)
 {
 	$file_types  = array(
-		'image/pjpeg' => 'jpg', 
+		'image/pjpeg' => 'jpg',
 		'image/jpeg'  => 'jpg',
 		'image/jpeg'  => 'jpg',
 		'image/gif'   => 'gif',
 		'image/X-PNG' => 'png',
-		'image/PNG'   => 'png', 
-		'image/png'   => 'png', 
-		'image/x-png' => 'png', 
+		'image/PNG'   => 'png',
+		'image/png'   => 'png',
+		'image/x-png' => 'png',
 		'image/JPG'   => 'jpg',
 		'image/GIF'   => 'gif',
 		'image/bmp'   => 'bmp',
@@ -66,7 +64,7 @@ function file_gettype($mime)
 	else return $file_types[$mime];
 }
 function file_ext($file)
-{ 
-	return strtolower(trim(substr(strrchr($file, '.'), 1))); 
-} 
+{
+	return strtolower(trim(substr(strrchr($file, '.'), 1)));
+}
 ?>
