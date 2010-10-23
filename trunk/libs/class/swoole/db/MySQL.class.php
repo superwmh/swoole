@@ -22,9 +22,8 @@ class MySQL implements IDatabase
             $this->conn = mysql_pconnect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
         else
             $this->conn = mysql_connect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
-
-        mysql_select_db($db_config['dbname'],$this->conn);
-        if($db_config['ifsetname']) mysql_query('set names '.$db_config['charset'],$this->conn);
+        mysql_select_db($db_config['dbname'],$this->conn) or die(mysql_error($this->conn));
+        if($db_config['ifsetname']) mysql_query('set names '.$db_config['charset'],$this->conn) or die(mysql_error($this->conn));
 	}
 	/**
 	 * 执行一个SQL语句
@@ -32,8 +31,8 @@ class MySQL implements IDatabase
 	 */
 	function query($sql)
 	{
-		mysql_real_escape_string($sql,$this->conn);
-		$res = mysql_query($sql) or die(mysql_error($this->conn));
+		mysql_real_escape_string($sql,$this->conn) or die(mysql_error($this->conn));
+		$res = mysql_query($sql,$this->conn) or die(mysql_error($this->conn));
 		return new MySQLRecord($res);
 	}
 	/**

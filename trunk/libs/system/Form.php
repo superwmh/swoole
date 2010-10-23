@@ -95,11 +95,11 @@ class Form
 			if($self) $key=$value;
 			if ($key == $default)
 			{
-				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			else
 			{
-				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		return $htmlStr;
