@@ -17,4 +17,3 @@ function smarty_function_askey($params)
 	}
 	return $echo;
 }
-?>
