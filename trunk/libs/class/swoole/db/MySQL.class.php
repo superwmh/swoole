@@ -41,7 +41,7 @@ class MySQL implements IDatabase
 	 */
 	function Insert_ID()
 	{
-		return mysql_insert_id($this->conn);
+		return mysql_insert_id($this->conn) or die(mysql_error($this->conn));
 	}
 	function close()
 	{
