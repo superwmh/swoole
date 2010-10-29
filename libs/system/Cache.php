@@ -81,6 +81,19 @@ class Cache
     	if($this->uri['scheme']=='file') $this->cache->save();
     }
 
+    /*function lock($lock_key)
+    {
+    	$lock = 'l';
+    	while($lock=='l')
+    	{
+    		$lock = $this->get($lock_key);
+    		if($lock==)
+    	}
+    	return false;
+    }*/
+
+   // function
+
     function __call($method,$params)
     {
         return call_user_func_array(array($this->cache,$method),$params);

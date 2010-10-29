@@ -12,6 +12,7 @@ class CacheQueue implements IQueue
 	public $prefix = 'queue_';
 	private $cache_prefix;
 	static $cache_lifetime = 0;
+	static $mutex_loop = 100;
 
 	function __construct($config)
 	{
@@ -44,6 +45,16 @@ class CacheQueue implements IQueue
 		$this->cache->set($this->cache_prefix.'end',$this->end_id,self::$cache_lifetime);
 		$this->cache->save();
 		return true;
+	}
+
+	function getMutex($key)
+	{
+        while($mutext = $this->cache)
+	}
+
+	function releaseMutex()
+	{
+
 	}
 
 	function get()
