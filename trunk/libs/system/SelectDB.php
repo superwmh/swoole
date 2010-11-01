@@ -260,7 +260,7 @@ class SelectDB
 		if(!preg_match(self::$allow_regx,$sql_sub))
 		{
 			echo $sql_sub;
-			if(self::$error_call==='') die('Access deny!');
+			if(self::$error_call==='') die('sql block is not safe!');
 			else call_user_func(self::$error_call);
 		}
 	}
