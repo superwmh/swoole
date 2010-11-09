@@ -14,7 +14,7 @@ class SiteDict
 	static $cache_life = 600;
 	static $data_dir = DICTPATH;
 	public $table = 'site_dict';
-	
+
 	function __construct()
 	{
 		#import('app.SwooleDict');
@@ -45,8 +45,12 @@ class SiteDict
 	{
 		if(!self::$swoole->cache) Error::info('SiteDict Cache Error','Please load Cache!');
 		$filename = self::$data_dir.'/'.$dictname.'.php';
-		file_put_contents($filename,"<?php\n\${$dictname}=".var_export($dict,true).';');
+		self::write($dictname,$dict,$filename);
 		self::delete($dictname);
+	}
+	static function write($dictname,&$dict,$filename)
+	{
+	    file_put_contents($filename,"<?php\n\${$dictname}=".var_export($dict,true).';');
 	}
 	/**
 	 * 删除字典内容
