@@ -137,8 +137,6 @@ class Swoole extends ArrayObject
             echo 'Error: Function not found!';
             exit;
         }
-        $data = call_user_func($method);
-
         header('Cache-Control: no-cache, must-revalidate');
         header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
         header('Content-type: application/json');
