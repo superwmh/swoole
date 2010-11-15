@@ -27,6 +27,16 @@ class Swoole_js
 		if(!is_numeric($go)) $go=-1;
 		self::echojs("alert('$msg');\nhistory.go($go);\n");
 	}
+    static function parent_js_back($msg,$go=-1)
+	{
+		if(!is_numeric($go)) $go=-1;
+		self::echojs("alert('$msg');\nparent.history.go($go);\n");
+	}
+    static function parent_js_goto($msg,$url)
+	{
+		echo "<script language='javascript'>alert(\"$msg\");";
+		echo "window.parent.location.href=\"$url\";</script>";
+	}
 	static function js_alert($msg)
 	{
 		echo "<script language='javascript'>alert('$msg');</script>";
