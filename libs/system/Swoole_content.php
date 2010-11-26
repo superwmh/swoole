@@ -57,31 +57,15 @@ class Swoole_content
 	 * @param $data
 	 * @return unknown_type
 	 */
-	function image_local($data)
+	function image_local(&$content,$dir='')
 	{
-		$option="upfiles/images";
-		$up_path="/$option/".date('Y')."/".date("m")."/".date("d");
-		$path=WEBPATH."/".$up_path;
-
-		if(!file_exists(WEBPATH."/$option/"))
+	    if(empty($dir)) $dir = UPLOAD_DIR.'/extend/'.date('Ym')."/".date("d");
+		if(!file_exists($dir))
 		{
-			mkdir(WEBPATH."/$option/",0777);
-		}
-		if(!file_exists($path))
-		{
-			//echo "建立目录".$path;
-			if(!file_exists(WEBPATH."/$option/".date('Y')))
-			{
-				mkdir(WEBPATH."/$option/".date('Y'),0777);
-			}
-			if(!file_exists(WEBPATH."/$option/".date('Y')."/".date('m')))
-			{
-				mkdir(WEBPATH."/$option/".date('Y').'/'.date('m'),0777);
-			}
-			mkdir($path,0777);
+			mkdir(WEBPATH.$dir,0777,true);
 		}
 		$chunklist = array ();
-		$chunklist = explode("\n",$data);
+		$chunklist = explode("\n",$content);
 		$links = array ();
 		$regs = array ();
 		$source = array();
@@ -107,11 +91,10 @@ class Swoole_content
 			if(!strstr(WEBROOT,$uri) and $uri{0}!='/')
 			{
 				$filename=substr(time(),6,-1).rand(100000,999999).".jpg";
-				copy($uri,$path.'/'.$filename);
-				$data=str_replace($uri,WEBROOT.$up_path."/".$filename,$data);
+				copy($uri,WEBPATH.$dir.'/'.$filename);
+				$content = str_replace($uri,WEBROOT.$dir."/".$filename,$content);
 			}
 		}
-		return $data;
 	}
 
 	/**
