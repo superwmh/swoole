@@ -29,13 +29,12 @@ function isEmail(strValue) {
 function isPhone(strValue){
 	return (/^\d{3}-?\d{8}|\d{4}-?\d{7}$/).test(trim(strValue));	
 }
-function isTel(str) {
-	var reg = /^\d{7,8}$/;
-	var patt=new RegExp(reg);
-	return patt.test(str);
+function isTel(str) {	
+	return (/^1[3|4|5|8][0-9]\d{4,8}$/).test(trim(strValue));
 }
 /**
  * 获取单选框的值
+ * 
  * @param radioName
  * @return
  */
@@ -105,14 +104,19 @@ function chkCheckBoxChs(objNam, txt) {
 }
 
 function isEnglish(strValue) {
-	var reg = /^[A-Za-z0-9]*$/gi;
-	return reg.test(trim(strValue));
+	var reg = /[A-Za-z0-9_]{6,20}/i;
+	var patt = new RegExp(reg);
+	return patt.test(strValue);
 }
 function isNickname(strValue) {
 	var reg = /^[a-z-_\u4e00-\u9fa5]*$/gi;
 	return reg.test(trim(strValue));
 }
-function ispassword(strValue) {
+function isRealname(strValue){
+	var reg = /^[\u4e00-\u9fa5]+$/i;
+	return reg.test(trim(strValue));
+}
+function isPassword(strValue) {
 	var reg = strValue.length;
 	if(reg >= 6 && reg <= 12 ){
 	   return true;
@@ -120,110 +124,135 @@ function ispassword(strValue) {
 		return false;
 	}
 }
-function isarea(strValue) {
+function isArea(strValue) {
 	var reg = /^0\d{2,3}$/;
 	var patt = new RegExp(reg);
 	return patt.test(strValue);
 }
 
-//自定义过滤器
+function isNumber(strValue){
+	var reg = /^\d+$/;
+	return reg.test(trim(strValue));
+}
+function error_handle(o,msg){
+	o.focus();
+	alert(msg);
+}
+function right_handle(){}
+function split_param(attr){
+	return attr.split('|');
+}
+
+// 自定义过滤器
 var custom_filter = new Array;
 
-function checkform(event, oform) {
-	event = event ? event : window.event;
-	if (oform == undefined || oform == null)
-		var oform = event.srcElement ? event.srcElement : event.target;
-	var elms = oform.elements;
-	
+function check_input(input){
 	var qs;
 	var attr;
 	var other_obj;
 	var value;
-
-	for ( var i = 0; i < elms.length; i++) {
-
-		// 为空的情况 -empty
-		if (elms[i].getAttribute('empty') && elms[i].value == '') {
-			elms[i].focus();
-			alert(elms[i].getAttribute('empty'));
+	
+	// 为空的情况 -empty
+	if (input.getAttribute('empty') && input.value == '') {
+		error_handle(input,input.getAttribute('empty'));
+		return false;
+	}
+	
+	// 检测字符串最大长度
+	if (input.getAttribute('maxlen')) {
+		qs = split_param(input.getAttribute('maxlen'));
+		if(input.value.length > qs[0]){
+			error_handle(input,qs[1]);
 			return false;
 		}
-		
-		// 检查数值相等的情况 -equal
-		if (elms[i].getAttribute('equal')) {
-			attr = elms[i].getAttribute('equal');
-			qs = attr.split('|');
-			if (elms[i].value != qs[0]) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			}
+	}
+	
+	// 检测字符串最小长度
+	if (input.getAttribute('minlen')) {
+		qs = split_param(input.getAttribute('minlen'));
+		if(input.value.length < qs[0]){
+			error_handle(input,qs[1]);
+			return false;
 		}
-		
-		// 检查数值不相等的情况 -noequal
-		if (elms[i].getAttribute('noequal')) {
-			attr = elms[i].getAttribute('noequal');
-			qs = attr.split('|');
-			if (elms[i].value == qs[0]) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			}
+	}
+	
+	// 检查数值相等的情况 -equal
+	if (input.getAttribute('equal')) {
+		attr = input.getAttribute('equal');
+		qs = attr.split('|');
+		if (input.value != qs[0]) {
+			error_handle(input,qs[1]);
+			return false;
 		}
-		
-		// 检查对象相等的情况 -equalo
-		if (elms[i].getAttribute('equalo')) {
-			attr = elms[i].getAttribute('equalo');
-			qs = attr.split('|');
-			other_obj = document.getElementById(qs[0]);
-			if (elms[i].value != other_obj.value) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			}
+	}
+	
+	// 检查数值不相等的情况 -noequal
+	if (input.getAttribute('noequal')) {
+		attr = input.getAttribute('noequal');
+		qs = attr.split('|');
+		if (input.value == qs[0]) {
+			error_handle(input,qs[1]);
+			return false;
 		}
+	}
+	
+	// 检查对象相等的情况 -equalo
+	if (input.getAttribute('equalo')) {
+		attr = input.getAttribute('equalo');
+		qs = attr.split('|');
+		other_obj = document.getElementById(qs[0]);
+		if (input.value != other_obj.value) {
+			error_handle(input,qs[1]);
+			return false;
+		}
+	}
 
-		// 检查值的类型 -ctype
-		if (elms[i].getAttribute('ctype')) {
-			attr = elms[i].getAttribute('ctype');
-			qs = attr.split('|');
-			if (qs[0] == 'email' && !isEmail(elms[i].value)) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			} else if (qs[0] == 'Tel' && !isTel(elms[i].value)) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			} else if (qs[0] == 'nickname' && !isNickname(elms[i].value)) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			} else if (qs[0] == 'password' && !ispassword(elms[i].value)) {
-				elms[i].focus();
-				alert(qs[1]);
-				return false;
-			} else if (qs[0] == 'area' && !isarea(elms[i].value)){
-				elms[i].focus();
-			    alert(qs[1]);
-			    return false;
-			}
-		}
+	// 检查值的类型 -ctype
+	if (input.getAttribute('ctype')) {
+		attr = input.getAttribute('ctype');
+		qs = attr.split('|');
+		var func = 'is'+ qs[0].substring(0,1).toUpperCase()+qs[0].substring(1).toLowerCase();
 		
-		for(var j=0;j<custom_filter.length;j++){
-			if(elms[i].id==custom_filter[j].name || elms[i].name==custom_filter[j].name){
-				if(custom_filter[j].callback(elms[i])==false){
-					elms[i].focus();
-					alert(custom_filter[j].msg);
-					return false;
-				}
+		if (!eval(func+'(input.value)')) {
+			error_handle(input,qs[1]);
+			return false;
+		}
+	}
+	
+	// 检查异步请求的情况Ajax
+	if (input.getAttribute('ajax')) {
+		call = input.getAttribute('ajax');
+		if (call(input)==false) {
+			error_handle(input,qs[1]);
+			return false;
+		}
+	}
+	
+	for(var j=0;j<custom_filter.length;j++){
+		if(input.id==custom_filter[j].name || input.name==custom_filter[j].name){
+			if(custom_filter[j].callback(input)==false){
+				error_handle(input,custom_filter[j].msg);
+				return false;
 			}
 		}
 	}
 	return true;
 }
+function checkform(event, oform) {
+	event = event ? event : window.event;
+	if (oform == undefined || oform == null)
+		var oform = event.srcElement ? event.srcElement : event.target;
+	var elms = oform.elements;
+	for ( var i = 0; i < elms.length; i++) {		
+		var r = check_input(elms[i]);
+		if(r==false) return false;
+		else if(r!=false) right_handle(elms[i]);
+	}
+	return true;
+}
 /**
  * 增加自定义过滤条件
+ * 
  * @return
  */
 function add_filter(name,msg,callback){
@@ -231,6 +260,7 @@ function add_filter(name,msg,callback){
 }
 /**
  * 验证表单
+ * 
  * @param id
  * @return
  */
@@ -239,8 +269,22 @@ function validator(id) {
 	var oform = document.getElementById(id);
 	oform.onsubmit = checkform;
 }
+function validator_each(id){
+	if(id==null) return false;
+	var elms = document.getElementById(id);
+	for ( var i = 0; i < elms.length; i++) {
+		elms[i].onblur = function(){
+			var r = check_input(this);
+			if(r==false) return false;
+			else if(r!=false) right_handle(this);
+			return true;
+		};
+	}
+	return true;
+}
 /**
  * 强制验证表单，用于非提交的处理，执行此函数时，即检查表单合格性
+ * 
  * @param id
  * @return
  */
