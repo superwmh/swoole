@@ -1,4 +1,6 @@
 #labels Phase-Implementation,Featured
+详细请见Swoole官方网站：
+[http://swoole.com/News/83.html Swoole Model数据模型的使用]
 <p>可以使用命令行工具增加一个新的Model。在命令行下，进入网站的libs目录</p>
 <code>php manage.php addm TestModel</code>
 <p>&nbsp;或者，在apps/models 目录新建一个 TestModel.model.php文件。代码如下</p>
