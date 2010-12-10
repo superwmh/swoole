@@ -3,15 +3,15 @@
 <code>php manage.php addm TestModel</code>
 <p>&nbsp;或者，在apps/models 目录新建一个 TestModel.model.php文件。代码如下</p>
 <code>
-&lt;?php
+<?php
 class TestModel extends Model
 {
     public $table = 'test';
 }
-?&gt;
 </code>
 <p>&nbsp;新的Model必须继承自Model基类。必须有表名才可以使用Model数据库封装。现在在MySQL中新建一个表test.</p>
-<code>CREATE TABLE `wap`.`test` (
+<code>
+CREATE TABLE `wap`.`test` (
 `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `userid` INT NOT NULL ,
 `title` VARCHAR( 255 ) NOT NULL ,
@@ -22,7 +22,8 @@ class TestModel extends Model
 <h2>&nbsp;代码1：仅使用Model接口的数据库操作方式</h2>
 <p>下面演示一段代码，分别的功能是获取一条数据，获取userid为2的所有内容，获取某段时间userid为2的内容，更新数据内容，删除，新增一条数据。</p>
 <p>&nbsp;</p>
-<code>$content = $model-&gt;get(1);  //获取数据库的id为1的内容
+<code>
+$content = $model-&gt;get(1);  //获取数据库的id为1的内容
 $gets1['userid'] = 2;           //SQL语句的where条件
 $gets1['order'] = 'id desc';    //排序方式
 $gets1['limit'] = 10;            //查询10条
