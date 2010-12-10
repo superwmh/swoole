@@ -1,6 +1,6 @@
 #labels Phase-Implementation,Featured
 <p>可以使用命令行工具增加一个新的Model。在命令行下，进入网站的libs目录</p>
-<code>php manage.php addm TestModel</pre>
+<code>php manage.php addm TestModel</code>
 <p>&nbsp;或者，在apps/models 目录新建一个 TestModel.model.php文件。代码如下</p>
 <code>
 &lt;?php
