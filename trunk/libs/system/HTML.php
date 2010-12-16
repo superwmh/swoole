@@ -8,8 +8,11 @@
  * @subpackage HTML
  *
  */
-class HTML extends DOMDocument
+class HTML
 {
-	
+	static function deleteComment($content)
+	{
+	    return preg_replace('#<!--[^>]*-->#','',$content);
+	}
 }
 ?>
