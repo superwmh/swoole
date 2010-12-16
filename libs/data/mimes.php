@@ -40,6 +40,7 @@ $mimes  = array(
 'audio/mid'=>'mid',
 
 'application/x-pkcs7-certificates'=>'p7b',
+'application/zip'=>'zip',
 'application/x-gzip'=>'gz',
 'application/x-dvi'=>'dvi',
 'application/x-cpio'=>'cpio',

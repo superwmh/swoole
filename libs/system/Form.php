@@ -48,7 +48,7 @@ class Form
      * $attrArray html标签的熟悉  就是这个select的属性标签 例如  class="x1"
      * $add_help 增加一个值为空的 请选择 项
      */
-	static function select($name,&$option,$default=null,$self=null,$attrArray=null,$add_help=true)
+	static function select($name,$option,$default=null,$self=null,$attrArray=null,$add_help=true)
 	{
 		if (!is_array($option) || empty($option)) return("下拉选择框制作失败:需要使用的元素不是数组或没有数值");
 
@@ -85,7 +85,7 @@ class Form
 	 *	$self 设置为ture，option的值等于$value
 	 *	$attrArray html标签的熟悉  就是这个radio的属性标签 例如  class="x1"
 	 */
-	static function radio($name,&$array, $default=null,$self = false,$attrArray=null)
+	static function radio($name,$array, $default=null,$self = false,$attrArray=null)
 	{
 		if (!is_array($array) || empty($array)) return("单选框制作失败:需要使用的元素不是数组或没有数值");
 		$htmlStr = "";
@@ -112,7 +112,7 @@ class Form
 	 * $self 设置为ture，option的值等于$value
 	 * $attrArray html标签的熟悉  就是这个radio的属性标签 例如  class="x1"  有问
 	 */
-	static function checkbox($name,&$option, $default=null,$self = false,$attrArray=null)
+	static function checkbox($name,$option, $default=null,$self = false,$attrArray=null)
 	{
 		if (!is_array($option) || empty($option)) return("多选框制作失败:需要使用的元素不是数组或没有数值");
 		$htmlStr = "";

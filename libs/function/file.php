@@ -11,6 +11,7 @@ function file_upload($name,$up_dir=null,$access='',$filename=null)
 
 	$mime=$_FILES[$name]['type'];
 	$filetype= file_gettype($mime);
+
 	if($filetype=='bin') $filetype = file_ext($_FILES[$name]['name']);
 
 	if($filetype==false)
