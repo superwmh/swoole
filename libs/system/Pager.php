@@ -273,7 +273,7 @@ class Pager
 	 */
 	function _get_url($pageno=1)
 	{
-		if(empty($this->page_tpl)) return Swoole_tools::url_merge('page',$pageno,'mvc');
+		if(empty($this->page_tpl)) return Swoole_tools::url_merge('page',$pageno,'mvc,q');
 		else return sprintf($this->page_tpl,$pageno);
 	}
 
