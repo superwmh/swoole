@@ -225,14 +225,14 @@ class Pager
             {
                 $pager_html.=$this->first_page();
             }
-            if(in_array('next',$this->span_open))
-            {
-                $pager_html.=$this->next_page();
-            }
-            $pager_html.=$this->nowbar();
             if(in_array('previous',$this->span_open))
             {
                 $pager_html.=$this->pre_page();
+            }
+            $pager_html.=$this->nowbar();
+            if(in_array('next',$this->span_open))
+            {
+                $pager_html.=$this->next_page();
             }
             if(in_array('last',$this->span_open))
             {
