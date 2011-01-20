@@ -18,10 +18,13 @@ class MySQL implements IDatabase
 	function connect()
 	{
 		$db_config = &$this->config;
+
 		if(isset($db_config['persistent']) and $db_config['persistent'])
-            $this->conn = mysql_pconnect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
+            $this->conn = mysql_pconnect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error());
         else
-            $this->conn = mysql_connect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error($this->conn));
+
+            $this->conn = mysql_connect($db_config['host'],$db_config['user'],$db_config['password']) or die(mysql_error());
+
         mysql_select_db($db_config['dbname'],$this->conn) or die(mysql_error($this->conn));
         if($db_config['ifsetname']) mysql_query('set names '.$db_config['charset'],$this->conn) or die(mysql_error($this->conn));
 	}

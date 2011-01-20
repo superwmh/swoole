@@ -10,7 +10,7 @@ class SwooleEvent
 		$this->mode = $mode;
 		if($queue_url and $mode=='async')
 		{
-			$this->_queue = new Queue(array('server_url'=>$queue_url),$queue_type);
+			$this->_queue = new Queue(array('server_url'=>$queue_url,'name'=>'swoole_event'),$queue_type);
 		}
 	}
 	/**
@@ -53,26 +53,33 @@ class SwooleEvent
 
 	function run_server($time=1,$log_file=null)
 	{
-		if($log_file) $filelog = new FileLog($log_file);
+		$filelog = new FileLog($log_file);
 		while(true)
 		{
 		    $event = $this->_queue->get();
-			if($event)
+			if($event and !isset($event['HTTPSQS_GET_END']))
 			{
-				if(!isset($this->_handles[$params[0]]) or !function_exists($params[0]))
-	            {
-	                if(empty($handle)) Error::info('SwooleEvent Error','Event handle not found!');
-	            }
+			    if(!isset($this->_handles[$event[0]]))
+			    {
+			        $filelog->info('SwooleEvent Error: empty event!');
+			    }
+			    $func = $this->_handles[$event[0]];
+
+			    if(!function_exists($func))
+			    {
+			        $filelog->info('SwooleEvent Error: event handle function not exists!');
+			    }
 	            else
 	            {
-	            	call_user_func_array($event[0],array_slice($event,1));
-                    if($log_file) $filelog->info('Raise a event,type '.$event[0]);
+	                $parmas = array_slice($event,1);
+	            	call_user_func_array($func,$parmas);
+                    $filelog->info('SwooleEvent Info: process success!event type '.$func.'params('.implode(',',$parmas).')');
 	            }
 			}
 		    else
 		    {
 		    	usleep($time*1000);
-		    	echo 'sleep',NL;
+		    	//echo 'sleep',NL;
 		    }
 		}
 	}

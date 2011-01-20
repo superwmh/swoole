@@ -10,13 +10,13 @@ class SwooleLoader
 {
 	static $swoole;
 	static $_objects;
-	
+
 	function __construct($swoole)
 	{
 		self::$swoole = $swoole;
 		self::$_objects = array('model'=>new ArrayObject,'lib'=>new ArrayObject,'object'=>new ArrayObject);
 	}
-	
+
 	/**
 	 * 加载一个模型对象
 	 * @param $model_name 模型名称

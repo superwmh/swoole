@@ -33,7 +33,7 @@ class Swoole extends ArrayObject
         $this->load = new SwooleLoader($this);
         $this->model = new ModelLoader($this);
         $this->plugin = new PluginLoader($this);
-        $this->genv = new SwooleEnv($this);
+        //$this->genv = new SwooleEnv($this);
     }
     function __release()
     {
