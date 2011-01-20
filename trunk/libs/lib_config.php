@@ -5,6 +5,12 @@
  * @author 韩天峰
  */
 define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
+//加载核心的文件
+require LIBPATH.'/system/Swoole.php';
+require LIBPATH.'/system/SwooleLoader.php';
+require LIBPATH.'/system/ModelLoader.php';
+require LIBPATH.'/system/PluginLoader.php';
+
 if(PHP_OS=='WINNT') define("NL","\r\n");
 else define("NL","\n");
 define("BL","<br />".NL);

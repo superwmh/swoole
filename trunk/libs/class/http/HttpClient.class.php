@@ -314,6 +314,7 @@ class HttpClient {
         $host = $bits['host'];
         $port = isset($bits['port']) ? $bits['port'] : 80;
         $path = isset($bits['path']) ? $bits['path'] : '/';
+        $path .= "?{$bits['query']}";
         $client = new HttpClient($host, $port);
         if (!$client->post($path, $data)) {
             return false;
