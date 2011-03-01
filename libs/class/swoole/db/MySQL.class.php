@@ -46,9 +46,14 @@ class MySQL implements IDatabase
 	{
 		return mysql_insert_id($this->conn);
 	}
+	function ping()
+	{
+	    if(!mysql_ping($this->conn)) return false;
+	    else return true;
+	}
 	function close()
 	{
-		mysql_close($thi->conn);
+		mysql_close($this->conn);
 	}
 }
 class MySQLRecord implements IDbRecord
