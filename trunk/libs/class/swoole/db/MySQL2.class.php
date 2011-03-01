@@ -46,10 +46,6 @@ class MySQL2 extends mysqli implements IDatabase
     {
         return $this->insert_id;
     }
-    function close()
-    {
-        $this->close($thi->conn);
-    }
 }
 class MySQLiRecord implements IDbRecord
 {
