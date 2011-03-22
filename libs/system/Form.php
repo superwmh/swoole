@@ -95,11 +95,11 @@ class Form
 			if($self) $key=$value;
 			if ($key == $default)
 			{
-				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<label><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value."</label>";
 			}
 			else
 			{
-				$htmlStr .= "<input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."&nbsp;&nbsp;&nbsp;&nbsp;";
+				$htmlStr .= "<label><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."</label>";
 			}
 		}
 		return $htmlStr;
@@ -125,11 +125,11 @@ class Form
 			if($self) $key=$value;
 			if(strpos($default,strval($key))!==false)
 			{
-				$htmlStr .= "<li><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />&nbsp;".$value.'</li>';
+				$htmlStr .= "<label><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value.'</label>';
 			}
 			else
 			{
-				$htmlStr .= "<li><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />&nbsp;".$value.'</li>';
+				$htmlStr .= "<label><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />".$value.'</label>';
 			}
 		}
 		return $htmlStr;

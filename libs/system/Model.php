@@ -15,6 +15,11 @@ class Model
 	public $foreignkey='catid';
 
 	public $table="";
+	/**
+	 * 表切片参数
+	 * @var unknown_type
+	 */
+	public $tablesize = 1000000;
 	public $fields;
 	public $select='*';
 
@@ -28,7 +33,11 @@ class Model
 		$this->dbs = new SelectDB($swoole->db);
 		$this->swoole = $swoole;
 	}
-
+    function shard_table($id)
+    {
+        $table_id = intval($id/$this->tablesize);
+        $this->table = $this->table.'_'.$table_id;
+    }
 	/**
 	 * 获取主键$primary_key为$object_id的一条记录对象(Record Object)
 	 * 如果参数为空的话，则返回一条空白的Record，可以赋值，产生一条新的记录

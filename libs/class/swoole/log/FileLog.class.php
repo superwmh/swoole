@@ -1,15 +1,17 @@
 <?php
-class FileLog
+/**
+ * 文件日志类
+ * @author Tianfeng.Han
+ *
+ */
+class FileLog implements ILog
 {
     private $log_file;
-    private $date_format;
-    private $type;
+    static $date_format = 'Y-m-d H:i:s';
 
-	function __construct($log_file,$date_format='Y-m-d H:i:s',$type=3)
+	function __construct($log_file)
     {
     	$this->log_file = $log_file;
-    	$this->date_format = $date_format;
-    	$this->type = $type;
     }
 	/**
 	 * 写入日志
@@ -19,23 +21,8 @@ class FileLog
 	 */
     function put($type,$msg)
     {
-    	$msg = date($this->date_format).' '.$type.' '.$msg.NL;
-    	return error_log($msg,$this->type,$this->log_file);
-    }
-
-    function info($msg)
-    {
-    	$this->put('INFO',$msg);
-    }
-
-    function error($msg)
-    {
-    	$this->put('ERROR',$msg);
-    }
-
-    function warn($msg)
-    {
-        $this->put('WARNNING',$msg);
+    	$msg = date(self::$date_format).' '.$type.' '.$msg.NL;
+    	return file_put_contents($this->log_file,$msg,FILE_APPEND);
     }
 }
 ?>

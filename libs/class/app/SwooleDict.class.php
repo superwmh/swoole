@@ -10,37 +10,73 @@ class SwooleDict extends Model
 	public $cache;
 	public $_data;
 	public $if_cache = false;
+	public $cache_prefix = '';
 	public $expire = 0;
 
-	function setCache($cache)
+	/**
+	 * 设置缓存前缀
+	 * @param $prefix
+	 * @return unknown_type
+	 */
+	function setCachePrefix($prefix='swoole_dict_')
+	{
+	    $this->cache_prefix = $prefix;
+	}
+	/**
+	 * 设置缓存
+	 * @param $cache
+	 * @param $expire
+	 * @return unknown_type
+	 */
+	function setCache($cache,$expire=3600)
 	{
 		$this->cache = $cache;
 		$this->if_cache = true;
+		$this->expire = $expire;
 	}
-
+    /**
+     * 按ID查询
+     * @param $id
+     * @return $value
+     */
 	function iget($id)
 	{
 		return $this->get($id)->get();
 	}
-
+    /**
+     * 按父ID查询得出列表
+     * @param $fid
+     * @param $order
+     * @return unknown_type
+     */
 	function igets($fid=0,$order = 'id')
 	{
 		$gets['fid'] = $fid;
 		$gets['order'] = $order;
 		return $this->gets($gets);
 	}
-
-	function pgets($kpath,$order='id')
+    /**
+     * 按路径查询，得到列表
+     * @param $kpath
+     * @param $order
+     * @return $list
+     */
+	function pgets($kpath,$order='')
 	{
 		$gets['kpath'] = $kpath;
 		$gets['order'] = $order;
 		return $this->gets($gets);
 	}
-
+    /**
+     * 按路径查询，得到一个值
+     * @param $kpath
+     * @param $order
+     * @return $list
+     */
 	function pget($kpath,$kname)
 	{
 		$path = "$kpath/$kname";
-		if($this->if_cache) $cache_data = $this->cache->get($path);
+		if($this->if_cache) $cache_data = $this->cache->get($this->cache_prefix.$path);
 		else $cache_data = false;
 		if($cache_data) return $cache_data;
 		else
@@ -59,7 +95,7 @@ class SwooleDict extends Model
 				}
 				return false;
 			}
-			if($this->if_cache) $this->cache->set($path,$res[0],$this->expire);
+			if($this->if_cache) $this->cache->set($this->cache_prefix.$path,$res[0],$this->expire);
 			return $res[0];
 		}
 	}
@@ -71,7 +107,7 @@ class SwooleDict extends Model
 	 */
 	function kget($keyid)
 	{
-		if($this->if_cache) $cache_data = $this->cache->get($keyid);
+		if($this->if_cache) $cache_data = $this->cache->get($this->cache_prefix.$keyid);
 		else $cache_data = false;
 		if($cache_data) return $cache_data;
 		else
@@ -79,7 +115,7 @@ class SwooleDict extends Model
 			$get['keyid'] = $keyid;
 			$get['limit'] = 1;
 			$data = $this->gets($get);
-			if($this->if_cache) $this->cache->set($keyid,$data[0],$this->expire);
+			if($this->if_cache) $this->cache->set($this->cache_prefix.$keyid,$data[0],$this->expire);
 			return $data[0];
 		}
 	}
