@@ -11,7 +11,7 @@ class Error
 {
 	public $error_id;
 	static public $error_code;
-	
+
 	function __construct($error_id)
 	{
 		if(empty(self::$error_code))
@@ -19,7 +19,7 @@ class Error
 			include LIBPATH.'/data/text/error_code.php';
 			self::$error_code = $error_code;
 		}
-		$this->error_id = $error_id;	
+		$this->error_id = $error_id;
 	}
 	/**
 	 * 输出一条错误信息，并结束程序的运行
@@ -29,6 +29,7 @@ class Error
 	 */
 	function info($msg,$content)
 	{
+	    if(DEBUG=='off') return false;
 		echo <<<HTMLS
 <html>
 <head>

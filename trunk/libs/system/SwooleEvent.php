@@ -26,11 +26,11 @@ class SwooleEvent
 		 */
         if($this->mode=='sync')
         {
-        	if(!isset($this->_handles[$params[0]]) or !function_exists($params[0]))
+        	if(!isset($this->_handles[$params[0]]) or !function_exists($this->_handles[$params[0]]))
         	{
         		if(empty($handle)) Error::info('SwooleEvent Error','Event handle not found!');
         	}
-        	return call_user_func_array($params[0],array_slice($params,1));
+        	return call_user_func_array($this->_handles[$params[0]],array_slice($params,1));
         }
         /**
          * 异步，将事件压入队列
@@ -73,7 +73,7 @@ class SwooleEvent
 	            {
 	                $parmas = array_slice($event,1);
 	            	call_user_func_array($func,$parmas);
-                    $filelog->info('SwooleEvent Info: process success!event type '.$func.'params('.implode(',',$parmas).')');
+                    $filelog->info('SwooleEvent Info: process success!event type '.$func.',params('.implode(',',$parmas).')');
 	            }
 			}
 		    else

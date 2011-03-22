@@ -25,7 +25,7 @@ class MySQL2 extends mysqli implements IDatabase
             parent::connect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
 
         if(mysqli_connect_errno())  exit("Connect failed: %s\n".mysqli_connect_error());
-        if($db_config['ifsetname']) $this->query('set names '.$db_config['charset']);
+        $this->set_charset($db_config['charset']);
     }
     /**
      * 执行一个SQL语句

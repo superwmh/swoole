@@ -24,6 +24,7 @@ class Pager
     public $page_tpl = '';
 
     public $span_open = array('first','last','next','previous');
+    public $pagesize_group = array(10,20,50);
     public $span_class;
     /**
      * private
@@ -31,6 +32,7 @@ class Pager
      */
     public $pagebarnum=10;//控制记录条的个数。
     public $totalpage=0;//总页数
+    public $pagesize=10;
     public $total=0;
     public $ajax_action_name='';//AJAX动作名
     public $nowindex=1;//当前页
@@ -59,7 +61,8 @@ class Pager
         }
         if((!is_int($total))||($total<0))$this->error(__FUNCTION__,$total.' is not a positive integer!');
         if((!is_int($perpage))||($perpage<=0))$this->error(__FUNCTION__,$perpage.' is not a positive integer!');
-        if(!empty($array['page_name']))$this->set('page_name',$array['page_name']);//设置pagename
+        if(!empty($array['page_name'])) $this->set('page_name',$array['page_name']);//设置pagename
+        $this->pagesize=$perpage;
         $this->_set_nowindex($nowindex);//设置当前页
         $this->totalpage=ceil($total/$perpage);
         $this->total = $total;
@@ -209,7 +212,15 @@ class Pager
     {
         return $this->offset;
     }
-
+    function set_pagesize()
+    {
+        $str = '<div class="pagesize"><span>每页显示：</span>';
+        foreach($this->pagesize_group as $p){
+            if($p==$this->pagesize) $str.="<span class='ps_cur' onclick='setPagesize($p)'>$p</span>";
+            else $str.="<span class='ps' onclick='setPagesize($p)'>$p</span>";
+        }
+        return $str.'</div>';
+    }
     /**
      * 控制分页显示风格（你可以增加相应的风格）
      *
@@ -237,6 +248,10 @@ class Pager
             if(in_array('last',$this->span_open))
             {
                 $pager_html.=$this->last_page();
+            }
+            if(in_array('pagesize',$this->span_open))
+            {
+                $pager_html.=$this->set_pagesize();
             }
             $pager_html.='</div>';
             return $pager_html;

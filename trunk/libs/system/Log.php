@@ -1,6 +1,12 @@
 <?php
 interface ILog
 {
+    /**
+     * 写入日志
+     * @param $type 类型
+     * @param $msg  内容
+     * @return unknown_type
+     */
     function put($type,$msg);
 }
 
@@ -9,7 +15,7 @@ class Log
     public $backends = array('DBLog','FileLog','PHPLog');
     public $backend;
 
-    function __construct($params,$backend='PHPLog')
+    function __construct($params,$backend='FileLog')
     {
         if(!in_array($backend,$this->backends))
 		{

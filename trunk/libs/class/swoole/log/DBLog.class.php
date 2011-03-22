@@ -1,4 +1,9 @@
 <?php
+/**
+ * 数据库日志记录类
+ * @author Tianfeng.Han
+ *
+ */
 class DBLog implements ILog
 {
     public $db;
