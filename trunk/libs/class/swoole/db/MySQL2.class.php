@@ -19,11 +19,7 @@ class MySQL2 extends mysqli implements IDatabase
     function connect()
     {
         $db_config = &$this->config;
-        if(isset($db_config['persistent']) and $db_config['persistent'])
-            parent::pconnect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']) or die(mysqli_connect_error());
-        else
-            parent::connect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
-
+        parent::connect($db_config['host'],$db_config['user'],$db_config['password'],$db_config['dbname']);
         if(mysqli_connect_errno())  exit("Connect failed: %s\n".mysqli_connect_error());
         $this->set_charset($db_config['charset']);
     }
