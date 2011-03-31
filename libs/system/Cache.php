@@ -30,7 +30,11 @@ class Cache
         {
             case 'memcache':
                 $obj = new Memcache;
-                $obj->connect($this->uri['host'],isset($this->uri['port'])?$this->uri['port']:11211);
+                $obj->addServer($this->uri['host'],isset($this->uri['port'])?$this->uri['port']:11211);
+                return $obj;
+            case 'memcached':
+                $obj = new Memcached;
+                $obj->addServer($this->uri['host'],isset($this->uri['port'])?$this->uri['port']:11211);
                 return $obj;
             case 'file':
                 $obj = new FileCache(FILECACHE_DIR.'/'.$this->uri['fragment'].'.fc');
