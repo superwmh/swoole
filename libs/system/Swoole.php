@@ -91,6 +91,8 @@ class Swoole extends ArrayObject
         if(!function_exists($url_func))
         Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
         $mvc = call_user_func($url_func);
+        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['controller'])) exit;
+        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['view'])) exit;
         $this->env['mvc'] = $mvc;
         $controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
         if(!file_exists($controller_path))

@@ -78,19 +78,23 @@ class Filter
         if($text) exit($text);
         else exit('Web input param error!');
     }
+    /**
+     * 过滤$_GET $_POST $_REQUEST $_COOKIE
+     * @return unknown_type
+     */
     static function request()
     {
-        //过滤$_GET $_POST $_REQUEST $_COOKIE 请
-        Filter::filter_array($_POST);
-        Filter::filter_array($_GET);
-        Filter::filter_array($_REQUEST);
-        Filter::filter_array($_COOKIE);
+        $_POST = Filter::filter_array($_POST);
+        $_GET = Filter::filter_array($_GET);
+        $_REQUEST = Filter::filter_array($_REQUEST);
+        $_COOKIE = Filter::filter_array($_COOKIE);
     }
     static function safe(&$content)
     {
         if(DBCHARSET=='utf8') $charset = 'utf-8';
         else $charset = DBCHARSET;
-        Filter::deslash($content);
+
+        $content = stripslashes($content);
         $content = html_entity_decode($content,ENT_QUOTES,$charset);
     }
     public static function filter_var($var,$type)
@@ -107,104 +111,104 @@ class Filter
                 return false;
         }
     }
-
-    public static function filter_array(&$array,$allow_html=false)
+    /**
+     * 过滤数组
+     * @param $array
+     * @return unknown_type
+     */
+    public static function filter_array($array)
     {
-        foreach($array as &$string)
+        $magic = get_magic_quotes_gpc();
+        $clean = array();
+        foreach($array as $key=>$string)
         {
-            if($allow_html===false)
-            {
-                if(is_array($string))
-                {
-                    self::filter_array($string);
-                }
-                else
-                {
-                    if(DBCHARSET=='utf8') $charset = 'utf-8';
-                    else $charset = DBCHARSET;
-                    $string = htmlspecialchars($string,ENT_QUOTES,$charset);
-                }
-            }
             if(is_array($string))
             {
                 self::filter_array($string);
             }
-            else self::addslash($string);
+            else
+            {
+                if($magic and DBCHARSET=='gbk')
+                {
+                    $string = stripslashes($string);
+                }
+                else
+                {
+                    $string = self::escape($string);
+                    $key = self::escape($key);
+                }
+            }
+            $clean[$key] = $string;
         }
+        return $clean;
+    }
+    /**
+     * 使输入的代码安全
+     * @param $string
+     * @return unknown_type
+     */
+    public static function escape($string)
+    {
+        if(is_numeric($string)) return $string;
+        if(DBCHARSET=='utf8') $charset = 'utf-8';
+        else $charset = DBCHARSET;
+        $string = htmlspecialchars($string,ENT_QUOTES,$charset);
+
+        if(DBCHARSET=='gbk') self::gbk_addslash($string);
+        else self::addslash($string);
+        return $string;
     }
     /**
      * 移除HTML中的危险代码，如iframe和script
      * @param $val
      * @return unknown_type
      */
-    public static function RemoveXSS(&$val)
+    public static function remove_xss($content,$allow='')
     {
-        // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
-        // this prevents some character re-spacing such as <java\0script>
-        // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
-        $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
-        // straight replacements, the user should never need these since they're normal characters
-        // this prevents like <IMG SRC=@avascript:alert('XSS')>
-        $search = 'abcdefghijklmnopqrstuvwxyz';
-        $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $search .= '1234567890!@#$%^&*()';
-        $search .= '~`";:?+/={}[]-_|\'\\';
-        for ($i = 0; $i < strlen($search); $i++) {
-            // ;? matches the ;, which is optional
-            // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
-
-            // @ @ search for the hex values
-            $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
-            // @ @ 0{0,7} matches '0' zero to seven times
-            $val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
+        $danger = 'javascript,vbscript,expression,applet,meta,xml,blink,link,style,script,embed,object,iframe,frame,frameset,ilayer,layer,bgsound,title,base';
+        if(!empty($allow))
+        {
+            $allows = explode(',',$allow);
+            $danger = str_replace($allow,'',$danger);
         }
-
-        // now the only remaining whitespace attacks are \t, \n, and \r
-        $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed',
-         'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
-        $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate','onbeforecopy', 'onbeforecut',
-        'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur',
-         'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable',
-         'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave',
-         'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin',
-         'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown',
-         'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend',
-         'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart',
-         'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart',
-         'onstart', 'onstop', 'onsubmit', 'onunload');
-        $ra = array_merge($ra1, $ra2);
-
-        $found = true; // keep replacing as long as the previous round replaced something
-        while ($found == true) {
-            $val_before = $val;
-            for ($i = 0; $i < sizeof($ra); $i++) {
-                $pattern = '/';
-                for ($j = 0; $j < strlen($ra[$i]); $j++) {
-                    if ($j > 0) {
-                        $pattern .= '(';
-                        $pattern .= '(&#[xX]0{0,8}([9ab]);)';
-                        $pattern .= '|';
-                        $pattern .= '|(&#0{0,8}([9|10|13]);)';
-                        $pattern .= ')*';
-                    }
-                    $pattern .= $ra[$i][$j];
-                }
-                $pattern .= '/i';
-                $replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag
-                $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags
-                if ($val_before == $val) {
-                    // no replacements were made, so exit the loop
-                    $found = false;
-                }
-            }
-        }
+        $danger = str_replace(',','|',$danger);
+        $search = "/<\s*($danger)[^>]*>[^<]*(<\s*\/\s*\\1\s*>)?/s";
+        return preg_replace($search,'',$content);
     }
-
+    /**
+     * 过滤危险字符
+     * @param $string
+     * @return unknown_type
+     */
     public static function addslash(&$string)
     {
-        if(!get_magic_quotes_gpc()) $string = addslashes($string);
+        $string = addslashes($string);
     }
-
+    /**
+     * 过滤危险字符，解决GBK漏洞
+     * @param $string
+     * @return unknown_type
+     */
+    public static function gbk_addslash(&$string)
+    {
+        while(true)
+        {
+            $i = mb_strpos($text, chr(92),0,"GBK");
+            if ($i === false) break;
+            $T = mb_substr($text, 0, $i, "GBK") . chr(92) . chr(92);
+            $text = substr($text, strlen($T) - 1);
+            $OK .= $T;
+        }
+        $text = $OK . $text;
+        $text = str_replace(chr(39), chr(92) . chr(39), $text);
+        $text = str_replace(chr(34), chr(92) . chr(34), $text);
+        $string = $text;
+    }
+    /**
+     * 移除反斜杠过滤
+     * @param $string
+     * @return unknown_type
+     */
     public static function deslash(&$string)
     {
         $string = stripslashes($string);
