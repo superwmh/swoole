@@ -35,7 +35,7 @@ class MySQL implements IDatabase
 	function query($sql)
 	{
 		mysql_real_escape_string($sql,$this->conn);
-		$res = mysql_query($sql,$this->conn) or die(mysql_error($this->conn));
+		$res = mysql_query($sql,$this->conn) or die(mysql_error($this->conn))."\n<hr />$sql";
 		return new MySQLRecord($res);
 	}
 	/**

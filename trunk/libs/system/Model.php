@@ -215,6 +215,23 @@ class Model
 		elseif($get==='sql') return $selectdb->getsql();
 	}
 	/**
+	 * 获取一个键值对应的结构，键为表记录主键的值，值为记录数据或者其中一个字段的值
+	 * @param $gets
+	 * @param $field
+	 * @return unknown_type
+	 */
+	function getMap($gets,$field=null)
+	{
+	    $list = $this->gets($gets);
+	    $new = array();
+	    foreach($list as $li)
+	    {
+	        if(empty($field)) $new[$li[$this->primary]] = $li;
+	        else $new[$li[$this->primary]] = $li[$field];
+	    }
+	    return $new;
+	}
+	/**
 	 * 获取表的字段描述
 	 * @return $fields
 	 */
@@ -318,14 +335,16 @@ class Record implements ArrayAccess
 		}
 		elseif($this->change==2)
 		{
-			unset($this->_data[$this->primary]);
+			$update = $this->_data;
+			unset($update[$this->primary]);
 			$this->db->update($this->_current_id,$this->_change,$this->table,$this->primary);
 		}
 		return true;
 	}
 	function update()
 	{
-		unset($this->_data[$this->primary]);
+		$update = $this->_data;
+		unset($update[$this->primary]);
 		$this->db->update($this->_current_id,$this->_change,$this->table,$this->primary);
 	}
 	/**
