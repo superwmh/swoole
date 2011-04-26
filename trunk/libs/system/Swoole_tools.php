@@ -12,6 +12,29 @@ class Swoole_tools
     static public $url_prefix = '';
     static public $url_add_end = '';
 
+    /**
+     * 解析URI
+     * @param $url
+     * @return unknown_type
+     */
+    static public function uri($url)
+    {
+        $res = parse_url($url);
+        $return['protocol'] = $res['scheme'];
+        $return['host'] = $res['host'];
+        $return['port'] = $res['port'];
+        $return['user'] = $res['user'];
+        $return['pass'] = $res['pass'];
+        $return['path'] = $res['path'];
+        $return['id'] = $res['fragment'];
+        parse_str($res['query'],$return['params']);
+        return $return;
+    }
+    /**
+     * 多久之前
+     * @param $datetime
+     * @return unknown_type
+     */
     static function howLongAgo($datetime)
     {
         $timestamp = strtotime($datetime);
@@ -47,6 +70,13 @@ class Swoole_tools
         $time = date('s',$seconds)-date('s',$timestamp);
         return $time.'秒前';
     }
+    /**
+     * URL合并
+     * @param $key
+     * @param $value
+     * @param $ignore
+     * @return unknown_type
+     */
     static function url_merge($key,$value,$ignore=null)
     {
         $url = array();
@@ -66,7 +96,12 @@ class Swoole_tools
 
         return $prefix.implode(self::$url_param_join,$url).self::$url_add_end;
     }
-
+    /**
+     * URL解析到REQUEST
+     * @param $url
+     * @param $request
+     * @return unknown_type
+     */
     static function url_parse_into($url,&$request)
     {
         $url = str_replace(self::$url_add_end,'',$url);
@@ -89,7 +124,31 @@ class Swoole_tools
             }
         }
     }
-
+    /**
+     * 数组编码转换
+     * @param $in_charset
+     * @param $out_charset
+     * @param $data
+     * @return $data
+     */
+    static function array_iconv($in_charset,$out_charset,$data)
+    {
+    	if(is_array($data))
+    	{
+    		foreach($data as $key=>$value)
+    		{
+    			if(is_array($value)) $value = array_iconv($value);
+    			else $value = iconv($in_charset,$out_charset,$value);
+    			$data[$key]=$value;
+    		}
+    	}
+    	return $data;
+    }
+    /**
+     * 数组饱满度
+     * @param $array
+     * @return unknown_type
+     */
     static function array_fullness($array)
     {
         $nulls = 0;
