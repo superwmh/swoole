@@ -22,7 +22,8 @@ class GeneralView
 
 	function run()
 	{
-		if(isset($_GET['action'])) $this->action = $_GET['action'];
+		$_GET['action'] = Validate::word($_GET['action']);
+	    if(!empty($_GET['action'])) $this->action = $_GET['action'];
 		$method = self::$method_prefix.'_'.$this->action;
 		if(method_exists($this,$method)) call_user_func(array($this,$method));
 		else Error::info('GeneralView Error!',"View <b>{$this->app_name}->{$method}</b> Not Found!");

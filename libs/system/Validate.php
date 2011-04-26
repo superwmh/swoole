@@ -152,9 +152,9 @@ class Validate
      * @param $str
      * @return false or $str
      */
-	static function word($str)
+	static function word($str,$other='')
 	{
-		$n = preg_match('/^([a-zA-Z_]*)$/',$str,$match);
+		$n = preg_match("/^([a-zA-Z_{$other}]*)$/",$str,$match);
 		if($n===0) return false;
 		else return $match[0];
 	}
