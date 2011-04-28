@@ -137,6 +137,17 @@ class Validate
 		else return $match[0];
     }
     /**
+     * 检测是否为手机号码（13、15、18）
+     * @param $str
+     * @return false or $str
+     */
+    static function mobile($str)
+    {
+        $n = preg_match('/^1[3|4|5|8]\d{9}$/',$str,$match);
+        if($n===0) return false;
+		else return $match[0];
+    }
+    /**
      * 检测是否为固定电话格式（可包含分机号）
      * @param $str
      * @return false or $str
