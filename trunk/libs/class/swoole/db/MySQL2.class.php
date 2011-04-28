@@ -31,7 +31,7 @@ class MySQL2 extends mysqli implements IDatabase
     {
         parent::real_escape_string($sql);
         $res = parent::query($sql);
-        if(!$res) echo $sql,"<hr />\n",$this->error,"<br />\n";
+        if(!$res) Error::info("SQL Error",$this->error."<hr />$sql");
         return new MySQLiRecord($res);
     }
     /**

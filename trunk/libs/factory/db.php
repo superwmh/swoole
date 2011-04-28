@@ -1,4 +1,5 @@
 <?php
+require LIBPATH.'/system/Database.php';
 $db_config['host'] = DBHOST;
 $db_config['engine'] = DBENGINE;
 $db_config['dbms'] = DBMS;

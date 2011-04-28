@@ -1,5 +1,5 @@
 <?php
-require_once LIBPATH.'/system/Log.php';
+require LIBPATH.'/system/Log.php';
 if(LOGTYPE=='FileLog')
 {
     $params = LOGPUT;

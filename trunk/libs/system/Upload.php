@@ -1,4 +1,11 @@
 <?php
+/**
+ * 文件上传类
+ * 限制尺寸，压缩，生成缩略图，限制格式
+ * @author Tianfeng.Han
+ * @package Swoole
+ * @subpackage SwooleSystem
+ */
 class Upload
 {
     public $mimes;
@@ -11,9 +18,9 @@ class Upload
     //指定子目录
     public $sub_dir;
     //子目录生成方法，可以使用randomkey，或者date
-    public $sub_type = 'date';
+    public $shard_type = 'date';
     //子目录生成参数
-    public $sub_shard = 'Ym/d';
+    public $shard_argv;
     //文件命名法
     public $filename_type = 'randomkey';
     //检查是否存在同名的文件
@@ -27,7 +34,7 @@ class Upload
      */
     public $max_width = 0; //如果为0的话不压缩
     public $max_height;
-    public $max_qulitity = 100;
+    public $max_qulitity = 80;
 
     /**
      * 产生缩略图
@@ -48,10 +55,9 @@ class Upload
      */
     public $error_code;
 
-    function __construct($params)
+    function __construct($base_dir)
     {
-        if(isset($params['upload_dir'])) Error::info('Upload error','no upload dir!');
-        $this->base_dir = $params['upload_dir'];
+        $this->base_dir = $base_dir;
         require LIBPATH.'/data/mimes.php';
         $this->mimes = $mimes;
     }
@@ -76,29 +82,32 @@ class Upload
     function save($name,$filename=null)
     {
         //检查请求中是否存在上传的文件
-        if(!empty($_FILES[$name]['type']))
+        if(empty($_FILES[$name]['type']))
         {
             $this->error_msg = "No upload file '$name'!";
     	    $this->error_code = 0;
     	    return false;
         }
         //最终相对目录
-    	if(!empty($this->sub_dir)) $up_dir = $this->base_dir."/".date($this->dir_shard);
-    	elseif($this->sub_type=='randomkey')
+    	if(!empty($this->sub_dir)) $this->base_dir = $this->base_dir."/".$this->sub_dir;
+    	//切分目录
+    	if($this->shard_type=='randomkey')
     	{
-    	    $up_dir = $this->base_dir."/".RandomKey::randmd5(8);
+    	    if(empty($this->shard_argv)) $this->shard_argv = 8;
+    	    $up_dir = $this->base_dir."/".RandomKey::randmd5($this->shard_argv);
     	}
     	else
     	{
-    	    $up_dir = $this->base_dir."/".date($this->sub_shard);
+    	    if(empty($this->shard_argv)) $this->shard_argv = 'Ym/d';
+    	    $up_dir = $this->base_dir."/".date($this->shard_argv);
     	}
     	//上传的最终绝对路径，如果不存在则创建目录
-    	$path=WEBPATH.$up_dir;
+    	$path = WEBPATH.$up_dir;
     	if(!is_dir($path)) mkdir($path,0777,true);
 
     	//MIME格式
-    	$mime=$_FILES[$name]['type'];
-    	$filetype= self::mime_type($mime);
+    	$mime = $_FILES[$name]['type'];
+    	$filetype= $this->mime_type($mime);
     	if($filetype==='bin') $filetype = self::file_ext($_FILES[$name]['name']);
     	if($filetype===false)
     	{
@@ -119,11 +128,11 @@ class Upload
     	//生成文件名
     	if($filename===null)
     	{
-    	    $filename=RandomKey::randtime(6,6);
+    	    $filename=RandomKey::randtime();
 	        //如果已存在此文件，不断随机直到产生一个不存在的文件名
 	        while($this->exist_check and is_file($path.'/'.$filename.'.'.$filetype))
 	        {
-	            $filename = RandomKey::randtime(6,6);
+	            $filename = RandomKey::randtime();
 	        }
     	}
     	elseif($this->overwrite===false and is_file($path.'/'.$filename.'.'.$filetype))
@@ -150,8 +159,8 @@ class Upload
     	    if($this->thumb_width and in_array($filetype,array('gif','jpg','jpeg','bmp','png')))
     	    {
     	        if(empty($this->thumb_dir)) $this->thumb_dir = $up_dir;
-    	        $thumb_file =$this->thumb_dir.'/'.$this->thumb_prefix.$filename.'.'.$filetype;
-    	        Image::thumbnail($save_filename,$this->base_dir.$thumb_file,$this->thumb_width,$this->thumb_height,$this->thumb_qulitity);
+    	        $thumb_file = $this->thumb_dir.'/'.$this->thumb_prefix.$filename;
+    	        Image::thumbnail($save_filename,WEBPATH.$thumb_file,$this->thumb_width,$this->thumb_height,$this->thumb_qulitity);
     	        $return['thumb'] = $thumb_file;
     	    }
     	    //压缩图片
@@ -176,7 +185,7 @@ class Upload
      * @param $mime
      * @return unknown_type
      */
-    static public function mime_type($mime)
+    public function mime_type($mime)
     {
     	if(isset($this->mimes[$mime])) return $this->mimes[$mime];
     	else return false;

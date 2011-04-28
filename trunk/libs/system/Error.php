@@ -69,7 +69,7 @@ HTMLS;
 		debug_print_backtrace();
 		echo '</pre>';
 		echo '</div></body></html>';
-		exit;
+		if($_SERVER['run_mode']!=='server') exit;
 	}
 
 	static function warn($title,$content)

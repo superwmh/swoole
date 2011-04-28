@@ -38,7 +38,7 @@ class PdoDB extends PDO
 	{
 		if($this->debug) echo "$sql<br />\n<hr />";
 		parent::quote($sql);
-		$res = parent::query($sql) or die("$sql<br />\n<hr />SQL Error: ".implode(", ",$this->errorInfo())."<br />\n");
+		$res = parent::query($sql) or Error::info("SQL Error",implode(", ",$this->errorInfo())."<hr />$sql");
 		return $res;
 	}
 	/**
