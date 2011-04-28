@@ -1,4 +1,5 @@
 <?php
+require LIBPATH.'/system/SwooleEvent.php';
 if(!defined('EVENT_MODE') or EVENT_MODE=='sync')
 {
 	$event = new SwooleEvent('sync');

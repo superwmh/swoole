@@ -95,7 +95,7 @@ class Swoole extends ArrayObject
         if(!preg_match('/^[a-z0-9_]+$/i',$mvc['view'])) exit;
         $this->env['mvc'] = $mvc;
         $controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
-        if(!file_exists($controller_path))
+        if(!is_file($controller_path))
         {
             header("HTTP/1.1 404 Not Found");
             Error::info('MVC Error',"Controller <b>{$mvc['controller']}</b> not exist!");
@@ -109,7 +109,7 @@ class Swoole extends ArrayObject
         if(!method_exists($controller,$mvc['view']))
         {
             header("HTTP/1.1 404 Not Found");
-            Error::info('MVC Error!'.$this->view,"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
+            Error::info('MVC Error!'.$mvc['view'],"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
         }
         if(empty($mvc['param'])) $param = array();
         else $param = $mvc['param'];
@@ -147,8 +147,7 @@ class Swoole extends ArrayObject
         $data = call_user_func($method);
         if(DBCHARSET!='utf8')
         {
-            import_func('array');
-            $data = array_iconv(DBCHARSET , 'utf-8' , $data);
+            $data = Swoole_tools::array_iconv(DBCHARSET , 'utf-8' , $data);
         }
         echo json_encode($data);
     }
