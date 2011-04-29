@@ -33,7 +33,6 @@ class Swoole extends ArrayObject
         $this->load = new SwooleLoader($this);
         $this->model = new ModelLoader($this);
         $this->plugin = new PluginLoader($this);
-        //$this->genv = new SwooleEnv($this);
     }
     function __release()
     {
@@ -41,6 +40,24 @@ class Swoole extends ArrayObject
         unset($this->tpl);
         unset($this->cache);
     }
+    /**
+     * 获取资源消耗
+     * @return unknown_type
+     */
+    function runtime()
+    {
+        // 显示运行时间
+        $return['time'] = number_format((microtime(true)-$this->env['runtime']['start']),4).'s';
+
+        $startMem =  array_sum(explode(' ',$this->env['runtime']['mem']));
+        $endMem   =  array_sum(explode(' ',memory_get_usage()));
+        $return['memory'] = number_format(($endMem - $startMem)/1024).'kb';
+        return $return;
+    }
+    /**
+     * 压缩内容
+     * @return unknown_type
+     */
     function gzip()
     {
         //不要在文件中加入UTF-8 BOM头
@@ -54,7 +71,7 @@ class Swoole extends ArrayObject
      * 初始化环境
      * @return unknown_type
      */
-    private function __init()
+    function __init()
     {
         #记录运行时间和内存占用情况
         $this->env['runtime']['start'] = microtime(true);

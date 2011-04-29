@@ -58,6 +58,29 @@ class Database
 		$this->db_apt = new SelectDB($this);
 	}
 	/**
+	 * 初始化参数
+	 * @return unknown_type
+	 */
+	function __init()
+	{
+	    $this->check_status();
+	    $this->db_apt->init();
+	    $this->read_times = 0;
+	    $this->write_times = 0;
+	}
+	/**
+	 * 检查连接状态，如果连接断开，则重新连接
+	 * @return unknown_type
+	 */
+	function check_status()
+	{
+    	if(!$this->db->ping())
+        {
+            $this->db->close();
+            $this->db->connect();
+        }
+	}
+	/**
 	 * 执行一条SQL语句
 	 * @param $sql
 	 * @return unknown_type
