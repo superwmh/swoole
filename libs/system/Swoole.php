@@ -16,6 +16,11 @@ class Swoole extends ArrayObject
 
     static $default_cache_life=600;
     public $pagecache;
+    /**
+     * 发生错误时的回调函数
+     * @var unknown_type
+     */
+    public $error_callback;
 
     public $load;
     public $model;

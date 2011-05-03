@@ -1,7 +1,7 @@
 <?php
 class SwooleServer
 {
-    public $proc = null;
+    public $protocol;
     public $host = '0.0.0.0';
     public $port;
     public $timeout;
@@ -15,15 +15,19 @@ class SwooleServer
         $this->timeout = $timeout;
     }
 
+	/**
+     * 应用协议
+     * @return unknown_type
+     */
+    function setProtocol($protocol)
+    {
+        $this->protocol = $protocol;
+        $this->protocol->server = $this;
+    }
+
     function onError($errno,$errstr)
     {
         exit("$errstr ($errno)");
-    }
-
-    function init()
-    {
-        $this->base_event = event_base_new();
-        $this->server_event = event_new();
     }
     /**
      * 创建一个Stream Server Socket
@@ -63,16 +67,29 @@ class SwooleServer
         //echo $log;
     }
 }
-
+/**
+ * 关闭socket
+ * @param $socket
+ * @param $event
+ * @return unknown_type
+ */
+function sw_socket_close($socket,$event=null)
+{
+    if($event)
+    {
+        event_del($event);
+        event_free($event);
+    }
+    stream_socket_shutdown($socket,STREAM_SHUT_RDWR);
+    fclose($socket);
+}
 function sw_fwrite_stream($fp, $string)
 {
     $length = strlen($string);
     for($written = 0; $written < $length; $written += $fwrite)
     {
         $fwrite = fwrite($fp, substr($string, $written));
-        if ($fwrite === false) {
-            return $written;
-        }
+        if($fwrite===false) return $written;
     }
     return $written;
 }
@@ -94,13 +111,13 @@ interface Swoole_TCP_Server_Driver
     function send($client_id,$data);
     function close($client_id);
     function shutdown();
-    function setProtocal($protocal);
+    function setProtocol($protocol);
 }
 interface Swoole_UDP_Server_Driver
 {
 
 }
-interface Swoole_TCP_Server_Protocal
+interface Swoole_TCP_Server_Protocol
 {
     function onStart();
     function onConnect($client_id);
@@ -109,7 +126,7 @@ interface Swoole_TCP_Server_Protocal
     function onShutdown();
 }
 
-interface Swoole_UDP_Server_Protocal
+interface Swoole_UDP_Server_Protocol
 {
     function onStart();
     function onData();

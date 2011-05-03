@@ -10,7 +10,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     public $server_event;
     public $client_event = array();
     public $server_sock;
-    public $protocol;
+
     //最大连接数
     public $max_connect=1000;
 
@@ -23,14 +23,10 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     {
         parent::__construct($host,$port,$timeout=30);
     }
-    /**
-     * 应用协议
-     * @return unknown_type
-     */
-    function setProtocal($protocal)
+    function init()
     {
-        $this->protocal = $protocal;
-        $this->protocal->server = $this;
+        $this->base_event = event_base_new();
+        $this->server_event = event_new();
     }
     /**
      * 运行服务器程序
@@ -39,6 +35,10 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     function run()
     {
         //初始化事件系统
+        if(!($this->protocol instanceof Swoole_TCP_Server_Protocol))
+        {
+            return error(902);
+        }
         $this->init();
         //建立服务器端Socket
         $this->server_sock = $this->create("tcp://{$this->host}:{$this->port}");
@@ -47,7 +47,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
         event_set($this->server_event,$this->server_sock, EV_READ | EV_PERSIST, "sw_server_handle_connect",$this);
         event_base_set($this->server_event,$this->base_event);
         event_add($this->server_event);
-        $this->protocal->onStart();
+        $this->protocol->onStart();
         event_base_loop($this->base_event);
     }
     /**
@@ -87,7 +87,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
         sw_socket_close($this->server_sock,$this->server_event);
         //关闭事件循环
         event_base_loopexit($this->base_event);
-        $this->protocal->onShutdown();
+        $this->protocol->onShutdown();
     }
     /**
      * 关闭某个客户端
@@ -97,21 +97,9 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     {
         sw_socket_close($this->client_sock[$client_id],$this->client_event[$client_id]);
         unset($this->client_sock[$client_id],$this->client_event[$client_id]);
-        $this->protocal->onClose($client_id);
+        $this->protocol->onClose($client_id);
+        $this->client_num--;
     }
-}
-/**
- * 关闭socket
- * @param $socket
- * @param $event
- * @return unknown_type
- */
-function sw_socket_close($socket,$event)
-{
-    event_del($event);
-    event_free($event);
-    stream_socket_shutdown($socket,STREAM_SHUT_RDWR);
-    fclose($socket);
 }
 /**
  * 处理客户端连接请求
@@ -146,7 +134,7 @@ function sw_server_handle_connect($server_socket,$events,$server)
     //加入事件监听组
     event_add($client_event);
     $server->client_event[$client_id] = $client_event;
-    $server->protocal->onConnect($client_id);
+    $server->protocol->onConnect($client_id);
     $server->client_num++;
 }
 /**
@@ -164,11 +152,11 @@ function sw_server_handle_receive($client_socket,$events,$arg)
 
     if($data !== false && $data !='')
     {
-        $server->protocal->onRecive($client_id,$data);
+        $server->protocol->onRecive($client_id,$data);
     }
     else
     {
         $server->close($client_id);
-        $this->protocal->onClose($client_id);
+        $this->protocol->onClose($client_id);
     }
 }
