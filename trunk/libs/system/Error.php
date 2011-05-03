@@ -10,6 +10,7 @@
 class Error
 {
 	public $error_id;
+	public $error_listener;
 	static public $error_code;
 
 	function __construct($error_id)
