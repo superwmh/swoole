@@ -30,6 +30,8 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         $request = $this->request($data);
         $response = $this->config['request_call']($request);
         $this->response($client_id,$response);
+        unset($request);
+        unset($response);
     }
     /**
      * 解析Cookies

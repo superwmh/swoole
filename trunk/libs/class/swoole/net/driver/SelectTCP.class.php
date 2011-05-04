@@ -59,6 +59,8 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     function close($client_id)
     {
         sw_socket_close($this->client_sock[$client_id]);
+        $this->client_sock[$id] = null;
+        $this->fds[$client_id] = null;
         unset($this->client_sock[$client_id],$this->fds[$client_id]);
         $this->protocol->onClose($client_id);
         $this->client_num--;
@@ -69,7 +71,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
         while(true)
         {
             $read_fds = $this->fds;
-            if(stream_select($read_fds , $write = null , $exp = null , $this->timeout,0))
+            if(stream_select($read_fds , $write = null , $exp = null , null))
             {
                 foreach($read_fds as $socket)
                 {
@@ -99,12 +101,12 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                             $this->protocol->onClose($socket_id);
                         }
                     }
-                }
-            }
+                }                
+            }      
         }
     }
 
-    function run()
+    function run($num=1)
     {
         //初始化事件系统
         if(!($this->protocol instanceof Swoole_TCP_Server_Protocol))
@@ -116,6 +118,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
         $this->server_socket_id = (int)$this->server_sock;
         $this->fds[$this->server_socket_id] = $this->server_sock;
         stream_set_blocking($this->server_sock , 0);
+	    if(($num-1)>0) sw_spawn($num-1);
         $this->protocol->onStart();
         $this->server_loop();
     }
