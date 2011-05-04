@@ -32,7 +32,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
      * 运行服务器程序
      * @return unknown_type
      */
-    function run()
+    function run($num=1)
     {
         //初始化事件系统
         if(!($this->protocol instanceof Swoole_TCP_Server_Protocol))
@@ -47,6 +47,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
         event_set($this->server_event,$this->server_sock, EV_READ | EV_PERSIST, "sw_server_handle_connect",$this);
         event_base_set($this->server_event,$this->base_event);
         event_add($this->server_event);
+	if(($num-1)>0) sw_spawn($num-1);
         $this->protocol->onStart();
         event_base_loop($this->base_event);
     }

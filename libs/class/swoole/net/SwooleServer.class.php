@@ -67,6 +67,27 @@ class SwooleServer
         //echo $log;
     }
 }
+function sw_run($cmd)
+{
+   if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
+   else exec($cmd." > /dev/null &");
+}
+function sw_restart()
+{
+	if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
+    else exec($cmd." > /dev/null &");
+}
+function sw_gc_array($array)
+{
+    $new = array();
+    foreach($array as $k=>$v)
+    {
+        $new[$k] = $v;
+        unset($array[$k]);
+    }
+    unset($array);
+    return $new;
+}
 /**
  * 关闭socket
  * @param $socket
@@ -107,7 +128,7 @@ function sw_spawn($num)
 }
 interface Swoole_TCP_Server_Driver
 {
-    function run();
+    function run($num);
     function send($client_id,$data);
     function close($client_id);
     function shutdown();

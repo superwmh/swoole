@@ -74,10 +74,10 @@ class Database
 	 */
 	function check_status()
 	{
-    	if(!$this->db->ping())
+    	if(!$this->_db->ping())
         {
-            $this->db->close();
-            $this->db->connect();
+            $this->_db->close();
+            $this->_db->connect();
         }
 	}
 	/**
