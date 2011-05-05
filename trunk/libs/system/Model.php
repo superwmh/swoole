@@ -231,6 +231,12 @@ class Model
 	    }
 	    return $new;
 	}
+	function exists($gets)
+	{
+	    $c = $this->count($gets);
+	    if($c>0) return true;
+	    else return false;
+	}
 	/**
 	 * 获取表的字段描述
 	 * @return $fields
