@@ -50,8 +50,6 @@ class Form
      */
 	static function select($name,$option,$default=null,$self=null,$attrArray=null,$add_help=true)
 	{
-		if (!is_array($option) || empty($option)) return("下拉选择框制作失败:需要使用的元素不是数组或没有数值");
-
 		$htmlStr = "<select name=\"$name\" id=\"$name\"";
 		$htmlStr .= self::input_attr($attrArray) . ">\n";
 
@@ -87,7 +85,6 @@ class Form
 	 */
 	static function radio($name,$array, $default=null,$self = false,$attrArray=null)
 	{
-		if (!is_array($array) || empty($array)) return("单选框制作失败:需要使用的元素不是数组或没有数值");
 		$htmlStr = "";
 		$attrStr = self::input_attr($attrArray);
 		foreach($array as $key => $value)
@@ -114,7 +111,6 @@ class Form
 	 */
 	static function checkbox($name,$option, $default=null,$self = false,$attrArray=null)
 	{
-		if (!is_array($option) || empty($option)) return("多选框制作失败:需要使用的元素不是数组或没有数值");
 		$htmlStr = "";
 		$attrStr = self::input_attr($attrArray);
 

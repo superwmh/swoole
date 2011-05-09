@@ -33,6 +33,11 @@ class Model
 		$this->dbs = new SelectDB($swoole->db);
 		$this->swoole = $swoole;
 	}
+	/**
+	 * 按ID切分表
+	 * @param $id
+	 * @return unknown_type
+	 */
     function shard_table($id)
     {
         $table_id = intval($id/$this->tablesize);
@@ -166,7 +171,8 @@ class Model
 	 */
 	function createTable()
 	{
-		$this->db->query($this->create_sql);
+		if($this->create_sql) return $this->db->query($this->create_sql);
+		else return false;
 	}
 	/**
 	 * 获取表状态
@@ -229,8 +235,33 @@ class Model
 	        if(empty($field)) $new[$li[$this->primary]] = $li;
 	        else $new[$li[$this->primary]] = $li[$field];
 	    }
+	    unset($list);
 	    return $new;
 	}
+	/**
+	 * 获取一个2层的树状结构
+	 * @param $gets
+	 * @param $category
+	 * @param $order
+	 * @return unknown_type
+	 */
+	function getTree($gets,$category='fid',$order='id desc')
+	{
+	    $gets['order'] = $category.','.$order;
+	    $list = $this->gets($gets);
+	    foreach($list as $li)
+	    {
+	        if($li[$category]==0) $new[$li[$this->primary]] = $li;
+	        else $new[$li[$category]]['child'][$li[$this->primary]] = $li;
+	    }
+	    unset($list);
+	    return $new;
+	}
+	/**
+	 * 检测是否存在数据，实际可以用count代替，0为false，>0为true
+	 * @param $gets
+	 * @return unknown_type
+	 */
 	function exists($gets)
 	{
 	    $c = $this->count($gets);
