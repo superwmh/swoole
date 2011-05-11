@@ -57,8 +57,9 @@ class Response
     function head()
     {
         //Protocol
-        if(isset($response->head[0])) $out = $this->head[0];
+        if(isset($this->head[0])) $out = $this->head[0];
         else $out = "HTTP/1.1 200 OK\r\n";
+        unset($this->head[0]);
         //Headers
         foreach($this->head as $k=>$v)
         {

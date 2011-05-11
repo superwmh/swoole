@@ -12,6 +12,11 @@ class Session
     static $cache_prefix;
     static $cache;
     static $cache_life = 1800;
+
+    public $sessID;
+    static $sess_size = 24;
+    static $sess_name = 'SESSID';
+
     /**
      * 构造函数
      * @param $cache Cache对象
@@ -20,6 +25,17 @@ class Session
     public function __construct($cache)
     {
         self::$cache = $cache;
+    }
+    public function load($sessId)
+    {
+        $this->sessID = $sessId;
+        $data = self::get($sessId);
+        if($data) return unserialize($data);
+        else return array();
+    }
+    public function save()
+    {
+        return self::set($this->sessID,serialize($_SESSION));
     }
     /**
      * 打开Session
