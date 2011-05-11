@@ -51,6 +51,7 @@ body {
 border:				#999 1px solid;
 background-color:	#fff;
 padding:			20px 20px 12px 20px;
+line-height:160%;
 }
 
 h1 {
@@ -67,9 +68,10 @@ margin: 			0 0 4px 0;
 		<p>$content</p><pre>
 HTMLS;
         $trace = debug_backtrace();
+        unset($trace[0]);
         foreach($trace as $t)
         {
-            $info .= "#{$t['file']}: {$t['line']},{$t['function']}";
+            $info .= "# line:{$t['line']}, call:{$t['class']}{$t['type']}{$t['function']}, file:{$t['file']} \n";
         }
 		$info .= '</pre></div></body></html>';
 		if($_SERVER['run_mode']==='server') return $info;

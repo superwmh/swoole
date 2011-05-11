@@ -205,6 +205,24 @@ class Swoole extends ArrayObject
         }
     }
 
+    function runServer()
+    {
+        if(empty($_SERVER['run_mode'])) $_SERVER['run_mode'] = 'server';
+        if(empty($_SERVER['server_driver'])) $_SERVER['server_driver'] = 'SelectTCP'; //BlockTCP,EventTCP,SelectTCP
+        if(empty($_SERVER['server_host'])) $_SERVER['server_host'] = '0.0.0.0';
+        if(empty($_SERVER['server_port'])) $_SERVER['server_port'] = 8888;
+        if(empty($_SERVER['server_processor_num'])) $_SERVER['server_processor_num'] = 1;   //启用的进程数目
+        if(empty($_SERVER['session_cookie_life'])) $_SERVER['session_cookie_life'] = 86400; //保存SESSION_ID的cookie存活时间
+        if(empty($_SERVER['session_life'])) $_SERVER['session_life'] = 1800;        //Session在Cache中的存活时间
+
+        import('#net.driver.'.$_SERVER['server_driver']);
+        import('#net.protocal.HttpServer');
+
+        $server = new $_SERVER['server_driver']($_SERVER['server_host'],$_SERVER['server_port'],60);
+        $server->setProtocol(new HttpServer);
+        $server->run($_SERVER['server_processor_num']);
+    }
+
     function runAdmin($admin_do)
     {
         require(LIBPATH."/admin/$admin_do.admin.php");
@@ -214,4 +232,3 @@ class Swoole extends ArrayObject
         call_user_func('admin_'.$action,$admin);
     }
 }
-?>

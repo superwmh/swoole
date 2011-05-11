@@ -5,6 +5,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
 {
     public $config;
     public $server;
+    public $request_process;
 
     /**
      * 缓存数据
@@ -13,9 +14,9 @@ class HttpServer implements Swoole_TCP_Server_Protocol
      */
     private $tmp;
 
-    function __construct($config)
+    function __construct($func='http_request_process')
     {
-        $this->config = $config;
+        $this->request_process = $func;
     }
 
     function onStart()
@@ -39,6 +40,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         {
             if(!isset($this->tmp[$client_id])) $this->tmp[$client_id] = $data;
             $this->tmp[$client_id] .= $data;
+            return true;
         }
         elseif(!empty($this->tmp[$client_id]))
         {
@@ -46,7 +48,8 @@ class HttpServer implements Swoole_TCP_Server_Protocol
             unset($this->tmp[$client_id]);
         }
         $request = $this->request($data);
-        $response = $this->config['request_call']($request);
+        $call_func = $this->request_process;
+        $response = $call_func($request);
         $this->response($client_id,$response);
         unset($request);
         unset($response);
@@ -101,7 +104,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         $request->meta['fragment'] = $info['fragment'];
         parse_str ($url_info['query'],$request->get);
 
-        //POST请求带有http bod
+        //POST请求,有http body
         if($request->meta['method']==="POST") parse_str($parts[1], $request->post);
         //解析Cookies
         if(!empty($request->head['Cookie'])) $request->cookie = $this->parse_cookie($request->head['Cookie']);
