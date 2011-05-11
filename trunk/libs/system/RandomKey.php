@@ -8,16 +8,6 @@ class RandomKey
         $zhcnchr = mb_convert_encoding($unichr, "UTF-8", "HTML-ENTITIES");
         return $zhcnchr;
     }
-
-    function chinese($num)
-    {
-        $str = '';
-        for($i=0;$i<$num;$i++)
-        {
-            $str[] = ;
-        }
-        return chr(hexdec($c1.$c2)).chr(hexdec($c3.$c4));
-    }
     /**
      * 随机生成一个字符串
      * @param $length

@@ -31,7 +31,7 @@ class Error
 	function info($msg,$content)
 	{
 	    if(DEBUG=='off') return false;
-		echo <<<HTMLS
+		$info = <<<HTMLS
 <html>
 <head>
 <title>$msg</title>
@@ -64,13 +64,16 @@ margin: 			0 0 4px 0;
 <body>
 	<div id="content">
 		<h1>$msg</h1>
-		<p>$content</p>
+		<p>$content</p><pre>
 HTMLS;
-		echo '<pre>';
-		debug_print_backtrace();
-		echo '</pre>';
-		echo '</div></body></html>';
-		if($_SERVER['run_mode']!=='server') exit;
+        $trace = debug_backtrace();
+        foreach($trace as $t)
+        {
+            $info .= "#{$t['file']}: {$t['line']},{$t['function']}";
+        }
+		$info .= '</pre></div></body></html>';
+		if($_SERVER['run_mode']==='server') return $info;
+		else echo $info;
 	}
 
 	static function warn($title,$content)

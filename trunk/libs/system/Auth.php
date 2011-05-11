@@ -130,7 +130,6 @@ class Auth
      */
     function autoLogin()
     {
-        $ip = Swoole_client::getIP();
         setcookie(self::$session_prefix.'autologin',1,time() + self::$cookie_life,'/');
         setcookie(self::$session_prefix.'username',$this->user['username'],time() + self::$cookie_life,'/');
         setcookie(self::$session_prefix.'password',$this->user['password'],time() + self::$cookie_life,'/');

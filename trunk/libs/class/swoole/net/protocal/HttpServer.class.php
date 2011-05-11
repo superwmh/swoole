@@ -63,7 +63,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         foreach ($blocks as $cookie)
         {
             list ($key, $value) = explode("=", $cookie);
-            $_cookies[$key] = $value;
+            $_cookies[trim($key)] = trim($value);
         }
         return $_cookies;
     }
@@ -122,6 +122,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         $response->head['Date'] = gmdate("D, d M Y H:i:s T");
         $response->head['Server'] = $this->config['software'];
         $response->head['Connection'] = 'close';
+        $response->head['Content-Length'] = strlen($response->body);
 
         $out = $response->head();
         $out .= $response->body;

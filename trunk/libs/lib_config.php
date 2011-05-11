@@ -100,7 +100,7 @@ function session()
         return true;
     }
     $session_cache = new Cache(SESSION_CACHE);
-    $mSess = new MSession($session_cache);
+    $mSess = new Session($session_cache);
     $mSess->initSess();
 }
 /**
