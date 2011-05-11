@@ -6,6 +6,13 @@ class HttpServer implements Swoole_TCP_Server_Protocol
     public $config;
     public $server;
 
+    /**
+     * 缓存数据
+     * Enter description here ...
+     * @var unknown_type
+     */
+    private $tmp;
+
     function __construct($config)
     {
         $this->config = $config;
@@ -27,6 +34,17 @@ class HttpServer implements Swoole_TCP_Server_Protocol
      */
     function onRecive($client_id,$data)
     {
+        //处理data的完整性
+        if(substr($data,-1)!=="\n")
+        {
+            if(!isset($this->tmp[$client_id])) $this->tmp[$client_id] = $data;
+            $this->tmp[$client_id] .= $data;
+        }
+        elseif(!empty($this->tmp[$client_id]))
+        {
+            $data = $this->tmp[$client_id];
+            unset($this->tmp[$client_id]);
+        }
         $request = $this->request($data);
         $response = $this->config['request_call']($request);
         $this->response($client_id,$response);
@@ -74,7 +92,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
             }
             if($head!=='')
             {
-                list($key, $value) = explode (":", $header);
+                list($key, $value) = explode (":", $head);
                 $request->head[$key] = trim($value);
             }
         }
@@ -86,7 +104,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         //POST请求带有http bod
         if($request->meta['method']==="POST") parse_str($parts[1], $request->post);
         //解析Cookies
-        if(!empty($request->head['Cookie'])) $request->cookie = $this->parse_cookie($request['Cookie']);
+        if(!empty($request->head['Cookie'])) $request->cookie = $this->parse_cookie($request->head['Cookie']);
         return $request;
     }
 
@@ -101,20 +119,14 @@ class HttpServer implements Swoole_TCP_Server_Protocol
 
     function response($client_id,$response)
     {
-        $out  = "HTTP/1.1 200 OK\r\n";
-        $out .= "Date: " . gmdate("D, d M Y H:i:s T")."\r\n";
-        $out .= "Server: " . $_SERVER['software'] . "\r\n";
-        $out .= "Content-type: ".$response->head['Content-Type']."\r\n";
-        $out .= "Connection: close\r\n";
-        //$out .= "Connection: Keep-Alive\r\n";
-        $out .= "Cache-Control: no-store, no-cache, must-revalidate\r\n"; // HTTP/1.1
-        $out .= "Cache-Control: post-check=0, pre-check=0\r\n";
-        $out .= "Pragma: no-cache\r\n"; // HTTP/1.0
-        $out .= "Content-Length: " .$response->head['Content-Length'] . "\r\n\r\n";
+        $response->head['Date'] = gmdate("D, d M Y H:i:s T");
+        $response->head['Server'] = $this->config['software'];
+        $response->head['Connection'] = 'close';
+
+        $out = $response->head();
         $out .= $response->body;
 
         $this->server->send($client_id,$out);
         $this->server->close($client_id);
     }
 }
-?>
