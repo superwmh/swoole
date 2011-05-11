@@ -128,7 +128,7 @@ function sw_spawn($num)
 }
 interface Swoole_TCP_Server_Driver
 {
-    function run($num);
+    function run($num=1);
     function send($client_id,$data);
     function close($client_id);
     function shutdown();

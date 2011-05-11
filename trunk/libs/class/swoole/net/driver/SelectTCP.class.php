@@ -1,5 +1,5 @@
 <?php
-require LIBPATH.'/class/swoole/net/SwooleServer.class.php';
+require_once LIBPATH.'/class/swoole/net/SwooleServer.class.php';
 class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 {
     public $server_sock;
@@ -98,11 +98,11 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                         else
                         {
                             $this->close($socket_id);
-                            $this->protocol->onClose($socket_id);
                         }
                     }
-                }                
-            }      
+                }
+                sw_gc_array($read_fds);
+            }
         }
     }
 
