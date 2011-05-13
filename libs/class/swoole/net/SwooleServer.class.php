@@ -7,6 +7,10 @@ class SwooleServer
     public $timeout;
 
     public $buffer_size = 1024;
+    public $server_block = 0; //0 block,1 noblock
+    public $client_block = 0; //0 block,1 noblock
+    //最大连接数
+    public $max_connect=1000;
 
     function __construct($host,$port,$timeout=30)
     {
@@ -15,7 +19,7 @@ class SwooleServer
         $this->timeout = $timeout;
     }
 
-	/**
+    /**
      * 应用协议
      * @return unknown_type
      */
@@ -64,17 +68,17 @@ class SwooleServer
     }
     function log($log)
     {
-        //echo $log;
+        echo $log;
     }
 }
 function sw_run($cmd)
 {
-   if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
-   else exec($cmd." > /dev/null &");
+    if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
+    else exec($cmd." > /dev/null &");
 }
 function sw_restart()
 {
-	if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
+    if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
     else exec($cmd." > /dev/null &");
 }
 function sw_gc_array($array)
@@ -103,6 +107,16 @@ function sw_socket_close($socket,$event=null)
     }
     stream_socket_shutdown($socket,STREAM_SHUT_RDWR);
     fclose($socket);
+}
+function sw_fread_stream($fp,$length)
+{
+    $data = '';
+    while($buf = fread($fp,$length))
+    {
+        $data .= $buf;
+        if($buf===null or strlen($buf)<$length) break;
+    }
+    return $data;
 }
 function sw_fwrite_stream($fp, $string)
 {

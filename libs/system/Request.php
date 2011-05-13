@@ -3,6 +3,7 @@ class Request
 {
     public $get;
     public $post;
+    public $file;
     public $cookie;
     public $session;
     public $head;
@@ -16,6 +17,7 @@ class Request
     {
         if($this->get) $_GET = $this->get;
         if($this->post) $_POST = $this->post;
+        if($this->file) $_FILES = $this->file;
         if($this->cookie) $_COOKIE = $this->cookie;
         $_REQUEST = array_merge($this->get,$this->post,$this->cookie);
         $_SERVER["HTTP_HOST"] = $this->head['Host'];
