@@ -5,6 +5,8 @@ class BlockTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 	public $server_sock;
 	public $server_socket_id;
 	public $client_sock;
+	public $buffer_size = 8192;
+	public $timeout_micro = 1000;
 
 	function __construct($host,$port,$timeout=30)
 	{
@@ -46,16 +48,12 @@ class BlockTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 		while($this->client_sock[0] = stream_socket_accept($this->server_sock,-1))
 		{
 			stream_set_blocking($this->client_sock[0], 1);
-			$data = fread($this->client_sock[0],$this->buffer_size);
-			if(feof($this->client_sock[0])) continue;
-			if($data !== false && $data !='')
-			{
-				$this->protocol->onRecive(0,$data);
-			}
-			else
-			{
-				$this->close(0);
-			}
+			stream_set_timeout($this->client_sock[0], 0, $this->timeout_micro);
+			if(feof($this->client_sock[0])) $this->close(0);
+
+			//堵塞Server必须读完全部数据
+            $data = sw_fread_stream($this->client_sock[0],$this->buffer_size);
+			$this->protocol->onRecive(0,$data);
 		}
 	}
 

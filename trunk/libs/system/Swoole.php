@@ -208,6 +208,7 @@ class Swoole extends ArrayObject
     function runServer()
     {
         if(empty($_SERVER['run_mode'])) $_SERVER['run_mode'] = 'server';
+        if(empty($_SERVER['server_software'])) $_SERVER['server_software'] = 'Swoole';
         if(empty($_SERVER['server_driver'])) $_SERVER['server_driver'] = 'SelectTCP'; //BlockTCP,EventTCP,SelectTCP
         if(empty($_SERVER['server_host'])) $_SERVER['server_host'] = '0.0.0.0';
         if(empty($_SERVER['server_port'])) $_SERVER['server_port'] = 8888;

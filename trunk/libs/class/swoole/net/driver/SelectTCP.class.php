@@ -5,8 +5,6 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     public $server_sock;
     public $server_socket_id;
 
-    //最大连接数
-    public $max_connect=1000;
     /**
      * 文件描述符
      * @var unknown_type
@@ -80,7 +78,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                     {
                         $client_socket = stream_socket_accept($this->server_sock);
                         $client_socket_id = (int)$client_socket;
-                        stream_set_blocking($client_socket,0);
+                        stream_set_blocking($client_socket,$this->client_block);
                         $this->client_sock[$client_socket_id] = $client_socket;
                         $this->fds[$client_socket_id] = $client_socket;
                         $this->client_num++;
@@ -90,7 +88,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                     }
                     else
                     {
-                        $data = fread($socket,$this->buffer_size);
+                        $data = sw_fread_stream($socket,$this->buffer_size);
                         if($data !== false && $data !='')
                         {
                             $this->protocol->onRecive($socket_id,$data);
