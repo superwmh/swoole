@@ -154,8 +154,9 @@ class Swoole extends ArrayObject
 
     function runAjax()
     {
-        if(empty($_GET['method'])) return;
-        $method = $_GET['method'];
+		if(!preg_match('/^[a-z0-9_]+$/i',$_GET['method'])) return false;
+        $method = 'ajax_'.$_GET['method'];
+
         if(!function_exists($method))
         {
             echo 'Error: Function not found!';
@@ -165,7 +166,6 @@ class Swoole extends ArrayObject
         header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
         header('Content-type: application/json');
 
-        $method = $_GET['method'];
         $data = call_user_func($method);
         if(DBCHARSET!='utf8')
         {
@@ -189,6 +189,7 @@ class Swoole extends ArrayObject
             {
                 //echo '没有缓存，正在建立缓存';
                 $view = isset($_GET['view'])?$_GET['view']:'index';
+				if(!preg_match('/^[a-z0-9_]+$/i',$view)) return false;
                 foreach($_GET as $key=>$param)
                 $this->tpl->assign($key,$param);
                 $cache->create($this->tpl->fetch($view.'.html'));
