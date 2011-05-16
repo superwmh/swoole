@@ -1,6 +1,7 @@
 <?php
 define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
 define('WEBPATH',realpath(LIBPATH.'/../'));
+require LIBPATH.'/function/cli.php';
 
 error_reporting(E_ERROR);
 //如果是命令行执行
@@ -168,95 +169,4 @@ HTMLS;
     echo '<tr><td colspan=2><input type="submit" name="button" id="button" value="确认并开始安装" /></td></tr>';
     //结束
     echo '</table></form></div></body></html>';
-}
-/**
- * 创建控制器类的文件
- * @param $name
- * @return unknown_type
- */
-function create_controllerclass($name,$hello=false)
-{
-    $content  = "";
-    $content .= "<?php\n";
-    $content .= "class {$name} extends Controller\n";
-    $content .= "{\n";
-    $content .= "	function __construct(\$swoole)\n";
-    $content .= "	{\n";
-    $content .= "	    parent::__construct(\$swoole);\n";
-    $content .= "	}\n";
-    //添加一个hello view
-    if($hello)
-    {
-        $content .= "	function index(\$swoole)\n";
-        $content .= "	{\n";
-        $content .= "	    echo 'hello world.This page build by <a href=http://www.swoole.com/>swoole</a>!';\n";
-        $content .= "	}\n";
-    }
-    $content .= "}";
-    file_put_contents(WEBPATH.'/apps/controllers/'.$name.'.php',$content);
-}
-/**
- * 创建模型类的文件
- * @param $name
- * @return unknown_type
- */
-function create_modelclass($name)
-{
-    $content  = "";
-    $content .= "<?php\n";
-    $content .= "class {$name} extends Model\n";
-    $content .= "{\n";
-    $content .= "	//Here write Database table's name\n";
-    $content .= "	var \$table = '';\n";
-    $content .= "}";
-    file_put_contents(WEBPATH.'/apps/models/'.$name.'.model.php',$content);
-}
-/**
- * 创建必需的目录
- * @return unknown_type
- */
-function create_require_dir()
-{
-    /**
-     * 建立MVC目录
-     */
-    if(!is_dir(WEBPATH.'/apps')) mkdir(WEBPATH.'/apps',0755);
-    if(!is_dir(WEBPATH.'/apps/controllers')) mkdir(WEBPATH.'/apps/controllers',0755);
-    if(!is_dir(WEBPATH.'/apps/models')) mkdir(WEBPATH.'/apps/models',0755);
-    if(!is_dir(WEBPATH.'/apps/views')) mkdir(WEBPATH.'/apps/views',0755);
-
-    /**
-     * 建立缓存的目录
-     */
-    if(!is_dir(WEBPATH.'/cache')) mkdir(WEBPATH.'/cache',0755);
-    if(!is_dir(WEBPATH.'/cache/pages_c')) mkdir(WEBPATH.'/cache/pages_c',0777);
-    if(!is_dir(WEBPATH.'/cache/templates_c')) mkdir(WEBPATH.'/cache/templates_c',0777);
-    if(!is_dir(WEBPATH.'/cache/filecache')) mkdir(WEBPATH.'/cache/virtualdata',0777);
-
-    /**
-     * Smarty的模板目录
-     */
-    if(!is_dir(WEBPATH.'/templates')) mkdir(WEBPATH.'/templates',0755);
-
-    /**
-     * 建立静态文件的目录
-     */
-    if(!is_dir(WEBPATH.'/static')) mkdir(WEBPATH.'/static',0755);
-    if(!is_dir(WEBPATH.'/static/images')) mkdir(WEBPATH.'/static/images',0755);
-    if(!is_dir(WEBPATH.'/static/css')) mkdir(WEBPATH.'/static/css',0755);
-    if(!is_dir(WEBPATH.'/static/uploads')) mkdir(WEBPATH.'/static/uploads',0755);
-    if(!is_dir(WEBPATH.'/static/js')) mkdir(WEBPATH.'/static/js',0755);
-
-    /**
-     * 建立外部扩展类目录
-     */
-    if(!is_dir(WEBPATH.'/class')) mkdir(WEBPATH.'/class',0755);
-    /**
-     * 建立网站字典目录
-     */
-    if(!is_dir(WEBPATH.'/dict')) mkdir(WEBPATH.'/dict',0755);
-    /**
-     * 建立Swoole插件系统目录
-     */
-    if(!is_dir(WEBPATH.'/swoole_plugin')) mkdir(WEBPATH.'/swoole_plugin',0755);
 }
