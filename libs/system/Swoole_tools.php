@@ -71,30 +71,40 @@ class Swoole_tools
         return $time.'秒前';
     }
     /**
+     * 合并URL字串，parse_query的反向函数
+     * @param $urls
+     * @return unknown_type
+     */
+    static function combine_query($urls)
+    {
+        foreach($urls as $k=>$v)
+        {
+            if(!empty($k)) $url[] = $k.self::$url_key_join.urlencode($v);
+        }
+        return implode(self::$url_param_join,$url);
+    }
+    /**
      * URL合并
      * @param $key
      * @param $value
      * @param $ignore
      * @return unknown_type
      */
-    static function url_merge($key,$value,$ignore=null)
+    static function url_merge($key,$value,$ignore=null,$urls=null)
     {
         $url = array();
-        $urls = $_GET;
-        $urls = array_merge($_GET,array_combine(explode(',',$key),explode(',',$value)));
+        if($url===null) $urls = $_GET;
+
+        $urls = array_merge($urls,array_combine(explode(',',$key),explode(',',$value)));
         if($ignore!==null)
         {
             $ignores = explode(',',$ignore);
             foreach($ignores as $ig) unset($urls[$ig]);
         }
-        foreach($urls as $k=>$v)
-        {
-            if(!empty($k)) $url[] = $k.self::$url_key_join.urlencode($v);
-        }
         if(self::$url_prefix=='') $prefix = $_SERVER['PHP_SELF'].'?';
         else $prefix = self::$url_prefix;
 
-        return $prefix.implode(self::$url_param_join,$url).self::$url_add_end;
+        return $prefix.self::combine_query($urls).self::$url_add_end;
     }
     /**
      * URL解析到REQUEST
@@ -133,16 +143,16 @@ class Swoole_tools
      */
     static function array_iconv($in_charset,$out_charset,$data)
     {
-    	if(is_array($data))
-    	{
-    		foreach($data as $key=>$value)
-    		{
-    			if(is_array($value)) $value = self::array_iconv($value);
-    			else $value = iconv($in_charset,$out_charset,$value);
-    			$data[$key]=$value;
-    		}
-    	}
-    	return $data;
+        if(is_array($data))
+        {
+            foreach($data as $key=>$value)
+            {
+                if(is_array($value)) $value = self::array_iconv($value);
+                else $value = iconv($in_charset,$out_charset,$value);
+                $data[$key]=$value;
+            }
+        }
+        return $data;
     }
     /**
      * 数组饱满度
