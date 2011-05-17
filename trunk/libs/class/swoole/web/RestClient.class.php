@@ -9,15 +9,13 @@ class RestClient
 {
     public $server_url;
     public $keep_alive = false;
-    public $secret;
     public $client_type;
     public $http;
     public $debug;
 
-    function __construct($url,$user,$password)
+    function __construct($url,$user='',$password='')
     {
-        $this->secret = Auth::mkpasswd($user,$password);
-        $this->server_url = $url."?user=$user&pass=".$this->secret.'&';
+        $this->server_url = $url."?user=$user&pass=".Auth::mkpasswd($user,$password).'&';
 
         import('http.CURL');
         $this->client_type = 'curl';
