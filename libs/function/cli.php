@@ -95,7 +95,6 @@ function create_require_dir()
     if(!is_dir(WEBPATH.'/apps')) mkdir(WEBPATH.'/apps',0755);
     if(!is_dir(WEBPATH.'/apps/controllers')) mkdir(WEBPATH.'/apps/controllers',0755);
     if(!is_dir(WEBPATH.'/apps/models')) mkdir(WEBPATH.'/apps/models',0755);
-    if(!is_dir(WEBPATH.'/apps/views')) mkdir(WEBPATH.'/apps/views',0755);
 
     /**
      * 建立缓存的目录
@@ -103,7 +102,7 @@ function create_require_dir()
     if(!is_dir(WEBPATH.'/cache')) mkdir(WEBPATH.'/cache',0755);
     if(!is_dir(WEBPATH.'/cache/pages_c')) mkdir(WEBPATH.'/cache/pages_c',0777);
     if(!is_dir(WEBPATH.'/cache/templates_c')) mkdir(WEBPATH.'/cache/templates_c',0777);
-    if(!is_dir(WEBPATH.'/cache/filecache')) mkdir(WEBPATH.'/cache/virtualdata',0777);
+    if(!is_dir(WEBPATH.'/cache/filecache')) mkdir(WEBPATH.'/cache/filecache',0777);
 
     /**
      * Smarty的模板目录
