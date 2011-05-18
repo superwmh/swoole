@@ -1,4 +1,10 @@
 <?php
+interface ICache
+{
+    function set($key,$value,$expire);
+    function get($key);
+    function delete($key);
+}
 /**
  * 缓存制造类，缓存基类
  * @author Tianfeng.Han
