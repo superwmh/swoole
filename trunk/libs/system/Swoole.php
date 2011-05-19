@@ -218,7 +218,7 @@ class Swoole extends ArrayObject
         if(empty($_SERVER['session_life'])) $_SERVER['session_life'] = 1800;        //Session在Cache中的存活时间
 
         import('#net.driver.'.$_SERVER['server_driver']);
-        import('#net.protocal.HttpServer');
+        import('#net.protocol.HttpServer');
 
         $server = new $_SERVER['server_driver']($_SERVER['server_host'],$_SERVER['server_port'],60);
         $server->setProtocol(new HttpServer);

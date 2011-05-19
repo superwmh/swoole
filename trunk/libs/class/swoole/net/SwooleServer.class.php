@@ -150,7 +150,9 @@ interface Swoole_TCP_Server_Driver
 }
 interface Swoole_UDP_Server_Driver
 {
-
+    function run($num=1);
+    function shutdown();
+    function setProtocol($protocol);
 }
 interface Swoole_TCP_Server_Protocol
 {
@@ -164,6 +166,6 @@ interface Swoole_TCP_Server_Protocol
 interface Swoole_UDP_Server_Protocol
 {
     function onStart();
-    function onData();
+    function onData($peer,$data);
     function onShutdown();
 }

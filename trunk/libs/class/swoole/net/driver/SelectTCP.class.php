@@ -99,7 +99,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                         }
                     }
                 }
-                sw_gc_array($read_fds);
+                //sw_gc_array($read_fds);
             }
         }
     }
