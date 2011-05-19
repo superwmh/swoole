@@ -1,6 +1,6 @@
 <?php
 require LIBPATH.'/class/swoole/net/SwooleServer.class.php';
-abstract class EventUDP extends SwooleServer implements Swoole_UDP_Server
+class EventUDP extends SwooleServer implements Swoole_UDP_Server_Driver
 {
     /**
      * Server Socket
@@ -21,7 +21,6 @@ abstract class EventUDP extends SwooleServer implements Swoole_UDP_Server
 	{
 		parent::__construct($host,$port,$timeout=30);
 	}
-
     /**
      * 运行服务器程序
      * @return unknown_type
@@ -37,7 +36,7 @@ abstract class EventUDP extends SwooleServer implements Swoole_UDP_Server
 		event_set($this->server_event,$this->server_sock, EV_READ | EV_PERSIST, "sw_server_handle_recvfrom",$this);
 		event_base_set($this->server_event,$this->base_event);
 		event_add($this->server_event);
-		$this->onStart();
+		$this->protocol->onStart();
 		event_base_loop($this->base_event);
 	}
 	/**
@@ -50,17 +49,8 @@ abstract class EventUDP extends SwooleServer implements Swoole_UDP_Server
 	    sw_socket_close($this->server_sock,$this->server_event);
 	    //关闭事件循环
         event_base_loopexit($this->base_event);
-        $this->onShutdown();
+        $this->protocol->onShutdown();
 	}
-	/**
-	 * 接收到数据后回调函数
-	 * @param $client_sock
-	 * @param $data
-	 * @return unknown_type
-	 */
-	abstract protected function onData($peer,$data);
-	protected function onShutdown(){}
-    protected function onStart(){}
 }
 
 function sw_server_handle_recvfrom($server_socket,$events,$server)
@@ -68,10 +58,6 @@ function sw_server_handle_recvfrom($server_socket,$events,$server)
     $data = stream_socket_recvfrom($server_socket,$server->buffer_size,$server->flags, $peer);
     if($data !== false && $data !='')
 	{
-		$server->onData($peer,$data);
-	}
-	else
-	{
-	    $server->onError(0,"Data Packet is empty!\n");
+		$server->protocol->onData($peer,$data);
 	}
 }

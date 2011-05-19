@@ -1,5 +1,5 @@
 <?php
-if(DBCHARSET=='utf8') echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+if(defined('DBCHARSET') and DBCHARSET=='utf8') echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 class Swoole_js
 {
 	static $head="<script language=\"javascript\">\n";

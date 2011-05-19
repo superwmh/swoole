@@ -2,6 +2,9 @@
 define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
 define('WEBPATH',realpath(LIBPATH.'/../'));
 require LIBPATH.'/function/cli.php';
+require LIBPATH.'/system/Form.php';
+require LIBPATH.'/system/Swoole_js.php';
+$GLOBALS['menu'] = '<a href="manage.php">初始化目录</a> <a href="?act=cm">创建模型</a> <a href="?act=cc">创建控制器</a>';
 
 error_reporting(E_ERROR);
 //如果是命令行执行
@@ -15,6 +18,8 @@ if(!empty($argv[0]))
 else
 {
     if(empty($_GET['act'])) manage_check_env();
+    elseif($_GET['act']=='cc') manage_create_controller();
+    elseif($_GET['act']=='cm') manage_create_model();
     elseif($_GET['act']=='init')
     {
         if(file_exists(WEBPATH.'/config.php')) exit('此目录下已安装Swoole框架!');
@@ -101,6 +106,7 @@ HTMLS;
 <body>
 	<div id="content">
 	  <h1>$title</h1>
+	  <p>{$GLOBALS['menu']}</p>
 	  <form id="form1" name="form1" method="post" action="?act=init">
 		<table border="1" cellpadding="0" cellspacing="0" width="450">
 HTMLS;
@@ -156,7 +162,6 @@ HTMLS;
     }
     else echo "<tr><td>mbstring</td><td class='red'>不支持宽字符处理函数</td></tr>";
 
-    require LIBPATH.'/system/Form.php';
     $dbtype_check = Form::select('dbtype',$dbtype,null,true);
     echo "<tr><td>数据库驱动类型</td><td>{$dbtype_check}</td></tr>";
 
@@ -167,6 +172,93 @@ HTMLS;
     echo '<tr><td>数据库用户名</td><td>'.Form::input('dbuser').'</td></tr>';
     echo '<tr><td>数据库密码</td><td>'.Form::input('dbpassword').'</td></tr>';
     echo '<tr><td colspan=2><input type="submit" name="button" id="button" value="确认并开始安装" /></td></tr>';
+    //结束
+    echo '</table></form></div></body></html>';
+}
+
+function manage_create_controller()
+{
+    if($_POST)
+    {
+        $name = trim($_POST['name']);
+        if(empty($name)) return false;
+        if(is_file(WEBPATH.'/apps/controllers/'.$name.'.php'))
+        {
+            Swoole_js::js_back('已存在此控制器');
+            return false;
+        }
+        else
+        {
+            create_controllerclass($name);
+            Swoole_js::js_back('创建成功');
+            return true;
+        }
+    }
+    $title = "Swoole创建控制器";
+    echo <<<HTMLS
+    <head>
+    <title>$title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+HTMLS;
+    echo file_get_contents(LIBPATH.'/data/media/swoole.css');
+    echo <<<HTMLS
+</style>
+</head>
+<body>
+	<div id="content">
+	  <h1>$title</h1>
+	  <p>{$GLOBALS['menu']}</p>
+	  <form id="form1" name="form1" method="post" action="">
+		<table border="1" cellpadding="0" cellspacing="0" width="450">
+HTMLS;
+
+    echo '<tr><td>控制器名称</td><td>'.Form::input('name').'</td></tr>';
+    echo '<tr><td colspan=2><input type="submit" name="button" id="button" value="确认并创建控制器" /></td></tr>';
+    //结束
+    echo '</table></form></div></body></html>';
+}
+
+function manage_create_model()
+{
+    if($_POST)
+    {
+        $name = trim($_POST['name']);
+        $table = trim($_POST['table']);
+        if(empty($name) or empty($table)) return false;
+        if(is_file(WEBPATH.'/apps/models/'.$name.'.model.php'))
+        {
+            Swoole_js::js_back('已存在此模型');
+            return false;
+        }
+        else
+        {
+            create_modelclass($name,$table);
+            Swoole_js::js_back('创建成功');
+            return true;
+        }
+    }
+    $title = "Swoole创建模型";
+    echo <<<HTMLS
+    <head>
+    <title>$title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+HTMLS;
+    echo file_get_contents(LIBPATH.'/data/media/swoole.css');
+    echo <<<HTMLS
+</style>
+</head>
+<body>
+	<div id="content">
+	  <h1>$title</h1>
+	  <p>{$GLOBALS['menu']}</p>
+	  <form id="form1" name="form1" method="post" action="">
+		<table border="1" cellpadding="0" cellspacing="0" width="450">
+HTMLS;
+    echo '<tr><td>模型名称</td><td>'.Form::input('name').'</td></tr>';
+    echo '<tr><td>数据库表名</td><td>'.Form::input('table').'</td></tr>';
+    echo '<tr><td colspan=2><input type="submit" name="button" id="button" value="确认并创建" /></td></tr>';
     //结束
     echo '</table></form></div></body></html>';
 }
