@@ -11,6 +11,8 @@ class SwooleServer
     public $client_block = 0; //0 block,1 noblock
     //最大连接数
     public $max_connect=1000;
+    //客户端socket列表
+    public $client_sock;
 
     function __construct($host,$port,$timeout=30)
     {
