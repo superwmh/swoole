@@ -10,8 +10,6 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
      * @var unknown_type
      */
     public $fds;
-    //客户端socket列表
-    public $client_sock = array();
     //客户端数量
     public $client_num = 0;
 
