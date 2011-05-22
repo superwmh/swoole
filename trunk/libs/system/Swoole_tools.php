@@ -103,9 +103,6 @@ class Swoole_tools
         }
         if(self::$url_prefix=='') $prefix = $_SERVER['PHP_SELF'].'?';
         else $prefix = self::$url_prefix;
-        
-        debug($urls);
-
         return $prefix.self::combine_query($urls).self::$url_add_end;
     }
     /**
