@@ -93,7 +93,7 @@ class Swoole_tools
     static function url_merge($key,$value,$ignore=null,$urls=null)
     {
         $url = array();
-        if($url===null) $urls = $_GET;
+        if($urls===null) $urls = $_GET;
 
         $urls = array_merge($urls,array_combine(explode(',',$key),explode(',',$value)));
         if($ignore!==null)
@@ -103,6 +103,8 @@ class Swoole_tools
         }
         if(self::$url_prefix=='') $prefix = $_SERVER['PHP_SELF'].'?';
         else $prefix = self::$url_prefix;
+        
+        debug($urls);
 
         return $prefix.self::combine_query($urls).self::$url_add_end;
     }
