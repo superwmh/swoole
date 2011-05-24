@@ -8,7 +8,6 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 	 */
 	public $base_event;
 	public $server_event;
-	public $client_event = array();
 	public $server_sock;
 
 	//最大连接数
@@ -67,11 +66,11 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 	 */
 	function sendAll($client_id,$data)
 	{
-		foreach($this->client_sock as $k=>$sock)
-		{
-			if($k==$client_id) continue;
-			$this->sendData($sock,$data);
-		}
+	    foreach($this->client_sock as $k=>$sock)
+        {
+            if($client_id and $k==$client_id) continue;
+            $this->sendData($sock,$data);
+        }
 	}
 	/**
 	 * 关闭服务器程序
@@ -134,9 +133,9 @@ function sw_server_handle_connect($server_socket,$events,$server)
 	event_base_set($client_event,$server->base_event);
 	//加入事件监听组
 	event_add($client_event);
+	$server->client_sock[$client_id] = $client_socket;
 	$server->client_event[$client_id] = $client_event;
 	$server->protocol->onConnect($client_id);
-	$server->client_num++;
 }
 /**
  * 接收到数据后进行处理
