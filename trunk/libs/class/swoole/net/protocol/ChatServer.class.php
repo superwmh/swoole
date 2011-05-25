@@ -79,7 +79,7 @@ class ChatServer implements Swoole_TCP_Server_Protocol
     }
     function onClose($client_id)
     {
-        $uid = array_search($client_id);
+        $uid = array_search($client_id,$this->chat_client);
         unset($this->chat_client[$uid],$this->chat_unames[$uid]);
         $this->log('user logout!');
         $this->sysNotice('logout:'.$uid,$client_id);
