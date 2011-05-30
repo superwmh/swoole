@@ -4,6 +4,7 @@ define('WEBPATH',realpath(LIBPATH.'/../'));
 require LIBPATH.'/function/cli.php';
 require LIBPATH.'/system/Form.php';
 require LIBPATH.'/system/Swoole_js.php';
+require LIBPATH.'/system/Swoole_tools.php';
 $GLOBALS['menu'] = '<a href="manage.php">初始化目录</a> <a href="?act=cm">创建模型</a> <a href="?act=cc">创建控制器</a>';
 
 error_reporting(E_ERROR);
@@ -57,6 +58,7 @@ function main($param)
     switch($cmd)
     {
         case 'install':
+        case 'setup':
             $project = $param['name'];
             $strlen = strlen($project);
             $end_char = $project{$strlen-1};
