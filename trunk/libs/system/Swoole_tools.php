@@ -271,7 +271,7 @@ class Swoole_tools
             $handle =opendir($fdir);
             while(false!==($filename=readdir($handle)))
             {
-                if($filename!="."&&$filename!="..") dir_copy($fdir."/".$filename,$tdir."/".$filename);
+                if($filename!="."&&$filename!="..") self::dir_copy($fdir."/".$filename,$tdir."/".$filename);
             }
             closedir($handle);
             return true;
