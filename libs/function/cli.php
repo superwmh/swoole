@@ -21,6 +21,16 @@ function import_all_controller()
     $d->close();
 }
 /**
+ * 检查是否加载了某个扩展
+ * @param $ext_name
+ * @return unknown_type
+ */
+function require_ext($ext_name)
+{
+    if(extension_loaded($ext_name)) return true;
+    else return new Error('require php extension <b>'.$ext_name.'</b>');
+}
+/**
  * 导入所有model
  * @return unknown_type
  */

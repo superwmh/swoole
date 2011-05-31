@@ -122,7 +122,7 @@ class Swoole extends ArrayObject
             header("HTTP/1.1 404 Not Found");
             Error::info('MVC Error',"Controller <b>{$mvc['controller']}</b> not exist!");
         }
-        else require($controller_path);
+        else require_once($controller_path);
         if(!class_exists($mvc['controller']))
         {
             Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");

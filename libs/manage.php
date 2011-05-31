@@ -1,13 +1,15 @@
 <?php
-define("LIBPATH",str_replace("\\","/",dirname(__FILE__)));
-define('WEBPATH',realpath(LIBPATH.'/../'));
+require 'lib_config.php';
 require LIBPATH.'/function/cli.php';
 require LIBPATH.'/system/Form.php';
 require LIBPATH.'/system/Swoole_js.php';
 require LIBPATH.'/system/Swoole_tools.php';
+
+if(is_file('../config.php')) require '../config.php';
+else define('WEBPATH',realpath(LIBPATH.'/../'));
 $GLOBALS['menu'] = '<a href="manage.php">初始化目录</a> <a href="?act=cm">创建模型</a> <a href="?act=cc">创建控制器</a>';
 
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 //如果是命令行执行
 if(!empty($argv[0]))
 {
@@ -83,6 +85,9 @@ function main($param)
         case 'addm':
             create_modelclass($param['name']);
             echo "create a new model {$param['name']}!\n";
+            break;
+        case 'debug':
+            require LIBPATH.'/code/console.php';
             break;
         default:
             break;
