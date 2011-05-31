@@ -1,1 +1,7 @@
-请修改config.php文件中数据库配置
+1、请修改config.php文件中数据库配置，将本目录作为网站根目录
+也可以用libs/manage.php安装框架到其他目录，请参考在线文档或者手册
+2、Server模式，入口文件为server.php，
+在命令行下进入本目录，输入php server.php，可启动服务器
+Windows下请选择driver为SelectTCP(默认)或者BlockTCP。Linux且安装了Libevent，可使用EventTCP
+3、使用Server方式运行程序需要注意：新修改的代码不会生效，需重启server才可生效，模板文件修改后，无需重启即可生效。
+SESSION，请在controller中使用$this->session_start()，发送cookie，需要使用$this->request->setcookie。其他与Web服务器下运行一致。

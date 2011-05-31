@@ -9,18 +9,48 @@
  */
 class Error
 {
+    /**
+     * 错误ID
+     * @var unknown_type
+     */
 	public $error_id;
-	public $error_listener;
+	/**
+	 * 错误信息
+	 * @var unknown_type
+	 */
+	public $error_msg;
 	static public $error_code;
+    static public $stop = false;
 
-	function __construct($error_id)
+	/**
+	 * 错误对象
+	 * @param $error 如果为INT，则读取错误信息字典，否则设置错误字符串
+	 * @param $stop 是否终止程序运行(exit)
+	 * @return unknown_type
+	 */
+	function __construct($error)
 	{
-		if(empty(self::$error_code))
-		{
-			include LIBPATH.'/data/text/error_code.php';
-			self::$error_code = $error_code;
-		}
-		$this->error_id = $error_id;
+	    if(is_numeric($error))
+	    {
+    	    if(empty(self::$error_code))
+    		{
+    			include LIBPATH.'/data/text/error_code.php';
+    			self::$error_code = $error_code;
+    			//错误ID
+    			$this->error_id = (int)$error;
+    			//错误信息
+    			if(!isset(self::$error_code[$this->error_id])) $this->error_msg = self::$error_code[$this->error_id];
+    		}
+	    }
+	    else
+	    {
+	        $this->error_id = 0;
+	        $this->error_msg = $error;
+	    }
+		global $php;
+		//如果定义了错误监听程序
+        if(isset($php->error_call[$error_id])) call_user_func($php->error_call[$error_id],$error);
+        if(self::$stop) exit(Error::info('Swoole Error',$this->error_msg));
 	}
 	/**
 	 * 输出一条错误信息，并结束程序的运行
@@ -68,7 +98,7 @@ margin: 			0 0 4px 0;
 		<p>$content</p><pre>
 HTMLS;
         $trace = debug_backtrace();
-        unset($trace[0]);
+        //unset($trace[0]);
         foreach($trace as $t)
         {
             $info .= "# line:{$t['line']}, call:{$t['class']}{$t['type']}{$t['function']}, file:{$t['file']} \n";
