@@ -178,9 +178,9 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
  */
 function __autoload($class_name)
 {
-    if(file_exists(LIBPATH.'/system/'.$class_name.'.php'))
+    if(is_file(LIBPATH.'/system/'.$class_name.'.php'))
     require(LIBPATH.'/system/'.$class_name.'.php');
-    elseif(file_exists(WEBPATH.'/class/'.$class_name.'.class.php'))
+    elseif(is_file(WEBPATH.'/class/'.$class_name.'.class.php'))
     require(WEBPATH.'/class/'.$class_name.'.class.php');
 }
 ?>
