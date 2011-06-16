@@ -3,21 +3,21 @@
  * 文件缓存类，提供类似memcache的接口
  * 警告：此类仅用于测试，不作为生产环境的代码，请使用Key-Value缓存系列！
  * @author Tianfeng.Han
- * @package SwooleSystem
+ * @package Swoole
  * @subpackage cache
- *
  */
-class FileCache
+class FileCache implements ICache
 {
 	public $_vd=array();
 	public $onchange=0;
 	public $res;
-	public $autosave = false;
+	public $autosave = true;
 
-	function __construct($file)
+	function __construct($config)
 	{
-		$this->res=$file;
-		if(file_exists($this->res)) $this->_vd=unserialize(file_get_contents($this->res));
+	    if(isset($config['params']['file'])) $this->res = $config['params']['file'];
+	    else $this->res = FILECACHE_DIR.'/'.$config['id'].'.php';
+		if(is_file($this->res)) $this->_vd = unserialize(file_get_contents($this->res));
     }
 
     function set($name,$value,$timeout=0)
@@ -38,7 +38,7 @@ class FileCache
 
 	function exist($name)
 	{
-		if(!array_key_exists($name,$this->_vd)) return false;
+		if(isset($this->_vd[$name])) return false;
 		elseif($this->_vd[$name]["timeout"]==0) return true;
 		elseif(($this->_vd[$name]["mktime"]+$this->_vd[$name]["timeout"])<time())
 		{
@@ -51,7 +51,7 @@ class FileCache
 
 	function delete($name)
 	{
-		if(array_key_exists($name,$this->_vd)) unset($this->_vd[$name]);
+		if(isset($this->_vd[$name])) unset($this->_vd[$name]);
 	}
 
 	function save()
@@ -64,4 +64,3 @@ class FileCache
 		$this->save();
 	}
 }
-?>

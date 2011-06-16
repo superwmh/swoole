@@ -44,7 +44,7 @@ define('LOGPUT_TYPE','file');
 //Login登录用户配置
 define('LOGIN_TABLE','user_login');
 //框架
-require(WEBPATH.'/libs/lib_config.php');
+require_once WEBPATH.'/libs/lib_config.php';
 //自动加载项目，请查看libs/factory目录
 $php->autoload('db','tpl','cache');
 //加载插件

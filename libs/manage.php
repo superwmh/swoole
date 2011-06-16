@@ -83,7 +83,7 @@ function main($param)
             echo "create a new controller {$param['name']}!\n";
             break;
         case 'addm':
-            create_modelclass($param['name']);
+            create_modelclass($param['name'],$argv[2]);
             echo "create a new model {$param['name']}!\n";
             break;
         case 'debug':

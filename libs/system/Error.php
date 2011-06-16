@@ -20,7 +20,7 @@ class Error
 	 */
 	public $error_msg;
 	static public $error_code;
-    static public $stop = false;
+    static public $stop = true;
 
 	/**
 	 * 错误对象
@@ -98,7 +98,6 @@ margin: 			0 0 4px 0;
 		<p>$content</p><pre>
 HTMLS;
         $trace = debug_backtrace();
-        //unset($trace[0]);
         foreach($trace as $t)
         {
             $info .= "# line:{$t['line']}, call:{$t['class']}{$t['type']}{$t['function']}, file:{$t['file']} \n";

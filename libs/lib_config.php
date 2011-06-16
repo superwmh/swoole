@@ -14,12 +14,10 @@ require LIBPATH.'/system/PluginLoader.php';
 if(PHP_OS=='WINNT') define("NL","\r\n");
 else define("NL","\n");
 define("BL","<br />".NL);
-
 /**
  * 产生类库的全局变量
  */
 $php = new Swoole;
-
 /**
  *函数的命名空间
  */

@@ -6,15 +6,17 @@
  * @author Tianfeng.Han
  * @subpackage base
  */
-class Swoole extends ArrayObject
+class Swoole
 {
     public $db;
     public $tpl;
     public $cache;
     public $event;
-    public $config;
+    public $log;
+    public $upload;
+    public $user;
 
-    static $default_cache_life=600;
+    public $config;
     public $pagecache;
     /**
      * 发生错误时的回调函数
@@ -34,7 +36,6 @@ class Swoole extends ArrayObject
         if(DEBUG=='off') error_reporting(0);
         else error_reporting(E_ALL);
         $this->__init();
-        parent::__construct();
         $this->load = new SwooleLoader($this);
         $this->model = new ModelLoader($this);
         $this->plugin = new PluginLoader($this);
