@@ -1,5 +1,11 @@
 <?php
-class DBCache
+/**
+ * 数据库缓存
+ * @author Tianfeng.Han
+ * @package Swoole
+ * @subpackage cache
+ */
+class DBCache implements ICache
 {
     public $swoole;
     public $shard_id = 0;
@@ -17,6 +23,11 @@ class DBCache
             `expire` INT NOT NULL ,
             INDEX ( `ckey` )
             ) ENGINE = MYISAM ;";
+    }
+
+    function create_table()
+    {
+        $this->model->create_table();
     }
 
     function shard($id)

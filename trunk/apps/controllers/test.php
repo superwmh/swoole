@@ -17,4 +17,11 @@ class test extends Controller
         //$_SESSION['hello'] = "write to session";
         return $_SESSION['hello'].$this->showTime();
     }
+
+    function testme()
+    {
+        $hello = 80;
+        echo 3435*$hello,NL;
+        require LIBPATH.'/code/console.php';
+    }
 }
