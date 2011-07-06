@@ -23,6 +23,7 @@ class Pager
     public $is_ajax=false;//是否支持AJAX分页模式
     public $page_tpl = '';
 
+    public $fragment;
     public $span_open = array('first','last','next','previous');
     public $pagesize_group = array(10,20,50);
     public $span_class;
@@ -86,17 +87,6 @@ class Pager
         else {
             $this->error(__FUNCTION__,$var." does not belong to PB_Page!");
         }
-
-    }
-    /**
-     * 打开倒AJAX模式
-     *
-     * @param string $action 默认ajax触发的动作。
-     */
-    function open_ajax($action)
-    {
-        $this->is_ajax=true;
-        $this->ajax_action_name=$action;
     }
     /**
      * 获取显示"下一页"的代码
@@ -255,36 +245,6 @@ class Pager
             }
             $pager_html.='</div>';
             return $pager_html;
-        }
-        switch ($mode)
-        {
-            case '1':
-                $this->next_page='下一页';
-                $this->pre_page='上一页';
-                $pager_html.=$this->pre_page().$this->nowbar().$this->next_page().'第'.$this->select().'页';
-                break;
-            case '2':
-                $this->next_page='下一页';
-                $this->pre_page='上一页';
-                $this->first_page='首页';
-                $this->last_page='尾页';
-                $pager_html.=$this->first_page().$this->pre_page().'<span>[第'.$this->nowindex.'页]</span> '.$this->nowbar().$this->next_page().$this->last_page();
-                break;
-            case '3':
-                $this->next_page='下一页';
-                $this->pre_page='上一页';
-                $this->first_page='首页';
-                $this->last_page='尾页';
-                $pager_html.=$this->first_page().$this->pre_page().$this->next_page().$this->last_page();
-                break;
-            case '4':
-                $this->next_page='下一页';
-                $this->pre_page='上一页';
-                $pager_html.=$this->pre_page().$this->nowbar().$this->next_page();
-                break;
-            case '5':
-                $pager_html.=$this->pre_bar().$this->pre_page().$this->nowbar().$this->next_page().$this->next_bar();
-                break;
         }
         $pager_html.='</div>';
         return $pager_html;

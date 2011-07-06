@@ -6,31 +6,45 @@
  * @subpackage base
  *
  */
-class SwooleConfig
+class SwooleConfig implements ArrayAccess
 {
-	private $_data;
-	private $_file;
+    private $_data = array();
 
-	function __construct($config_file)
-	{
-	  // $this->_file = $config_file;
-	   //require $config_file;
-	   //$this->_data = $config;
-	}
+    function load($key)
+    {
+        $f = APPSPATH.'/configs/'.$key.'.inc.php';
+        if(is_file($f))
+        {
+            require $f;
+            $this->_data[$key] = $$key;
+        }
+        else return new Error("Config file {$f} not found!".NL);
+    }
 
-	function __get($key)
-	{
-		return $this->offsetGet($key);
-	}
+    function save($key)
+    {
+        $f = APPSPATH.'/configs/'.$key.'.inc.php';
+        file_put_contents($f,var_export($this->_data,true));
+    }
 
-	function __set($key,$value)
-	{
-		$this->_data[$key] = $value;
-	}
+    function offsetExists($keyname)
+    {
+        return isset($this->_data[$keyname]);
+    }
 
-	function save()
-	{
+    function offsetGet($keyname)
+    {
+        if(!isset($this->_data[$keyname])) $this->load($key);
+        return $this->_data[$keyname];
+    }
 
-	}
+    function offsetSet($keyname,$value)
+    {
+        $this->_data[$keyname] = $value;
+    }
+
+    function offsetUnset($keyname)
+    {
+        unset($this->_data[$keyname]);
+    }
 }
-?>

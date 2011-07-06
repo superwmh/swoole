@@ -16,7 +16,7 @@ class Swoole
     public $upload;
     public $user;
 
-    public $config;
+    static public $config;
     public $pagecache;
     /**
      * 发生错误时的回调函数
@@ -98,10 +98,9 @@ class Swoole
      * 加载config数据
      * @return unknown_type
      */
-    function loadConfig($static = true)
+    function loadConfig()
     {
-        if($static) $this->config = new ArrayObject;
-        else $this->config = new SwooleConfig;
+        self::$config = new SwooleConfig;
     }
     /**
      * 运行MVC处理模型
@@ -155,7 +154,7 @@ class Swoole
 
     function runAjax()
     {
-		if(!preg_match('/^[a-z0-9_]+$/i',$_GET['method'])) return false;
+        if(!preg_match('/^[a-z0-9_]+$/i',$_GET['method'])) return false;
         $method = 'ajax_'.$_GET['method'];
 
         if(!function_exists($method))
@@ -190,7 +189,7 @@ class Swoole
             {
                 //echo '没有缓存，正在建立缓存';
                 $view = isset($_GET['view'])?$_GET['view']:'index';
-				if(!preg_match('/^[a-z0-9_]+$/i',$view)) return false;
+                if(!preg_match('/^[a-z0-9_]+$/i',$view)) return false;
                 foreach($_GET as $key=>$param)
                 $this->tpl->assign($key,$param);
                 $cache->create($this->tpl->fetch($view.'.html'));
