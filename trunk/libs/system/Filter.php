@@ -166,14 +166,25 @@ class Filter
     public static function remove_xss($content,$allow='')
     {
         $danger = 'javascript,vbscript,expression,applet,meta,xml,blink,link,style,script,embed,object,iframe,frame,frameset,ilayer,layer,bgsound,title,base';
+        $event = 'onabort|onactivate|onafterprint|onafterupdate|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditfocus|'.
+        'onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|oncontrolselect|'.
+        'oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|'.
+        'ondragover|ondragstart|ondrop|onerror|onerrorupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|'.
+        'onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmouseout|onmouseover|onmouseup|'.
+        'onmousewheel|onmove|onmoveend|onmovestart|onpaste|onpropertychange|onreadystatechange|onreset|onresize|onresizeend|onresizestart|'.
+        'onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload';
+
         if(!empty($allow))
         {
             $allows = explode(',',$allow);
             $danger = str_replace($allow,'',$danger);
         }
         $danger = str_replace(',','|',$danger);
-        $search = "/<\s*($danger)[^>]*>[^<]*(<\s*\/\s*\\1\s*>)?/s";
-        return preg_replace($search,'',$content);
+        //替换所有危险标签
+        $content = preg_replace("/<\s*($danger)[^>]*>[^<]*(<\s*\/\s*\\1\s*>)?/is",'',$content);
+        //替换所有危险的JS事件
+        $content = preg_replace("/<([^>]*)($event)\s*\=([^>]*)>/is","<\\1 \\3>",$content);
+        return $content;
     }
     /**
      * 过滤危险字符

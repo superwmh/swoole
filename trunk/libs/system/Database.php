@@ -81,6 +81,30 @@ class Database
         }
 	}
 	/**
+	 * 启动事务处理
+	 * @return unknown_type
+	 */
+	function start()
+	{
+	    $this->_db->query('START TRANSACTION');
+	}
+	/**
+	 * 提交事务处理
+	 * @return unknown_type
+	 */
+	function commit()
+	{
+	    $this->_db->query('COMMIT');
+	}
+	/**
+	 * 事务回滚
+	 * @return unknown_type
+	 */
+	function rollback()
+	{
+	    $this->_db->query('ROLLBACK');
+	}
+	/**
 	 * 执行一条SQL语句
 	 * @param $sql
 	 * @return unknown_type
