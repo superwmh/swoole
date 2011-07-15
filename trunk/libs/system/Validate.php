@@ -6,55 +6,55 @@
  */
 class Validate
 {
-	/**
-	 * 验证是否为INT
-	 * @param $num 数字
-	 * @return false or $num
-	 */
-	static function int($num)
-	{
-		return filter_var($num, FILTER_VALIDATE_INT);
-	}
-	/**
-	 * 验证是否为无符号整数UINT
-	 * @param $num
-	 * @return false or $num
-	 */
-	static function uint($num)
-	{
-		$num = filter_var($num, FILTER_VALIDATE_INT);;
-		if($num===false or $num<0) return false;
-		else return $num;
-	}
-	/**
-	 * 验证是否为浮点型
-	 * @param $num 数字
-	 * @return false or $num
-	 */
-	static function float($num)
-	{
-		return filter_var($num, FILTER_VALIDATE_FLOAT);
-	}
-	/**
-	 * 验证是否为无符号浮点型UFloat
-	 * @param $num 数字
-	 * @return false or $num
-	 */
-	static function ufloat($num)
-	{
-		$num = filter_var($num, FILTER_VALIDATE_FLOAT);;
-        if($num===false or $num<0) return false;
-        else return $num;
-	}
-	/**
-	 * 验证是否为EMAIL
-	 * @param $str
-	 * @return false or $str
-	 */
-	static function email($str)
-	{
-		return filter_var($str, FILTER_VALIDATE_EMAIL);
-	}
+    static $regx = array(
+    	//邮箱
+        'email'=>'/^[\w-\.]+@[\w-]+(\.(\w)+)*(\.(\w){2,4})$/',
+        //手机号码
+        'mobile'=>'/^(?:13\d|15\d|18\d)-?\d{5}(\d{3}|\*{3})$/',
+        //固定电话带分机号
+        'tel'=>'/^((0\d{2,3})-)(\d{7,8})(-(\d{1,4}))?$/',
+        //固定电话不带分机号
+        'phone'=>'/^\d{3}-?\d{8}|\d{4}-?\d{7}$/',
+        //域名
+        'domain'=>'/@([0-9a-z-_]+.)+[0-9a-z-_]+$/i',
+        //IPv4
+        'ip'=>'/^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$/',
+        //日期
+        'date'=>'/^[1-9][0-9][0-9][0-9]-[0-9]{1,2}-[0-9]{1,2}$/',
+        //日期时间
+        'datetime'=>'/^[1-9][0-9][0-9][0-9]-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}(:[0-9]{1,2}){1,2}$/',
+        //时间
+        'time'=>'/^[0-9]{1,2}(:[0-9]{1,2}){1,2}$/',
+        /*--------- 数字类型 --------------*/
+        'int'=>'/^\d{1,11}$/', //十进制整数
+        'hex'=>'/^0x[0-9a-f]+$/i', //16进制整数
+        'bin'=>'/^[01]+$/', //二进制
+        'oct'=>'/^0[1-7]*[0-7]+$/', //8进制
+        'float'=>'/^\d+\.[0-9]+$/', //浮点型
+        /*---------字符串类型 --------------*/
+        //utf-8中文字符串
+        'chinese'=>'/^([\\xE4-\\xE9][\\x80-\\xBF][\\x80-\\xBF])+$/',
+        //utf-8中文字符串
+        'chinese_utf8'=>'/^[\x{4e00}-\x{9fa5}]+$/u',
+        /*---------常用类型 --------------*/
+        'english'=>'/^[a-z0-9_\.]$/i', //英文
+        'nickname'=>'/^[a-z\-_\u4e00-\u9fa5]*$/gi', //昵称，可以带英文字符和数字
+        'realname'=>'/^[\u4e00-\u9fa5]+$/i', //真实姓名
+        'password'=>'/^[a-z0-9]{6,32}$/i', //密码
+        'area'=>'^0\d{2,3}$' //区号
+
+    );
+    static function check($ctype,$input)
+    {
+        if(isset(self::$regx[$ctype]))
+        {
+            $regx = self::$regx[$ctype];
+            $n = preg_match($regx,$input,$match);
+    		if($n===0) return false;
+    		else return $match[0];
+        }
+        else return self::$ctype($input);
+    }
 	/**
 	 * 验证字符串格式
 	 * @param $str
@@ -63,15 +63,6 @@ class Validate
 	static function string($str)
 	{
 		return filter_var($str, FILTER_DEFAULT);
-	}
-	/**
-	 * 验证是否为IP地址
-	 * @param $str
-	 * @return false or $str
-	 */
-	static function ip($str)
-	{
-		return filter_var($str, FILTER_VALIDATE_IP);
 	}
 	/**
 	 * 验证是否为URL
@@ -90,28 +81,6 @@ class Validate
 	static function text($str)
 	{
 		return filter_var($str, FILTER_SANITIZE_STRING);
-	}
-	/**
-	 * 检测是否为utf-8中文字符串
-	 * @param $str
-	 * @return false or $str
-	 */
-	static function chinese($str)
-	{
-		$n = preg_match("/^([\\xE4-\\xE9][\\x80-\\xBF][\\x80-\\xBF])+$/",$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-	/**
-	 * 检测是否为utf-8中文字符串
-	 * @param $str
-	 * @return false or $str
-	 */
-    static function chinese_utf8($str)
-	{
-		$n = preg_match("/^[\x{4e00}-\x{9fa5}]+$/u",$str,$match);
-		if($n===0) return false;
-		else return $match[0];
 	}
     /**
 	 * 检测是否为gb2312中文字符串
@@ -136,28 +105,6 @@ class Validate
 		if($n===0) return false;
 		else return $match[0];
     }
-    /**
-     * 检测是否为手机号码（13、15、18）
-     * @param $str
-     * @return false or $str
-     */
-    static function mobile($str)
-    {
-        $n = preg_match('/^1[3|4|5|8]\d{9}$/',$str,$match);
-        if($n===0) return false;
-		else return $match[0];
-    }
-    /**
-     * 检测是否为固定电话格式（可包含分机号）
-     * @param $str
-     * @return false or $str
-     */
-	static function tel($str)
-	{
-        $n = preg_match('/(\d{3})-(\d{8})-{0,1}([0-9]{0,4})|(\d{4})-(\d{7})-{0,1}([0-9]{0,4})$/',$str,$match);
-        if($n===0) return false;
-		else return $match[0];
-	}
 	/**
      * 检测是否一个英文单词，不含空格和其他特殊字符
      * @param $str
@@ -169,39 +116,7 @@ class Validate
 		if($n===0) return false;
 		else return $match[0];
 	}
-	/**
-     * 检测是否一个日期格式
-     * @param $str
-     * @return false or $str
-     */
-	static function date($str)
-	{
-	    $n = preg_match('/[1-9][0-9][0-9][0-9]-[0-9]{1,2}-[0-9]{1,2}$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-	/**
-     * 检测是否一个时间格式
-     * @param $str
-     * @return false or $str
-     */
-	static function time($str)
-	{
-		$n = preg_match('/[0-9]{1,2}(:[0-9]{1,2}){1,2}$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-	/**
-     * 检测是否一个日期时间格式
-     * @param $str
-     * @return false or $str
-     */
-	static function datetime($value)
-	{
-	    $n = preg_match('/[1-9][0-9][0-9][0-9]-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}(:[0-9]{1,2}){1,2}$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
+
 	/**
 	 * 检查是否ASSIC码
 	 * @param $value
@@ -217,61 +132,6 @@ class Validate
 			}
 		}
 		return $value;
-	}
-	/**
-	 * 检查是否为IP
-	 * @param $value
-	 * @return true or false
-	 */
-	static function ipv4($str)
-	{
-	    $n = preg_match('/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-	/**
-	 * 检测是否八进制数
-	 * @param $value
-	 * @return unknown_type
-	 */
-	static function octal($str)
-	{
-	    $n = preg_match('/0[1-7]*[0-7]+$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-    /**
-	 * 检测是否二进制数
-	 * @param $value
-	 * @return unknown_type
-	 */
-	static function binary($str)
-	{
-	    $n = preg_match('/[01]+$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-    /**
-	 * 检测是否十六进制数
-	 * @param $value
-	 * @return unknown_type
-	 */
-	static function hex($str)
-	{
-	    $n = preg_match('/0x[0-9a-f]+$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
-	}
-    /**
-	 * 检测是否为域名
-	 * @param $value
-	 * @return unknown_type
-	 */
-	static function domain($str)
-	{
-	    $n = preg_match('/@([0-9a-z-_]+.)+[0-9a-z-_]+$/',$str,$match);
-		if($n===0) return false;
-		else return $match[0];
 	}
 }
 ?>
