@@ -34,7 +34,7 @@ class SwooleConfig implements ArrayAccess
 
     function offsetGet($keyname)
     {
-        if(!isset($this->_data[$keyname])) $this->load($key);
+        if(!isset($this->_data[$keyname])) $this->load($keyname);
         return $this->_data[$keyname];
     }
 

@@ -12,6 +12,8 @@ class DBCache implements ICache
 
     function __construct($table)
     {
+        //用URL配置缓存
+        if(is_array($table)) $table = $table['params']['table'];
         global $php;
         $this->model = new Model($php);
         $this->model->table = $table;

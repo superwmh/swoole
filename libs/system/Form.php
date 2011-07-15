@@ -9,25 +9,47 @@
  */
 class Form
 {
-	static function autoform($params,$option = null,$data = null ,$selfs = null)
+    static $checkbox_value_split = ',';
+    static $default_help_option = '请选择';
+
+    /**
+     * 根据数组，生成表单
+     * @param $form_array
+     * @return unknown_type
+     */
+	static function autoform($form_array)
 	{
 		$forms = array();
-		foreach($params as $name=>$p)
+		foreach($form_array as $k=>$v)
 		{
-			$func = $p['type'];
+		    //表单类型
+			$func = $v['type'];
+			//表单值
 			$value = '';
-			if(!empty($data[$name])) $value = $data[$name];
-			$attr = array();
-			if(!empty($p['attr']) and is_array($p['attr'])) $attr = $p['attr'];
-			$self = array();
-			if(!empty($p['self']) and is_array($p['self'])) $attr = $p['self'];
+			if(isset($v['value'])) $value = $v['value'];
+			unset($v['type'],$v['value']);
 
-			if($func=='select' or $func=='checkbox' or $func=='radio') $forms[$name] = self::$func($name,$option[$name],$value,$self,$attr);
-			else $forms[$name] = self::$func($name,$value,$attr);
+			if($func=='input' or $func=='password' or $func=='text' or $func=='htmltext')
+			{
+			    $forms[$k] = self::$func($k,$value,$v);
+			}
+			else
+			{
+			    $option = $v['option'];
+	            $self = $v['self'];
+	            $label_class = $v['label_class'];
+			    unset($v['option'],$v['self'],$v['label_class']);
+			    $forms[$k] = self::$func($k,$option,$value,$self,$v,$label_class);
+			}
 		}
 		return $forms;
 	}
-	static function input_attr($attr)
+	/**
+	 * 元素选项处理
+	 * @param $attr
+	 * @return unknown_type
+	 */
+	static function input_attr(&$attr)
 	{
 	    $str = " ";
         if(!empty($attr) && is_array($attr))
@@ -40,7 +62,7 @@ class Form
         return $str;
 	}
 	/**
-     * 将一个关联数组解析为列表选择表单
+     * 下拉选择菜单
      * $name  此select 的 name 标签
      * $array 要制作select 的数
      * $default 如果要设定默认选择哪个数据 就在此填入默认的数据的值
@@ -56,7 +78,7 @@ class Form
 		if($add_help)
 		{
 			if($add_help===true)
-			$htmlStr .= "<option value=\"\">请选择</option>\n";
+			$htmlStr .= "<option value=\"\">".self::$default_help_option."</option>\n";
 			else $htmlStr .= "<option value=\"\">$add_help</option>\n";
 		}
 		foreach($option as $key => $value)
@@ -76,62 +98,68 @@ class Form
 		return $htmlStr;
 	}
 	/**
-	 * 将一维数组做成选择框
+	 * 单选按钮
 	 *	$name  此radio 的 name 标签
 	 *	$array 要制作radio 的数
 	 *	$default 如果要设定默认选择哪个数据 就在此填入默认的数据的值
 	 *	$self 设置为ture，option的值等于$value
-	 *	$attrArray html标签的熟悉  就是这个radio的属性标签 例如  class="x1"
+	 *	$attrArray html的属性 例如  class="x1"
 	 */
-	static function radio($name,$array, $default=null,$self = false,$attrArray=null)
+	static function radio($name,$option,$default=null,$self=false,$attrArray=null,$label_class='')
 	{
 		$htmlStr = "";
-		$attrStr = self::input_attr($attrArray);
-		foreach($array as $key => $value)
+	    $attrStr = self::input_attr($attrArray);
+
+		foreach($option as $key => $value)
 		{
 			if($self) $key=$value;
 			if ($key == $default)
 			{
-				$htmlStr .= "<label><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value."</label>";
+				$htmlStr .= "<label class='$label_class'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value."</label>";
 			}
 			else
 			{
-				$htmlStr .= "<label><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."</label>";
+				$htmlStr .= "<label class='$label_class'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."</label>";
 			}
 		}
 		return $htmlStr;
 	}
 	/**
-	 * 将一维数组做成选择框
+	 * 多选按钮
 	 * $name  此radio 的 name 标签
 	 * $array 要制作radio 的数
 	 * $default 如果要设定默认选择哪个数据 就在此填入默认的数据的值
 	 * $self 设置为ture，option的值等于$value
-	 * $attrArray html标签的熟悉  就是这个radio的属性标签 例如  class="x1"  有问
+	 * $attrArray html的属性 例如  class="x1"
 	 */
-	static function checkbox($name,$option, $default=null,$self = false,$attrArray=null)
+	static function checkbox($name,$option,$default=null,$self = false,$attrArray=null,$label_class='')
 	{
 		$htmlStr = "";
 		$attrStr = self::input_attr($attrArray);
+		$default = array_flip(explode(self::$checkbox_value_split,$default));
 
-		if(!$self)
-		$self=array();
 		foreach($option as $key => $value)
 		{
 			if($self) $key=$value;
-			if(strpos($default,strval($key))!==false)
+			if(isset($default[$key]))
 			{
-				$htmlStr .= "<label><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value.'</label>';
+				$htmlStr .= "<label class='$label_class'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value.'</label>';
 			}
 			else
 			{
-				$htmlStr .= "<label><input type=\"checkbox\" name=\"{$name}[]\" id=\"$name\" value=\"$key\"  {$attrStr} />".$value.'</label>';
+				$htmlStr .= "<label class='$label_class'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\"  {$attrStr} />".$value.'</label>';
 			}
 		}
 		return $htmlStr;
 	}
-
-    static function upload($name,$value='',$attrArray=null,$size=50)
+    /**
+     * 文件上传表单
+     * @param $name 表单名称
+     * @param $value 值
+     * @param $attrArray html的属性 例如  class="x1"
+     * @return unknown_type
+     */
+    static function upload($name,$value='',$attrArray=null)
     {
     	$attrStr = self::input_attr($attrArray);
     	$form = '';
@@ -139,38 +167,118 @@ class Form
             $form = " <a href='$value' target='_blank'>查看文件</a><br />\n重新上传";
         return $form."<input type='file' name='$name' id='{$name}' size='{$size}' {$attrStr} />";
     }
-
-	static public function input($name,$value='',$attrArray=null)
+    /**
+     * 单行文本输入框
+     * @param $name
+     * @param $value
+     * @param $attrArray
+     * @return unknown_type
+     */
+	static function input($name,$value='',$attrArray=null)
 	{
 		$attrStr = self::input_attr($attrArray);
 		return "<input type='text' name='{$name}' id='{$name}' value='{$value}' {$attrStr} />";
 	}
-
-	static public function string($name,$value='',$attrArray=null)
+	/**
+     * 按钮
+     * @param $name
+     * @param $value
+     * @param $attrArray
+     * @return unknown_type
+     */
+	static function button($name,$value='',$attrArray=null)
 	{
-		return self::input($name,$value,$attrArray);
+		if(empty($attrArray['type'])) $attrArray['type'] = 'button';
+	    $attrStr = self::input_attr($attrArray);
+		return "<input name='{$name}' id='{$name}' value='{$value}' {$attrStr} />";
 	}
-
-	static function int($name,$value='',$attrArray=null)
+	/**
+	 * 密码输入框
+	 * @param $name
+	 * @param $value
+	 * @param $attrArray
+	 * @return unknown_type
+	 */
+    static function password($name,$value='',$attrArray=null)
 	{
-		return self::input($name,$value,$attrArray);
+		$attrStr = self::input_attr($attrArray);
+		return "<input type='password' name='{$name}' id='{$name}' value='{$value}' {$attrStr} />";
 	}
-
-	static public function htmltext($name,$value='',$attrArray=null)
-	{
-		if(!isset($attrArray['height'])) $attrArray['height'] = 480;
-		global $php;
-		$php->plugin->load('fckeditor');
-		return editor($name,$value,$attrArray['height']);
-	}
-
-	static public function text($name,$value='',$attrArray=null)
+	/**
+	 * 多行文本输入框
+	 * @param $name
+	 * @param $value
+	 * @param $attrArray
+	 * @return unknown_type
+	 */
+    static function text($name,$value='',$attrArray=null)
 	{
 		if(!isset($attrArray['cols'])) $attrArray['cols'] = 60;
 		if(!isset($attrArray['rows'])) $attrArray['rows'] = 3;
 		$attrStr = self::input_attr($attrArray);
 		$forms = "<textarea name='{$name}' id='{$name}' $attrStr>$value</textarea>";
 		return $forms;
+	}
+    /**
+     * HTML文本编辑器
+     * @param $name
+     * @param $value
+     * @param $attrArray
+     * @return unknown_type
+     */
+	static function htmltext($name,$value='',$attrArray=null)
+	{
+		if(!isset($attrArray['height'])) $attrArray['height'] = 480;
+		global $php;
+		$php->plugin->load('fckeditor');
+		return editor($name,$value,$attrArray['height']);
+	}
+	/**
+     * 隐藏项
+     * @param $name
+     * @param $value
+     * @param $attrArray
+     * @return unknown_type
+     */
+	static function hidden($name,$value='',$attrArray=null)
+	{
+	    $attrStr = self::input_attr($attrArray);
+		return "<input type='hidden' name='{$name}' id='{$name}' value='{$value}' {$attrStr} />";
+	}
+	/**
+	 * 表单头部
+	 * @param $form_name
+	 * @param $method
+	 * @param $action
+	 * @param $if_upload
+	 * @param $attrArray
+	 * @return unknown_type
+	 */
+	static function head($form_name,$method='post',$action='',$if_upload=false,$attrArray=null)
+	{
+	    if($if_upload) $attrArray['enctype'] = "multipart/form-data";
+	    $attrStr = self::input_attr($attrArray);
+	    return "<form action='$action' method='$method' name='$form_name' id='$form_name' $attrStr>";
+	}
+    static function foot($form_name)
+    {
+        return '</form><script type="text/javascript" src="/static/js/SwooleUI.js"></script>
+               <script type="text/javascript" src="/static/js/validator.js"></script>
+               <script type="text/javascript">
+                   window.onload = function(){
+                       validator("'.$form_name.'");
+                   };
+               </script>';
+    }
+	/* ---------------特殊方法-------------------- */
+	static function date_picker()
+	{
+
+	}
+
+	static function time_picker()
+	{
+
 	}
 
 	static public function areaProvince($nameprovince,$namecity,$value='')

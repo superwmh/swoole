@@ -18,8 +18,10 @@ class SelectDB
     public $where='';
     public $order='';
     public $group='';
+    public $having='';
     public $join='';
     public $union='';
+    public $for_update='';
 
     //Union联合查询
     private $if_union = false;
@@ -190,7 +192,11 @@ class SelectDB
         }
         else $this->order = '';
     }
-
+    /**
+     * 组合方式
+     * @param $group
+     * @return unknown_type
+     */
     function group($group)
     {
         if(!empty($group))
@@ -200,47 +206,101 @@ class SelectDB
         }
         else $this->group = '';
     }
-
+    /**
+     * group后条件
+     * @param $having
+     * @return unknown_type
+     */
+    function having($having)
+    {
+        if(!empty($having))
+        {
+            self::sql_safe($having);
+            $this->having = "having $having";
+        }
+        else $this->having = '';
+    }
+    /**
+     * IN条件
+     * @param $field
+     * @param $ins
+     * @return unknown_type
+     */
     function in($field,$ins)
     {
         $this->where("`$field` in ({$ins})");
     }
-
+    /**
+     * NOT IN条件
+     * @param $field
+     * @param $ins
+     * @return unknown_type
+     */
     function notin($field,$ins)
     {
         $this->where("`$field` not in ({$ins})");
     }
-
+    /**
+     * INNER连接
+     * @param $table_name
+     * @param $on
+     * @return unknown_type
+     */
     function join($table_name,$on)
     {
         $this->join.="INNER JOIN `{$table_name}` ON ({$on})";
     }
-
+    /**
+     * 左连接
+     * @param $table_name
+     * @param $on
+     * @return unknown_type
+     */
     function leftjoin($table_name,$on)
     {
         $this->join.="LEFT JOIN `{$table_name}` ON ({$on})";
     }
-
+    /**
+     * 右连接
+     * @param $table_name
+     * @param $on
+     * @return unknown_type
+     */
     function rightjoin($table_name,$on)
     {
         $this->join.="RIGHT JOIN `{$table_name}` ON ({$on})";
     }
-
+    /**
+     * 分页参数,指定每页数量
+     * @param $pagesize
+     * @return unknown_type
+     */
     function pagesize($pagesize)
     {
         $this->page_size = (int)$pagesize;
     }
-
+    /**
+     * 分页参数,指定当前页数
+     * @param $page
+     * @return unknown_type
+     */
     function page($page)
     {
         $this->page = (int)$page;
     }
-
+    /**
+     * 主键查询条件
+     * @param $id
+     * @return unknown_type
+     */
     function id($id)
     {
         $this->where("`{$this->primary}` = '$id'");
     }
-
+    /**
+     * 产生分页
+     * @return unknown_type
+     */
     function paging()
     {
         $this->num = $this->count();
@@ -254,17 +314,15 @@ class SelectDB
         $this->pager = new Pager(array('total'=>$this->num,'perpage'=>$this->page_size));
     }
 
-    function filter($filter_func)
-    {
-        $filter_list = explode(',',$filter_func);
-        $this->result_filter = array_merge($$this->result_filter,$filter_list);
-    }
-
     static function quote(&$sql)
     {
         $sql = str_replace("'","&#039;",$sql);
     }
-
+    /**
+     * 使SQL元素安全
+     * @param $sql_sub
+     * @return unknown_type
+     */
     static function sql_safe($sql_sub)
     {
         if(!preg_match(self::$allow_regx,$sql_sub))
@@ -274,10 +332,14 @@ class SelectDB
             else call_user_func(self::$error_call);
         }
     }
-
+    /**
+     * 获取组合成的SQL语句字符串
+     * @param $ifreturn
+     * @return unknown_type
+     */
     function getsql($ifreturn=true)
     {
-        $this->sql="select {$this->select} from {$this->table} {$this->join} {$this->where} {$this->union} {$this->group} {$this->order} {$this->limit}";
+        $this->sql="select {$this->select} from {$this->table} {$this->join} {$this->where} {$this->union} {$this->group} {$this->having} {$this->order} {$this->limit} {$this->for_update}";
         if($this->if_union) $this->sql = str_replace('{#union_select#}',$this->union_select,$this->sql);
         if($ifreturn) return $this->sql;
     }
@@ -296,7 +358,19 @@ class SelectDB
             }
         }
     }
-
+    /**
+     * 锁定行或表
+     * @return unknown_type
+     */
+    function lock()
+    {
+        $this->for_update = 'for update';
+    }
+    /**
+     * 执行生成的SQL语句
+     * @param $sql
+     * @return unknown_type
+     */
     function exeucte($sql='')
     {
         if($sql=='') $this->getsql(false);
@@ -304,7 +378,11 @@ class SelectDB
         $this->res = $this->db->query($this->sql);
         $this->is_execute++;
     }
-
+    /**
+     * SQL联合
+     * @param $sql
+     * @return unknown_type
+     */
     function union($sql)
     {
         $this->if_union = true;
@@ -316,7 +394,11 @@ class SelectDB
         }
         else $this->union = 'UNION ('.$sql.')';
     }
-
+    /**
+     * 将数组作为指令调用
+     * @param $params
+     * @return unknown_type
+     */
     function put($params)
     {
         if(isset($params['put']))
@@ -345,7 +427,6 @@ class SelectDB
             $this->_call($key,$value);
         }
     }
-
     private function _call($method,$param)
     {
         if($method=='update' or $method=='delete' or $method=='insert') return false;
@@ -371,7 +452,12 @@ class SelectDB
             }
         }
     }
-
+    /**
+     * 获取记录
+     * @param $field
+     * @param $cache_id
+     * @return unknown_type
+     */
     function getone($field='',$cache_id='')
     {
         $this->limit('1');
@@ -395,7 +481,11 @@ class SelectDB
         if($field==='') return $record;
         return $record[$field];
     }
-
+    /**
+     * 获取所有记录
+     * @param $cache_id
+     * @return unknown_type
+     */
     function getall($cache_id='')
     {
         if($this->auto_cache or !empty($cache_id))
@@ -418,7 +508,10 @@ class SelectDB
             return $this->res->fetchall();
         }
     }
-
+    /**
+     * 获取当前条件下的记录数
+     * @return unknown_type
+     */
     public function count()
     {
         $sql="select count({$this->count_fields}) as c from {$this->table} {$this->join} {$this->where} {$this->union} {$this->group}";
@@ -458,7 +551,11 @@ class SelectDB
         $values=substr($values,0,-1);
         return $this->db->query("insert into {$this->table} ($field) values($values)");
     }
-
+    /**
+     * 对符合当前条件的记录执行update
+     * @param $data
+     * @return unknown_type
+     */
     function update($data)
     {
         $update="";
@@ -471,9 +568,12 @@ class SelectDB
         $update = substr($update,0,-1);
         return $this->db->query("update {$this->table} set $update {$this->where} {$this->limit}");
     }
+    /**
+     * 删除当前条件下的记录
+     * @return unknown_type
+     */
     function delete()
     {
         return $this->db->query("delete from {$this->table} {$this->where} {$this->limit}");
     }
 }
-?>
