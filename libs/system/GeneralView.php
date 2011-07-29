@@ -265,39 +265,6 @@ class GeneralView
 			$this->swoole->tpl->display($config['tpl.list']);
 		}
 	}
-	/**
-	 * 列表删除
-	 * @return unknown_type
-	 */
-	function list_del()
-	{
-
-	}
-	/**
-	 * 详细与更新
-	 * @return unknown_type
-	 */
-	function detail_update()
-	{
-
-	}
-	/**
-	 * 增加
-	 * @return unknown_type
-	 */
-	function add()
-	{
-
-	}
-	/**
-	 * 批量操作
-	 * @return unknown_type
-	 */
-	function lot()
-	{
-
-	}
-
 	function handle_attachment($config)
 	{
 		if(!isset($config['entity']) or !isset($config['attach']) or !isset($config['entity_id'])) die('参数错误！');

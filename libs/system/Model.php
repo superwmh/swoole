@@ -3,7 +3,8 @@
  * Model类，ORM基础类，提供对某个数据库表的接口
  * @author Administrator
  * @package SwooleSystem
- * @subpackage MVC
+ * @subpackage Model
+ * @link http://www.swoole.com/
  */
 class Model
 {
@@ -13,6 +14,10 @@ class Model
 
 	public $primary="id";
 	public $foreignkey='catid';
+
+	public $_struct;
+	public $_form;
+	public $_form_secret = true;
 
 	public $table="";
 	/**
@@ -276,12 +281,62 @@ class Model
 	{
 		return $this->db->query('describe '.$this->table)->fetchall();
 	}
+    /**
+     * 自动生成表单
+     * @param $set_id
+     * @return unknown_type
+     */
+	function getForm($set_id=0)
+	{
+	    $this->_form_();
+	    //传入ID，修改表单
+	    if($set_id)
+	    {
+	        $data = $this->get((int)$set_id)->get();
+	        foreach($this->_form as $k=>&$f) $f['value'] = $data[$k];
+            if(method_exists($this,"_set_")) $this->_set_();
+
+            if($this->_form_secret) Form::secret(get_class($this).'_set');
+	    }
+	    //增加表单
+	    elseif(method_exists($this,"_add_"))
+	    {
+	        $this->_add_();
+	        if($this->_form_secret) Form::secret(get_class($this).'_add');
+	    }
+        return Form::autoform($this->_form);
+	}
+	/**
+	 *
+	 * @param 出错时设置$error
+	 * @return true or false
+	 */
+    function checkForm($input,$method,&$error)
+    {
+        if($this->_form_secret)
+        {
+            $k = 'form_'.get_class($this).'_'.$method;
+            if(!isset($_SESSION)) session();
+            if($_COOKIE[$k]!=$_SESSION[$k])
+            {
+                $error = '错误的请求';
+                return false;
+            }
+        }
+        $this->_form_();
+        return Form::checkInput($input,$this->_form,$error);
+    }
+	function parseForm()
+	{
+
+	}
 }
 /**
  * Record类，表中的一条记录，通过对象的操作，映射到数据库表
  * 可以使用属性访问，也可以通过关联数组方式访问
- * @author Administrator
+ * @author Tianfeng.Han
  * @package SwooleSystem
+ * @subpackage Model
  */
 class Record implements ArrayAccess
 {
@@ -416,9 +471,9 @@ class Record implements ArrayAccess
 /**
  * 数据结果集，由Record组成
  * 通过foreach遍历，可以产生单条的Record对象，对每条数据进行操作
- * @author Administrator
+ * @author Tianfeng.Han
  * @package SwooleSystem
- * @subpackage MVC
+ * @subpackage Model
  */
 class RecordSet implements Iterator
 {

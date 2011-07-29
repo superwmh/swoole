@@ -5,13 +5,13 @@
  * @author Tianfeng.Han
  * @package SwooleSystem
  * @subpackage HTML
+ * @link http://www.swoole.com/
  *
  */
 class Form
 {
     static $checkbox_value_split = ',';
     static $default_help_option = '请选择';
-
     /**
      * 根据数组，生成表单
      * @param $form_array
@@ -40,9 +40,97 @@ class Form
 	            $label_class = $v['label_class'];
 			    unset($v['option'],$v['self'],$v['label_class']);
 			    $forms[$k] = self::$func($k,$option,$value,$self,$v,$label_class);
+			    if($func=='radio' and isset($v['empty']))
+			        $forms[$k].= "\n<script language='javascript'>add_filter('{$k}','{$v['empty']}',function(){return getRadioValue('{$k}');});</script>";
+			    elseif($func=='checkbox' and isset($v['empty']))
+			        $forms[$k].= "\n<script language='javascript'>add_filter('{$k}[]','{$v['empty']}',function(){return getCheckboxValue('{$k}[]');});</script>";
 			}
 		}
 		return $forms;
+	}
+	static function checkInput($input,$form,&$error)
+	{
+	    foreach($form as $name=>$f)
+	    {
+	        $value = $input[$name];
+    	    // 为空的情况 -empty
+        	if(isset($f['empty']) and empty($value))
+        	{
+        		$error = $f['empty'];
+        		return false;
+        	}
+        	//检测字符串最大长度
+        	if(isset($f['maxlen']))
+        	{
+        	    $qs = explode('|',$f['maxlen']);
+        	    if(mb_strlen($value)>$qs[0])
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检测字符串最小长度
+        	if(isset($f['minlen']))
+        	{
+        	    $qs = explode('|',$f['maxlen']);
+        	    if(mb_strlen($value)>$qs[0])
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检查数值相等的情况 -equal
+        	if(isset($f['equal']))
+        	{
+        	    $qs = explode('|',$f['equal']);
+        	    if($value!=$qs[0])
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检查数值相等的情况 -noequal
+        	if(isset($f['noequal']))
+        	{
+        	    $qs = explode('|',$f['noequal']);
+        	    if($value==$qs[0])
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检查对象相等的情况 -equalo
+        	if(isset($f['equalo']))
+        	{
+        	    $qs = explode('|',$f['equalo']);
+        	    if($value==$input[$qs[0]])
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检查对象相等的情况 -equalo
+        	if(isset($f['ctype']))
+        	{
+        	    $qs = explode('|',$f['ctype']);
+        	    if(!Validate::check($qs[0],$value))
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	        //检查值的类型 -regx，自定义正则检查
+        	if(isset($f['regx']))
+        	{
+        	    $qs = explode('|',$f['regx']);
+        	    if(!Validate::regx($qs[0],$value))
+        	    {
+        	        $error = $qs[1];
+        		    return false;
+        	    }
+        	}
+	    }
+        return true;
 	}
 	/**
 	 * 元素选项处理
@@ -258,17 +346,37 @@ class Form
 	{
 	    if($if_upload) $attrArray['enctype'] = "multipart/form-data";
 	    $attrStr = self::input_attr($attrArray);
-	    return "<form action='$action' method='$method' name='$form_name' id='$form_name' $attrStr>";
+	    return "action='$action' method='$method' name='$form_name' id='$form_name' $attrStr";
 	}
-    static function foot($form_name)
+	/**
+	 * 设置Form Secret防止，非当前页面提交数据
+	 * @param $page_name
+	 * @param $return
+	 * @return unknown_type
+	 */
+	static function secret($page_name='',$length=32,$return=false)
+	{
+	    $secret = uniqid(RandomKey::string($length));
+	    if($return) return $secret;
+	    else
+	    {
+	        $k = 'form_'.$page_name;
+	        setcookie($k,$secret,0,'/');
+	        if(!isset($_SESSION)) session();
+	        $_SESSION[$k] = $secret;
+	    }
+	}
+	/**
+	 * JS验证
+	 * @param $form_name
+	 * @return unknown_type
+	 */
+    static function js($form_name,$each=false)
     {
-        return '</form><script type="text/javascript" src="/static/js/SwooleUI.js"></script>
-               <script type="text/javascript" src="/static/js/validator.js"></script>
-               <script type="text/javascript">
-                   window.onload = function(){
-                       validator("'.$form_name.'");
-                   };
-               </script>';
+        $js = "window.onload = function(){\n validator(\"$form_name\");\n";
+        if($each) $js.="validator_each(\"$form_name\");\n";
+        $js .= "};\n";
+        return Swoole_js::echojs($js,true);
     }
 	/* ---------------特殊方法-------------------- */
 	static function date_picker()

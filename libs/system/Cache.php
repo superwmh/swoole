@@ -44,14 +44,14 @@ class Cache
     function __construct($cache_url)
     {
         $config = Swoole_tools::uri($cache_url);
-        $this->cache = $this->get_cache($config);
+        $this->cache = self::get_cache($config);
     }
     /**
      * 获取缓存对象
      * @param $scheme
      * @return cache object
      */
-    private function get_cache($config)
+    static function get_cache($config)
     {
         if(empty(self::$backends[$config['protocol']])) return Error::info('Cache Error',"cache backend:{$config['protocol']} no support");
         $backend = self::$backends[$config['protocol']];
