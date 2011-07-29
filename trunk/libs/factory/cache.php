@@ -1,3 +1,5 @@
 <?php
 require LIBPATH.'/system/Cache.php';
-$cache = new Cache(CACHE_URL);
+$_c = new Cache(CACHE_URL);
+$cache = $_c->cache;
+unset($_c);

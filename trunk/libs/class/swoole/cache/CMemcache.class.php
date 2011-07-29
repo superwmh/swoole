@@ -22,9 +22,9 @@ class CMemcache implements ICache
         //多服务器
         if($this->multi)
         {
-            foreach($configs as $cf) $this->cache->addServer($cf);
+            foreach($configs as $cf) $this->addServer($cf);
         }
-        else $this->cache->addServer($configs);
+        else $this->addServer($configs);
     }
     /**
      * 格式化配置
@@ -46,7 +46,7 @@ class CMemcache implements ICache
     private function addServer($cf)
     {
         $this->format_config($cf);
-        if($memcached)	$this->cache->addServer($cf['host'],$cf['port'],$cf['weight']);
+        if($this->memcached)	$this->cache->addServer($cf['host'],$cf['port'],$cf['weight']);
         else $this->cache->addServer($cf['host'],$cf['port'],$cf['persistent'],$cf['weight']);
     }
     /**
@@ -55,11 +55,11 @@ class CMemcache implements ICache
      */
     function get($key)
     {
-        return $this->memcache?$this->cache->getMulti($key):$this->cache->get($key);
+        return $this->memcached?$this->cache->getMulti($key):$this->cache->get($key);
     }
     function set($key,$value,$expire=0)
     {
-        return $this->memcache?$this->cache->set($key,$value,$expire):$this->_cache->set($key,$value,self::$compress,$expire);;
+        return $this->memcached?$this->cache->set($key,$value,$expire):$this->cache->set($key,$value,self::$compress,$expire);;
     }
     function delete($key)
     {

@@ -17,7 +17,11 @@ class FileCache implements ICache
 	{
 	    if(isset($config['params']['file'])) $this->res = $config['params']['file'];
 	    else $this->res = FILECACHE_DIR.'/'.$config['id'].'.php';
-		if(is_file($this->res)) $this->_vd = unserialize(file_get_contents($this->res));
+		if(is_file($this->res))
+		{
+		    require($this->res);
+		    $this->_vd = $_vd;
+		}
     }
 
     function set($name,$value,$timeout=0)
@@ -38,7 +42,7 @@ class FileCache implements ICache
 
 	function exist($name)
 	{
-		if(isset($this->_vd[$name])) return false;
+		if(!isset($this->_vd[$name])) return false;
 		elseif($this->_vd[$name]["timeout"]==0) return true;
 		elseif(($this->_vd[$name]["mktime"]+$this->_vd[$name]["timeout"])<time())
 		{
@@ -52,11 +56,16 @@ class FileCache implements ICache
 	function delete($name)
 	{
 		if(isset($this->_vd[$name])) unset($this->_vd[$name]);
+		$this->onchange=1;
+		$this->save();
 	}
 
 	function save()
 	{
-		if($this->onchange==1) file_put_contents($this->res,serialize($this->_vd));
+		if($this->onchange==1)
+		{
+		    file_put_contents($this->res,"<?php\n\$_vd=".var_export($this->_vd,true).';');
+		}
 	}
 
 	function __destruct()
