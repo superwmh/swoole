@@ -6,20 +6,26 @@ class HttpServer implements Swoole_TCP_Server_Protocol
     public $config;
     public $server;
     public $request_process;
+    public $server_software = 'Swoole';
+    public $default_port = 80;
 
     function __construct($func='http_request_process')
     {
         $this->request_process = $func;
     }
-
+    /**
+     * 日志处理
+     * @param $msg
+     * @return unknown_type
+     */
     function log($msg)
     {
-        //echo $msg;
+        echo $msg,NL;
     }
 
     function onStart()
     {
-        echo "server running\n";
+        echo "server running()\n";
     }
     function onConnect($client_id)
     {
@@ -33,7 +39,6 @@ class HttpServer implements Swoole_TCP_Server_Protocol
      */
     function onRecive($client_id,$data)
     {
-        $this->log($data);
         //处理data的完整性
         $request = $this->request($data);
         $call_func = $this->request_process;
@@ -66,13 +71,11 @@ class HttpServer implements Swoole_TCP_Server_Protocol
             if(!isset($meta['filename']))
             {
                 //checkbox
-
                 if(substr($meta['name'],-2)==='[]') $request->post[substr($meta['name'],0,-2)][] = trim($parts[1]);
                 else $request->post[$meta['name']] = trim($parts[1]);
             }
             else
             {
-                ;
                 $file = trim($parts[1]);
                 $tmp_file = tempnam('/tmp','sw');
                 file_put_contents($tmp_file,$file);
@@ -164,13 +167,12 @@ class HttpServer implements Swoole_TCP_Server_Protocol
     function response($client_id,$response)
     {
         $response->head['Date'] = gmdate("D, d M Y H:i:s T");
-        $response->head['Server'] = $_SERVER['server_software'];
+        $response->head['Server'] = $this->server_software;
         $response->head['KeepAlive'] = 'off';
         $response->head['Connection'] = 'close';
         $response->head['Content-Length'] = strlen($response->body);
 
         $out = $response->head();
-        $this->log($out);
         $out .= $response->body;
 
         $this->server->send($client_id,$out);
