@@ -181,4 +181,3 @@ function __autoload($class_name)
     elseif(is_file(WEBPATH.'/class/'.$class_name.'.class.php'))
     require(WEBPATH.'/class/'.$class_name.'.class.php');
 }
-?>

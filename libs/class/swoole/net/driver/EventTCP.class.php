@@ -148,7 +148,7 @@ function sw_server_handle_receive($client_socket,$events,$arg)
 {
 	$server = $arg[0];
 	$client_id = $arg[1];
-	$data = fread($client_socket,$server->buffer_size);
+	$data = sw_fread_stream($client_socket,$server->buffer_size);
 
 	if($data !== false && $data !='')
 	{

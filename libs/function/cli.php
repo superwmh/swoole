@@ -15,10 +15,15 @@ function import_all_controller()
         //首字母大写的controller为基类控制器，不直接提供响应
         if(ord($name{0})>64 and ord($name{0})<91) continue;
         $path = $d->path.'/'.$file;
-        require($path);
-        $php->env['controllers'][$name] = $path;
+        import_controller($name,$path);
     }
     $d->close();
+}
+function import_controller($name,$path)
+{
+    global $php;
+    require($path);
+    $php->env['controllers'][$name] = array('path'=>$path,'time'=>time());
 }
 /**
  * 检查是否加载了某个扩展
@@ -66,7 +71,7 @@ function create_controllerclass($name,$hello=false)
     $content .= "	{\n";
     $content .= "	    parent::__construct(\$swoole);\n";
     $content .= "	}\n";
-    //添加一个hello view
+    //添加一个hello vie
     if($hello)
     {
         $content .= "	function index(\$swoole)\n";
@@ -154,7 +159,8 @@ function http_request_process($request)
     $response = new Response;
 
     //回收Smarty产生的assign内存占用
-    sw_gc_array($php->tpl->_tpl_vars);
+    //sw_gc_array($php->tpl->_tpl_vars);
+
     $path = trim($request->meta['path'],'/');
     $_mvc =  explode('/',$path,2);
 
@@ -186,22 +192,39 @@ function http_request_process($request)
     }
     else
     {
-        if(empty($path)) $mvc = array('controller'=>'page','view'=>'index');
-        else
-        {
-            $mvc['controller'] = $_mvc[0];
-            $mvc['view'] = $_mvc[1];
-        }
+        $url_route_func = Swoole::$config['server']['url_route'];
+        $mvc = $url_route_func($path);
         $php->env['mvc'] = $mvc;
         $response->head['Content-Type'] = 'text/html';
 
+        $controller_file = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
         if(!isset($php->env['controllers'][$mvc['controller']]))
         {
-            $response->send_http_status(404);
-            $response->body = Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");
-            return $response;
+            if(is_file($controller_file))
+            {
+                import_controller($controller_file);
+            }
+            else
+            {
+                $response->send_http_status(404);
+                $response->body = Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");
+                return $response;
+            }
         }
         $controller = new $mvc['controller']($php);
+        //auto reload
+        if(extension_loaded('runkit') and Swoole::$config['server']['reload'])
+        {
+            clearstatcache();
+            $fstat = stat($controller_file);
+            //修改时间大于加载时的时间
+            if($fstat['mtime']>$php->env['controllers'][$mvc['controller']]['time'])
+            {
+                runkit_import($controller_file);
+                $php->env['controllers'][$mvc['controller']]['time'] = time();
+                echo "reload controller ".$mvc['controller'],NL;
+            }
+        }
         $controller->request = $request;
         $controller->response = $response;
         if(!method_exists($controller,$mvc['view']))
@@ -219,4 +242,15 @@ function http_request_process($request)
         if($controller->session_open) $controller->session->save();
         return $response;
     }
+}
+function url_route_default($url_path)
+{
+    $mvc = array('controller'=>'page','view'=>'index');
+    if(!empty($url_path))
+    {
+        $request = explode('/',$url_path,2);
+        $mvc['controller']=$request[0];
+        $mvc['view']=$request[0];
+    }
+    return $mvc;
 }

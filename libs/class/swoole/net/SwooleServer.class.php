@@ -70,7 +70,7 @@ class SwooleServer
     }
     function log($log)
     {
-        echo $log;
+        echo $log,NL;
     }
 }
 function sw_run($cmd)
@@ -133,6 +133,7 @@ function sw_fwrite_stream($fp, $string)
 
 function sw_spawn($num)
 {
+    if(!extension_loaded('pcntl')) return new Error("Require pcntl extension!");
     $pids = array();
     for($i=0;$i<$num;$i++)
     {

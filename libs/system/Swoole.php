@@ -95,7 +95,7 @@ class Swoole
         foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
     }
     /**
-     * 加载config数据
+     * 加载config对象，不加载则为静态数组
      * @return unknown_type
      */
     function loadConfig()
@@ -206,31 +206,21 @@ class Swoole
         }
     }
 
-    function runServer()
+    function runServer($url_route='')
     {
-        if(empty($_SERVER['run_mode'])) $_SERVER['run_mode'] = 'server';
-        if(empty($_SERVER['server_software'])) $_SERVER['server_software'] = 'Swoole';
         if(empty($_SERVER['server_driver'])) $_SERVER['server_driver'] = 'SelectTCP'; //BlockTCP,EventTCP,SelectTCP
+        if(empty($_SERVER['server_software'])) $_SERVER['server_software'] = $_SERVER['server_software'];
         if(empty($_SERVER['server_host'])) $_SERVER['server_host'] = '0.0.0.0';
         if(empty($_SERVER['server_port'])) $_SERVER['server_port'] = 8888;
         if(empty($_SERVER['server_processor_num'])) $_SERVER['server_processor_num'] = 1;   //启用的进程数目
         if(empty($_SERVER['session_cookie_life'])) $_SERVER['session_cookie_life'] = 86400; //保存SESSION_ID的cookie存活时间
         if(empty($_SERVER['session_life'])) $_SERVER['session_life'] = 1800;        //Session在Cache中的存活时间
+        Swoole::$config['server']['url_route'] = $url_route;
 
         import('#net.driver.'.$_SERVER['server_driver']);
         import('#net.protocol.HttpServer');
-
         $server = new $_SERVER['server_driver']($_SERVER['server_host'],$_SERVER['server_port'],60);
         $server->setProtocol(new HttpServer);
         $server->run($_SERVER['server_processor_num']);
-    }
-
-    function runAdmin($admin_do)
-    {
-        require(LIBPATH."/admin/$admin_do.admin.php");
-        $classname = $admin_do.'Admin';
-        $admin = new $classname($this);
-        $action = isset($_GET['action'])?$_GET['action']:'list';
-        call_user_func('admin_'.$action,$admin);
     }
 }
