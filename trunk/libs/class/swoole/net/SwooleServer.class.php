@@ -78,11 +78,6 @@ function sw_run($cmd)
     if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
     else exec($cmd." > /dev/null &");
 }
-function sw_restart()
-{
-    if(PHP_OS=='WINNT') pclose(popen("start /B ".$cmd,"r"));
-    else exec($cmd." > /dev/null &");
-}
 function sw_gc_array($array)
 {
     $new = array();

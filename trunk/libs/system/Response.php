@@ -48,7 +48,7 @@ class Response
 
     function setcookie($name, $value = null, $expire = null, $path = '/', $domain = null, $secure = null, $httponly = null)
     {
-        if(empty($domain)) $domain = $_SERVER["HTTP_HOST"];
+        if($value==null) $value='deleted';
         $cookie = "$name=$value; expires=Tue, ".date("D, d-M-Y H:i:s T",$expire)."; domain=$domain";
         if($httponly) $cookie.='; httponly';
         $this->cookie[] = $cookie;

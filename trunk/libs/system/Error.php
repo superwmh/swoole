@@ -103,7 +103,7 @@ HTMLS;
             $info .= "# line:{$t['line']}, call:{$t['class']}{$t['type']}{$t['function']}, file:{$t['file']} \n";
         }
 		$info .= '</pre></div></body></html>';
-		if($_SERVER['run_mode']==='server') return $info;
+		if(defined('SWOOLE_SERVER')) return $info;
 		else echo $info;
 	}
 
