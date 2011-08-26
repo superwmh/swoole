@@ -16,6 +16,13 @@ class Swoole
     public $upload;
     public $user;
 
+    public $server;
+    public $protocol;
+    public $request;
+    public $response;
+    public $session;
+    public $session_open = false;
+
     static public $config;
     public $pagecache;
     /**
@@ -206,21 +213,19 @@ class Swoole
         }
     }
 
-    function runServer($url_route='')
+    function runServer($ini_file='')
     {
-        if(empty($_SERVER['server_driver'])) $_SERVER['server_driver'] = 'SelectTCP'; //BlockTCP,EventTCP,SelectTCP
-        if(empty($_SERVER['server_software'])) $_SERVER['server_software'] = $_SERVER['server_software'];
-        if(empty($_SERVER['server_host'])) $_SERVER['server_host'] = '0.0.0.0';
-        if(empty($_SERVER['server_port'])) $_SERVER['server_port'] = 8888;
-        if(empty($_SERVER['server_processor_num'])) $_SERVER['server_processor_num'] = 1;   //启用的进程数目
-        if(empty($_SERVER['session_cookie_life'])) $_SERVER['session_cookie_life'] = 86400; //保存SESSION_ID的cookie存活时间
-        if(empty($_SERVER['session_life'])) $_SERVER['session_life'] = 1800;        //Session在Cache中的存活时间
-        Swoole::$config['server']['url_route'] = $url_route;
+        if(empty($ini_file)) $ini_file = WEBPATH.'/swoole.ini';
+        import('#net.protocol.AppServer');
+        $protocol = new AppServer($ini_file);
 
-        import('#net.driver.'.$_SERVER['server_driver']);
-        import('#net.protocol.HttpServer');
-        $server = new $_SERVER['server_driver']($_SERVER['server_host'],$_SERVER['server_port'],60);
-        $server->setProtocol(new HttpServer);
-        $server->run($_SERVER['server_processor_num']);
+        $server_conf = $protocol->config['server'];
+        import('#net.driver.'.$server_conf['driver']);
+        $server = new $server_conf['driver']($server_conf['host'],$server_conf['port'],60);
+
+        $server->setProtocol($protocol);
+        $server->run($server_conf['processor_num']);
+        $this->server = $server;
+        $this->protocol = $protocol;
     }
 }

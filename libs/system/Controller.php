@@ -7,11 +7,8 @@
 class Controller
 {
     public $swoole;
-    public $view;
     public $is_ajax = false;
     public $if_filter = true;
-    public $session;
-    public $session_open = false;
 
     protected $trace = array();
     protected $model;
@@ -21,33 +18,6 @@ class Controller
         $this->swoole = $swoole;
         $this->model = $swoole->model;
         if($this->if_filter) Filter::request();
-    }
-    /**
-     * 开启SESSION
-     * @return unknown_type
-     */
-    function session_start()
-    {
-        //运行在传统环境下
-        if(!isset($_SERVER['run_mode']))
-        {
-            session_start();
-            return true;
-        }
-        if(empty($_COOKIE[Session::$sess_name]))
-        {
-            $sess_id = uniqid(RandomKey::string(Session::$sess_size-13));
-            $this->response->setcookie(Session::$sess_name,$sess_id,time()+$_SERVER['session_cookie_life']);
-        }
-        else $sess_id = trim($_COOKIE[Session::$sess_name]);
-
-        $session_cache = new Cache(SESSION_CACHE);
-        Session::$cache_life = $_SERVER['session_life'];
-        Session::$cache_prefix = Session::$sess_name;
-        $sess = new Session($session_cache);
-        $_SESSION = $this->request->session = $sess->load($sess_id);
-        $this->session_open = true;
-        $this->session = $sess;
     }
     /**
      * 跟踪信息

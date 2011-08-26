@@ -1,35 +1,79 @@
 <?php
+require_once LIBPATH.'/class/swoole/net/SwooleServer.class.php';
 require_once LIBPATH.'/system/Request.php';
 require_once LIBPATH.'/system/Response.php';
+/**
+ * HTTP Server
+ * @author Tianfeng.Han
+ * @link http://www.swoole.com/
+ * @package Swoole
+ * @subpackage net.protocol
+ */
 class HttpServer implements Swoole_TCP_Server_Protocol
 {
-    public $config;
     public $server;
-    public $request_process;
-    public $server_software = 'Swoole';
+    public $config;
     public $default_port = 80;
+    public $default_page = 'index.html';
 
-    function __construct($func='http_request_process')
+    public $mime_types;
+    public $dynamic_only = false;
+    public $static_dir;
+    public $static_ext;
+    public $dynamic_ext;
+    public $deny_dir;
+
+    function __construct($ini_file)
     {
-        $this->request_process = $func;
+        define('SWOOLE_SERVER',true);
+        require(LIBPATH.'/data/mimes.php');
+        $this->mime_types = array_flip($mimes);
+        $this->load_setting($ini_file);
     }
-    /**
-     * 日志处理
-     * @param $msg
-     * @return unknown_type
-     */
     function log($msg)
     {
         echo $msg,NL;
     }
-
     function onStart()
     {
-        echo "server running()\n";
+        echo "server running\n";
+    }
+    function onShutdown()
+    {
+        echo "server shutdown\n";
     }
     function onConnect($client_id)
     {
 
+    }
+    function onClose($client_id)
+    {
+
+    }
+    private function load_setting($ini_file)
+    {
+        if(!is_file($ini_file)) exit("Swoole AppServer配置文件错误($ini_file)\n");
+        $config = parse_ini_file($ini_file,true);
+        /*--------------Server------------------*/
+        if(empty($config['server']['driver'])) $config['server']['driver'] = 'SelectTCP'; //BlockTCP,EventTCP,SelectTCP
+        if(empty($config['server']['software'])) $config['server']['software'] = $_SERVER['server_software'];
+        if(empty($config['server']['host'])) $config['server']['host'] = '0.0.0.0';
+        if(empty($config['server']['port'])) $config['server']['port'] = 8888;
+        if(empty($config['server']['processor_num'])) $config['server']['processor_num'] = 1;   //启用的进程数目
+        /*--------------Session------------------*/
+        if(empty($config['session']['cookie_life'])) $config['session']['cookie_life'] = 86400; //保存SESSION_ID的cookie存活时间
+        if(empty($config['session']['session_life'])) $config['session']['session_life'] = 1800;        //Session在Cache中的存活时间
+        if(empty($config['session']['cache_url'])) $config['session']['cache_url'] = 'file://localhost#sess';        //Session在Cache中的存活时间
+        /*--------------Apps------------------*/
+        if(empty($config['apps']['url_route'])) $config['apps']['url_route'] = 'url_route_default';
+        if(empty($config['apps']['auto_reload'])) $config['apps']['auto_reload'] = 0;
+        /*--------------Access------------------*/
+        $this->deny_dir = array_flip(explode(',',$config['access']['deny_dir']));
+        $this->static_dir = array_flip(explode(',',$config['access']['static_dir']));
+        $this->static_ext = array_flip(explode(',',$config['access']['static_ext']));
+        $this->dynamic_ext = array_flip(explode(',',$config['access']['dynamic_ext']));
+        /*-----set----*/
+        $this->config = $config;
     }
     /**
      * 接收到数据
@@ -39,11 +83,15 @@ class HttpServer implements Swoole_TCP_Server_Protocol
      */
     function onRecive($client_id,$data)
     {
-        //处理data的完整性
+        //检测request data完整性（暂无）
+        //解析请求
         $request = $this->request($data);
-        $call_func = $this->request_process;
-        $response = $call_func($request);
+        //处理请求，产生response对象
+        $response = $this->process_request($request);
+        //发送response
         $this->response($client_id,$response);
+        //回收内存
+        unset($data);
         unset($request);
         unset($response);
     }
@@ -62,10 +110,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         {
             if($f==='') continue;
             $parts = explode("\r\n\r\n",$f);
-            //var_dump($parts[0]);
-
             $head = $this->parse_head(explode("\r\n",$parts[0]));
-            //var_dump($head);
             if(!isset($head['Content-Disposition'])) continue;
             $meta = $this->parse_cookie($head['Content-Disposition']);
             if(!isset($meta['filename']))
@@ -122,7 +167,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         return $_cookies;
     }
     /**
-     * 处理请求
+     * 解析请求
      * @param $data
      * @return unknown_type
      */
@@ -154,16 +199,12 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         if(!empty($request->head['Cookie'])) $request->cookie = $this->parse_cookie($request->head['Cookie']);
         return $request;
     }
-
-    function onClose($client_id)
-    {
-
-    }
-    function onShutdown()
-    {
-        echo "server shutdown\n";
-    }
-
+    /**
+     * 发送响应
+     * @param $client_id
+     * @param $response
+     * @return unknown_type
+     */
     function response($client_id,$response)
     {
         $response->head['Date'] = gmdate("D, d M Y H:i:s T");
@@ -177,5 +218,96 @@ class HttpServer implements Swoole_TCP_Server_Protocol
 
         $this->server->send($client_id,$out);
         $this->server->close($client_id);
+    }
+    function http_error($code,$response,$content='')
+    {
+        $response->send_http_status($code);
+        $response->head['Content-Type'] = 'text/html';
+        $response->body = Error::info(Response::$HTTP_HEADERS[$code],"<p>$content</p><hr><address>{$this->config['server']['software']} Server at {$this->server->host} Port {$this->server->port}</address>");
+    }
+    /**
+     * 处理请求
+     * @param $request
+     * @return unknown_type
+     */
+    function process_request($request)
+    {
+        $request->setGlobal();
+        $response = new Response;
+        //仅有动态请求
+        if($this->dynamic_only)
+        {
+            $this->process_dynamic($request,$response);
+            return $response;
+        }
+        //请求路径
+        $path = explode('/',trim($request->meta['path'],'/'));
+        if(empty($path)) $request->meta['path'] = $this->default_page;
+        //扩展名
+        $ext_name = Upload::file_ext($request->meta['path']);
+        /* 检测是否拒绝访问 */
+        if(isset($this->deny_dir[$path[0]]))
+        {
+            $this->http_error(403,$response,"服务器拒绝了您的访问({$request->meta['path']})！");
+        }
+        /* 是否静态目录 */
+        elseif(isset($this->static_dir[$path[0]]) or isset($this->static_ext[$ext_name]))
+        {
+            $this->process_static($request,$response);
+        }
+        /* 动态脚本 */
+        elseif(isset($this->dynamic_ext[$ext_name]) or empty($ext_name))
+        {
+            $this->process_dynamic($request,$response);
+        }
+        else
+        {
+            $this->http_error(403,$response);
+        }
+        return $response;
+    }
+    /**
+     * 静态请求
+     * @param $request
+     * @param $response
+     * @return unknown_type
+     */
+    function process_static(&$request,&$response)
+    {
+        $path = realpath(WEBPATH.'/'.$request->meta['path']);
+        if(is_file($path))
+        {
+            $response->head['Content-Type'] = $mime_types[$ext_name];
+            $response->body = file_get_contents($path);
+        }
+        else $this->http_error(404,$response,"文件不存在({$request->meta['path']})！");
+    }
+    /**
+     * 动态请求
+     * @param $request
+     * @param $response
+     * @return unknown_type
+     */
+    function process_dynamic(&$request,&$response)
+    {
+        $path = realpath(WEBPATH.'/'.$request->meta['path']);
+        if(is_file($path))
+        {
+            $request->setGlobal();
+            ob_start();
+            try
+            {
+                include $path;
+            }
+            catch(Exception $e)
+            {
+                $response->send_http_status(404);
+                $response->head['Content-Type'] = 'text/html';
+                $response->body = $e->getMessage().'!<br /><h1>'.$this->config['server']['software'].'</h1>';
+            }
+            $response->body = ob_get_contents();
+            ob_end_clean();
+        }
+        else $this->http_error(404,$response,"页面不存在({$request->meta['path']})！");
     }
 }
