@@ -75,7 +75,7 @@ class Controller
         $_trace = array_merge($this->trace,$_trace);
 
         // 调用Trace页面模板
-        echo <<<HTMLS
+        $html = <<<HTMLS
 <style type="text/css">
 #swoole_trace_content  {
 font-family:		Consolas, Courier New, Courier, monospace;
@@ -93,18 +93,18 @@ padding:			20px 20px 12px 20px;
 HTMLS;
         foreach ($_trace as $key=>$info)
         {
-            echo $key.' : '.$info.BL;
+            $html .= $key.' : '.$info.BL;
         }
         if($detail)
         {
             //输出包含的文件
-            echo '加载的文件',BL;
+             $html .= '加载的文件'.BL;
             foreach ($included_files as $file)
             {
-                echo 'require '.$file,BL;
+                 $html .= 'require '.$file.BL;
             }
         }
-        echo "</div></fieldset></div>";
+         $html .= "</div></fieldset></div>";
+         return $html;
     }
 }
-?>

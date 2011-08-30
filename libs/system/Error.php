@@ -7,7 +7,7 @@
  * @author Tianfeng.Han
  *
  */
-class Error
+class Error extends Exception
 {
     /**
      * 错误ID
@@ -39,13 +39,18 @@ class Error
     			//错误ID
     			$this->error_id = (int)$error;
     			//错误信息
-    			if(!isset(self::$error_code[$this->error_id])) $this->error_msg = self::$error_code[$this->error_id];
+    			if(!isset(self::$error_code[$this->error_id]))
+    			{
+    			    $this->error_msg = self::$error_code[$this->error_id];
+    			    parent::__construct($this->error_msg,$error);
+    			}
     		}
 	    }
 	    else
 	    {
 	        $this->error_id = 0;
 	        $this->error_msg = $error;
+	        parent::__construct($error);
 	    }
 		global $php;
 		//如果定义了错误监听程序
@@ -58,7 +63,7 @@ class Error
 	 * @param $content
 	 * @return unknown_type
 	 */
-	function info($msg,$content)
+	static function info($msg,$content)
 	{
 	    if(DEBUG=='off') return false;
 		$info = <<<HTMLS
@@ -103,8 +108,8 @@ HTMLS;
             $info .= "# line:{$t['line']}, call:{$t['class']}{$t['type']}{$t['function']}, file:{$t['file']} \n";
         }
 		$info .= '</pre></div></body></html>';
-		if(defined('SWOOLE_SERVER')) return $info;
-		else echo $info;
+		if(self::$stop) exit($info);
+		else return $info;
 	}
 
 	static function warn($title,$content)

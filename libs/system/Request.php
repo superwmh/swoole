@@ -9,6 +9,8 @@ class Request
     public $head;
     public $meta;
 
+    public $status;
+
     /**
      * 将原始请求信息转换到PHP超全局变量中
      * @return unknown_type
@@ -22,6 +24,16 @@ class Request
         $_REQUEST = array_merge($this->get,$this->post,$this->cookie);
         $_SERVER["HTTP_HOST"] = $this->head['Host'];
         $_SERVER["HTTP_USER_AGENT"] = $this->head['User-Agent'];
+    }
+
+    function unsetGlobal()
+    {
+        if($_GET) $_GET = array();
+        if($_POST) $_POST = array();
+        if($_FILES) $_FILES = array();
+        if($_COOKIE) $_COOKIE = array();
+        if($_SESSION) $_SESSION = array();
+        $_REQUEST = array();
     }
 }
 ?>

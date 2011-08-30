@@ -17,7 +17,7 @@ define("BL","<br />".NL);
 /**
  * 产生类库的全局变量
  */
-$php = new Swoole;
+$php = Swoole::getInstance();
 /**
  *函数的命名空间
  */
@@ -92,38 +92,15 @@ function create($name)
  */
 function session()
 {
-    //运行在传统环境下
-    if(!defined('SWOOLE_SERVER'))
+    if(!defined('SESSION_CACHE'))
     {
-        if(!defined('SESSION_CACHE'))
-        {
-            session_start();
-            return true;
-        }
-        else
-        {
-            $session_cache = new Cache(SESSION_CACHE);
-            $mSess = new Session($session_cache);
-            $mSess->initSess();
-        }
+        session_start();
+        return true;
     }
     else
     {
-        global $php;
-        if(empty($_COOKIE[Session::$sess_name]))
-        {
-            $sess_id = uniqid(RandomKey::string(Session::$sess_size-13));
-            $php->response->setcookie(Session::$sess_name,$sess_id,time()+$php->protocol->config['session']['cookie_life']);
-        }
-        else $sess_id = trim($_COOKIE[Session::$sess_name]);
-
-        $session_cache = new Cache($php->protocol->config['session']['cache_url']);
-        Session::$cache_life = $php->protocol->config['session']['session_life'];
-        Session::$cache_prefix = Session::$sess_name;
-        $sess = new Session($session_cache);
-        $_SESSION = $php->request->session = $sess->load($sess_id);
-        $php->session_open = true;
-        $php->session = $sess;
+        Session::$cache = new Cache(SESSION_CACHE);
+        Session::initSess();
     }
 }
 /**
@@ -194,7 +171,7 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
     $info .= '<b>Line:</b> '.$errline."<br />\n";
     $info .= '<b>Info:</b> '.$errstr."<br />\n";
     $info .= '<b>Code:</b> '.$errno."<br />\n";
-    Error::info($title,$info);
+    echo Error::info($title,$info);
 }
 /**
  *自动导入类
