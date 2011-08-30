@@ -31,7 +31,9 @@ class AppServer extends HttpServer
                 return $response;
             }
         }
-        $controller = new $mvc['controller']($php);
+        //将对象赋值到控制器
+        $php->request = $request;
+        $php->response = $response;
         /*---------------------检测代码是否更新----------------------*/
         if(extension_loaded('runkit') and $this->config['apps']['auto_reload'])
         {
@@ -46,19 +48,28 @@ class AppServer extends HttpServer
             }
         }
         /*---------------------处理MVC----------------------*/
-        $php->request = $request;
-        $php->response = $response;
-        if(!method_exists($controller,$mvc['view']))
-        {
-            $this->http_error(404,$response,"视图 <b>{$mvc['controller']}->{$mvc['view']}</b> 不存在!");
-            return $response;
-        }
         if(empty($mvc['param'])) $param = array();
         else $param = $mvc['param'];
 
-        $response->head['Content-Type'] = 'text/html';
-        if($controller->is_ajax) $response->body = json_encode(call_user_func(array($controller,$mvc['view']),$param));
-        else $response->body = call_user_func(array($controller,$mvc['view']),$param);
+        $response->head['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0';
+        $response->head['Pragma'] = 'no-cache';
+        $response->head['Content-Type'] = 'text/html; charset='.$this->config['apps']['charset'];
+        try
+        {
+            $controller = new $mvc['controller']($php);
+            if(!method_exists($controller,$mvc['view']))
+            {
+                $this->http_error(404,$response,"视图 <b>{$mvc['controller']}->{$mvc['view']}</b> 不存在!");
+                return $response;
+            }
+
+            if($controller->is_ajax) $response->body = json_encode(call_user_func(array($controller,$mvc['view']),$param));
+            else $response->body = call_user_func(array($controller,$mvc['view']),$param);
+        }
+        catch(Exception $e)
+        {
+            if($request->finish!=1) $this->http_error(404,$response,$e->getMessage());
+        }
         //保存Session
         if($php->session_open) $php->session->save();
         return $response;

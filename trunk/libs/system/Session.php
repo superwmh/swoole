@@ -14,8 +14,9 @@ class Session
     static $cache_life = 1800;
 
     public $sessID;
-    static $sess_size = 24;
+    static $sess_size = 32;
     static $sess_name = 'SESSID';
+    static $sess_domain;
 
     /**
      * 构造函数
@@ -102,17 +103,17 @@ class Session
      * @param   NULL
      * @return  Bool  true/FALSE
      */
-    public function initSess()
+    static function initSess()
     {
         //不使用 GET/POST 变量方式
-        ini_set('session.use_trans_sid',    0);
+        ini_set('session.use_trans_sid',0);
         //设置垃圾回收最大生存时间
         ini_set('session.gc_maxlifetime',self::$cache_life);
         //使用 COOKIE 保存 SESSION ID 的方式
         ini_set('session.use_cookies',1);
         ini_set('session.cookie_path','/');
         //多主机共享保存 SESSION ID 的 COOKIE
-        ini_set('session.cookie_domain', SESSION_DOMAIN);
+        ini_set('session.cookie_domain', self::$sess_domain);
         //将 session.save_handler 设置为 user，而不是默认的 files
         session_module_name('user');
         //定义 SESSION 各项操作所对应的方法名：

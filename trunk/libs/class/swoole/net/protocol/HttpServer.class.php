@@ -26,6 +26,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
     function __construct($ini_file)
     {
         define('SWOOLE_SERVER',true);
+        import_func('compat');
         require(LIBPATH.'/data/mimes.php');
         $this->mime_types = array_flip($mimes);
         $this->load_setting($ini_file);
@@ -67,6 +68,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         /*--------------Apps------------------*/
         if(empty($config['apps']['url_route'])) $config['apps']['url_route'] = 'url_route_default';
         if(empty($config['apps']['auto_reload'])) $config['apps']['auto_reload'] = 0;
+        if(empty($config['apps']['charset'])) $config['apps']['charset'] = 'utf-8';
         /*--------------Access------------------*/
         $this->deny_dir = array_flip(explode(',',$config['access']['deny_dir']));
         $this->static_dir = array_flip(explode(',',$config['access']['static_dir']));
@@ -92,6 +94,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         $this->response($client_id,$response);
         //回收内存
         unset($data);
+        $request->unsetGlobal();
         unset($request);
         unset($response);
     }
@@ -208,7 +211,7 @@ class HttpServer implements Swoole_TCP_Server_Protocol
     function response($client_id,$response)
     {
         $response->head['Date'] = gmdate("D, d M Y H:i:s T");
-        $response->head['Server'] = $this->server_software;
+        $response->head['Server'] = $this->config['server']['software'];
         $response->head['KeepAlive'] = 'off';
         $response->head['Connection'] = 'close';
         $response->head['Content-Length'] = strlen($response->body);

@@ -1,5 +1,4 @@
 <?php
-if(defined('DBCHARSET') and DBCHARSET=='utf8') echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 /**
  * JS生成工具，可以生成常用的Javascript代码
  *
@@ -12,7 +11,13 @@ class Swoole_js
 {
     static $head="<script language=\"javascript\">\n";
     static $foot="</script>\n";
-    static $return = false;
+
+    static function charset()
+    {
+        $out = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        if(self::$return or $return) return $out;
+        else echo $out;
+    }
     /**
      * 输出JS
      * @param $js
@@ -23,7 +28,7 @@ class Swoole_js
         $out = self::$head;
         $out .= $js;
         $out .= self::$foot;
-        if(self::$return or $return) return $out;
+        if(!Error::$stop or $return) return $out;
         else echo $out;
     }
     /**
@@ -33,7 +38,7 @@ class Swoole_js
      */
     static function alert($str)
     {
-        self::echojs("alert(\"$str\");");
+        return self::echojs("alert(\"$str\");");
     }
     /**
      * 重定向URL
@@ -42,7 +47,7 @@ class Swoole_js
      */
     static function location($url)
     {
-        self::echojs("location.href='$url';");
+        return self::echojs("location.href='$url';");
     }
     /**
      * 历史记录返回
@@ -53,7 +58,7 @@ class Swoole_js
     static function js_back($msg,$go=-1)
     {
         if(!is_numeric($go)) $go=-1;
-        self::echojs("alert('$msg');\nhistory.go($go);\n");
+        return self::echojs("alert('$msg');\nhistory.go($go);\n");
     }
     /**
      * 父框架历史记录返回
@@ -64,7 +69,7 @@ class Swoole_js
     static function parent_js_back($msg,$go=-1)
     {
         if(!is_numeric($go)) $go=-1;
-        self::echojs("alert('$msg');\nparent.history.go($go);\n");
+        return self::echojs("alert('$msg');\nparent.history.go($go);\n");
     }
     /**
      * 父框架跳转
@@ -74,7 +79,7 @@ class Swoole_js
      */
     static function parent_js_goto($msg,$url)
     {
-        self::echojs("alert(\"$msg\");\nwindow.parent.location.href=\"$url\";");
+        return self::echojs("alert(\"$msg\");\nwindow.parent.location.href=\"$url\";");
     }
     /**
      * 弹出信息框
@@ -83,7 +88,7 @@ class Swoole_js
      */
     static function js_alert($msg)
     {
-        self::echojs("alert('$msg');");
+        return self::echojs("alert('$msg');");
     }
     /**
      * 跳转
@@ -93,7 +98,7 @@ class Swoole_js
      */
     static function js_goto($msg,$url)
     {
-        self::echojs("alert('$msg');\nwindow.location.href=\"$url\";\n");
+        return self::echojs("alert('$msg');\nwindow.location.href=\"$url\";\n");
     }
     /**
      * 父框架重载入
@@ -103,7 +108,7 @@ class Swoole_js
      */
     static function js_parent_reload($msg)
     {
-        self::echojs("alert('$msg');\nwindow.parent.location.reload();");
+        return self::echojs("alert('$msg');\nwindow.parent.location.reload();");
     }
     /**
      * 弹出信息并关闭窗口
@@ -113,7 +118,7 @@ class Swoole_js
      */
     static function js_alert_close($msg)
     {
-        self::echojs("alert('$msg');\nwindow.self.close();\n");
+        return self::echojs("alert('$msg');\nwindow.self.close();\n");
     }
     /**
      * 弹出确认，确定则进入$true指定的网址，否则转向$false指定的网址
@@ -125,7 +130,7 @@ class Swoole_js
     {
         $js = "if(confirm('$msg')) location.href=\"{$true}\";\n";
         $js .= "else location.href=\"$false\";\n";
-        self::echojs($js);
+        return self::echojs($js);
     }
     /**
      * 弹出确认，确定则进入$true指定的网址，否则返回
@@ -137,6 +142,6 @@ class Swoole_js
     {
         $js = "if(confirm('$msg')) location.href=\"{$true}\";\n";
         $js .= "else history.go(-1);\n";
-        self::echojs($js);
+        return self::echojs($js);
     }
 }

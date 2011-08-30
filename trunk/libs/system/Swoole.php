@@ -24,6 +24,11 @@ class Swoole
     public $session_open = false;
 
     static public $config;
+    /**
+     * Swoole类的实例
+     * @var unknown_type
+     */
+    static public $php;
     public $pagecache;
     /**
      * 发生错误时的回调函数
@@ -37,7 +42,7 @@ class Swoole
     public $genv;
     public $env;
 
-    function __construct()
+    private function __construct()
     {
         if(!defined('DEBUG')) define('DEBUG','off');
         if(DEBUG=='off') error_reporting(0);
@@ -46,6 +51,14 @@ class Swoole
         $this->load = new SwooleLoader($this);
         $this->model = new ModelLoader($this);
         $this->plugin = new PluginLoader($this);
+    }
+    static function getInstance()
+    {
+        if(!self::$php)
+        {
+            self::$php = new Swoole;
+        }
+        return self::$php;
     }
     function __release()
     {
@@ -222,10 +235,9 @@ class Swoole
         $server_conf = $protocol->config['server'];
         import('#net.driver.'.$server_conf['driver']);
         $server = new $server_conf['driver']($server_conf['host'],$server_conf['port'],60);
-
-        $server->setProtocol($protocol);
-        $server->run($server_conf['processor_num']);
         $this->server = $server;
         $this->protocol = $protocol;
+        $server->setProtocol($protocol);
+        $server->run($server_conf['processor_num']);
     }
 }
