@@ -20,6 +20,35 @@ class SwooleConfig implements ArrayAccess
         }
         else return new Error("Config file {$f} not found!".NL);
     }
+    /**
+     * 键值对应数组的配置编码
+     * @param $array
+     * @return unknown_type
+     */
+    static function encode($array)
+    {
+        $return = '';
+        foreach($array as $k=>$v)
+        {
+            $return .= $k.':'.$v."\n";
+        }
+        return $return;
+    }
+    /**
+     * 字符串配置解码
+     * @param $array
+     * @return unknown_type
+     */
+    static function decode($str)
+    {
+        $lines = explode("\n",$str);
+        foreach($lines as $li)
+        {
+            list($k,$v) = explode(":",$li);
+            $return[$k] = $v;
+        }
+        return $return;
+    }
 
     function save($key)
     {

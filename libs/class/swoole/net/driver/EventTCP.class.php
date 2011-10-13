@@ -121,8 +121,6 @@ function sw_server_handle_connect($server_socket,$events,$server)
 	}
 
 	$client_id = (int)$client_socket;
-	$server->log(stream_socket_get_name($client_socket,true)." is connected!");
-
 	//加入到客户端socket列表
 	$server->client_sock[$client_id] = $client_socket;
 	stream_set_blocking($client_socket , 0);
