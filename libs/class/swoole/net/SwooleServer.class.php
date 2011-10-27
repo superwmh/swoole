@@ -121,7 +121,7 @@ function sw_fwrite_stream($fp, $string)
     for($written = 0; $written < $length; $written += $fwrite)
     {
         $fwrite = fwrite($fp, substr($string, $written));
-        if($fwrite===false) return $written;
+        if($fwrite<=0 or $fwrite===false) return $written;
     }
     return $written;
 }
