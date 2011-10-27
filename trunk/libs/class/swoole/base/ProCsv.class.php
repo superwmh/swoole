@@ -32,6 +32,7 @@ class ProCsv
 		$line = trim($line);
 		$result = array();
 		$datas = explode(self::$col_sep,$line);
+        if(empty(self::$data_sep)) return $datas;
 		foreach($datas as $data)
 		{
 			$d = self::parse_data($data);

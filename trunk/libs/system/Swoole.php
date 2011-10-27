@@ -231,10 +231,10 @@ class Swoole
         if(empty($ini_file)) $ini_file = WEBPATH.'/swoole.ini';
         import('#net.protocol.AppServer');
         $protocol = new AppServer($ini_file);
-
+        global $argv;
         $server_conf = $protocol->config['server'];
         import('#net.driver.'.$server_conf['driver']);
-        $server = new $server_conf['driver']($server_conf['host'],$server_conf['port'],60);
+        $server = new $server_conf['driver']($server_conf['host'],$argv[1],60);
         $this->server = $server;
         $this->protocol = $protocol;
         $server->setProtocol($protocol);
