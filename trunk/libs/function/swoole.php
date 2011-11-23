@@ -3,6 +3,24 @@
  * 使用函数方式调用系统功能
  */
 /**
+ * 创建表名模型的别名函数
+ * @param $table_name
+ * @return unknown_type
+ */
+function T($table_name)
+{
+    return table($table_name);
+}
+/**
+ * 创建模型的别名函数
+ * @param $model_name
+ * @return unknown_type
+ */
+function M($model_name)
+{
+    return createModel($model_name);
+}
+/**
  * 执行一条SQL语句并返回结果
  * @param $sql
  * @return unknown_type
@@ -36,6 +54,11 @@ function assign($name,$value)
 {
 	global $php;
 	return $php->tpl->assign($name,$value);
+}
+function ref($name,&$value)
+{
+    global $php;
+	return $php->tpl->ref($name,$value);
 }
 /**
  * 渲染模板

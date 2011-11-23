@@ -47,14 +47,16 @@ class Pager
      */
     function __construct($array)
     {
-        if(is_array($array)){
-            if(!array_key_exists('total',$array))$this->error(__FUNCTION__,'need a param of total');
+        if(is_array($array))
+        {
+            if(!isset($array['total'])) $this->error(__FUNCTION__,'need a param of total');
             $total=intval($array['total']);
-            $perpage=(array_key_exists('perpage',$array))?intval($array['perpage']):10;
-            $nowindex=(array_key_exists('nowindex',$array))?intval($array['nowindex']):'';
-            $url=(array_key_exists('url',$array))?$array['url']:'';
+            $perpage = isset($array['perpage'])?intval($array['perpage']):10;
+            $nowindex = isset($array['nowindex'])?intval($array['nowindex']):'';
+            $url = isset($array['url'])?$array['url']:'';
         }
-        else{
+        else
+        {
             $total=$array;
             $perpage=10;
             $nowindex='';
@@ -68,7 +70,6 @@ class Pager
         $this->totalpage=ceil($total/$perpage);
         $this->total = $total;
         $this->offset=($this->nowindex-1)*$perpage;
-        if(!empty($array['ajax']))$this->open_ajax($array['ajax']);//打开AJAX模式
     }
     function set_class($span,$classname)
     {

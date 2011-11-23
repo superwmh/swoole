@@ -18,6 +18,7 @@ class SelectDB
     public $where='';
     public $order='';
     public $group='';
+    public $use_index='';
     public $having='';
     public $join='';
     public $union='';
@@ -75,6 +76,7 @@ class SelectDB
             $this->where='';
             $this->order='';
             $this->group='';
+            $this->use_index='';
             $this->join='';
             $this->union='';
         }
@@ -135,6 +137,16 @@ class SelectDB
         {
             $this->where=$this->where." and ".$where;
         }
+    }
+    /**
+     * 指定查询所使用的索引字段
+     * @param $fields
+     * @return unknown_type
+     */
+    function useIndex($field)
+    {
+        self::sql_safe($field);
+        $this->use_index = "use index($field)";
     }
     /**
      * 相似查询like
@@ -339,7 +351,7 @@ class SelectDB
      */
     function getsql($ifreturn=true)
     {
-        $this->sql="select {$this->select} from {$this->table} {$this->join} {$this->where} {$this->union} {$this->group} {$this->having} {$this->order} {$this->limit} {$this->for_update}";
+        $this->sql="select {$this->select} from {$this->table} {$this->join} {$this->use_index} {$this->where} {$this->union} {$this->group} {$this->having} {$this->order} {$this->limit} {$this->for_update}";
         if($this->if_union) $this->sql = str_replace('{#union_select#}',$this->union_select,$this->sql);
         if($ifreturn) return $this->sql;
     }
@@ -421,7 +433,17 @@ class SelectDB
             else $this->$orwheres($orwhere);
             unset($params['orwhere']);
         }
-
+        //处理walk调用
+        if(isset($params['walk']))
+        {
+            foreach($params['walk'] as $call)
+            {
+                list($key,$value) = each($call);
+                $this->_call($key,$value);
+            }
+            unset($params['walk']);
+        }
+        //处理其他参数
         foreach($params as $key=>$value)
         {
             $this->_call($key,$value);
@@ -435,20 +457,18 @@ class SelectDB
             if(method_exists($this,$method))
             {
                 if(is_array($param)) call_user_func_array(array($this,$method),$param);
-                else call_user_func(array($this,$method),$param);
+                else $this->$method($param);
             }
             else
             {
                 self::quote($param);
-                if($this->call_by=='func')
-                $this->where($method.'="'.$param.'"');
+                if($this->call_by=='func') $this->where($method.'="'.$param.'"');
                 elseif($this->call_by=='smarty')
                 {
                     if(strpos($param,'$')===false)	$this->where($method."='".$param."'");
                     else $this->where($method."='{".$param."}'");
                 }
-                else
-                Error::info('Error: SelectDB 错误的参数',"<pre>参数$method=$param</pre>");
+                else Error::info('Error: SelectDB 错误的参数',"<pre>参数$method=$param</pre>");
             }
         }
     }

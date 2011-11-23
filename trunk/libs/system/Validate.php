@@ -37,7 +37,7 @@ class Validate
     //utf-8中文字符串
         'chinese'=>'/^[\x{4e00}-\x{9fa5}]+$/u',
     /*---------常用类型 --------------*/
-        'english'=>'/^[a-z0-9_\.]$/i', //英文
+        'english'=>'/^[a-z0-9_\.]+$/i', //英文
         'nickname'=>'/^[\x{4e00}-\x{9fa5}a-z_\.]+$/ui', //昵称，可以带英文字符和数字
         'realname'=>'/^[\x{4e00}-\x{9fa5}]+$/u', //真实姓名
         'password'=>'/^[a-z0-9]{6,32}$/i', //密码
@@ -136,5 +136,16 @@ class Validate
             if ($ord > 127) return false;
         }
         return $value;
+    }
+    /**
+     * 检查值如果为空则设置为默认值
+     * @param $value
+     * @param $default
+     * @return unknown_type
+     */
+    static function value_default($value,$default)
+    {
+        if(empty($value)) return $default;
+        else return $value;
     }
 }
