@@ -41,6 +41,16 @@ class Template extends Smarty
 		else return false;
 		return true;
 	}
+	/**
+	 * 传引用到模板中
+	 * @param $key
+	 * @param $value
+	 * @return unknown_type
+	 */
+	function ref($key,&$value)
+	{
+	    $this->_tpl_vars[$key] = &$value;
+	}
 	function display($template= null,$cache_id= null,$complile_id= null)
 	{
 		if($template==null)

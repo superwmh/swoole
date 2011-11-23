@@ -9,7 +9,7 @@
 class ModelLoader
 {
 	private $swoole = null;
-	private $_models = array();
+	public $_models = array();
 
 	function __construct($swoole)
 	{

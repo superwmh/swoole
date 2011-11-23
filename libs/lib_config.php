@@ -29,23 +29,31 @@ function import_func($space_name)
 }
 
 /**
- *生产一个model接口
+ * 生产一个model接口，模型在注册树上为单例
+ * @param $model_name
  */
-function createModel($model_name,$import=false)
+function createModel($model_name)
 {
     global $php;
-    if($import===false)
-    {
-        return $php->model->$model_name;
-    }
+    return $php->model->$model_name;
+}
+/**
+ * 传入一个数据库表，返回一个封装此表的Model接口
+ * @param $table_name
+ * @return unknown_type
+ */
+function table($table_name)
+{
+    global $php;
+    if(isset($php->model->_models[$table_name])) return $php->model->$table_name;
     else
     {
-        $model = explode('.',$model_name);
-        import($model_name);
-        return new $model[-1]($php);
+        $model = new Model($php);
+        $model->table = $table_name;
+        $php->model->_models[$table_name] = $model;
+        return $model;
     }
 }
-
 /**
  * 导入类库
  */

@@ -17,6 +17,8 @@ class Auth
     static $login_url = '/login.php?';
     static $username = 'username';
     static $password = 'password';
+    static $lastlogin = 'lastlogin';
+    static $lastip = 'lastip';
     static $session_prefix = '';
     static $mk_password = 'username,password';
     static $password_hash = 'sha1';
@@ -34,6 +36,16 @@ class Auth
     {
         $_SESSION[self::$session_prefix.$key] = $this->user;
         $_SESSION[self::$session_prefix.'save_key'][] = self::$session_prefix.$key;
+    }
+    /**
+     * 更新用户信息
+     * @param $set
+     * @return unknown_type
+     */
+    function updateStatus($set=null)
+    {
+        if(empty($set)) $set = array(self::$lastlogin=>date('Y-m-d H:i:s'),self::$lastip=>Swoole_client::getIP());
+        $this->db->update($this->user['id'],$set,$this->table);
     }
     function setSession($key)
     {
@@ -77,7 +89,7 @@ class Auth
      * 获取登录用户的UID
      * @return unknown_type
      */
-    function getUid()
+    static function getUid()
     {
         return $_SESSION[self::$session_prefix.'user_id'];
     }
@@ -85,7 +97,7 @@ class Auth
      * 获取登录用户的信息
      * @return unknown_type
      */
-    function getUinfo()
+    static function getUinfo($key='userinfo')
     {
         return $_SESSION[self::$session_prefix.$key];
     }
@@ -100,9 +112,9 @@ class Auth
     function login($username,$password,$auto,$save=false)
     {
         setcookie(self::$session_prefix.'username',$username,time() + self::$cookie_life,'/');
-        $this->user = $this->db->query('select '.$this->select.' from '.$this->table." where username='$username'")->fetch();
+        $this->user = $this->db->query('select '.$this->select.' from '.$this->table." where ".self::$username."='$username'")->fetch();
         if(empty($this->user)) return false;
-        elseif($this->user['password']==$password)
+        elseif($this->user[self::$password]==$password)
         {
             $_SESSION[self::$session_prefix.'isLogin']=true;
             $_SESSION[self::$session_prefix.'user_id']=$this->user['id'];

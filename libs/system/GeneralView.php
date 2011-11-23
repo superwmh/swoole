@@ -18,12 +18,20 @@ class GeneralView
     public $model;
     public $gets = array();
 
-    public $action_del = true;
+    //保存读取到的变量
+    public $vars = array();
+
     public $error_txt = '错误的参数';
     public $del_info = '删除成功！';
     public $set_info = '修改成功！';
     public $add_info = '增加成功！';
     public $success_info = '操作成功！';
+
+    public $post_callback;
+    public $add_callback;
+    public $set_callback;
+    public $del_callback;
+    public $detail_callback;
 
     function __construct($swoole)
     {
@@ -37,13 +45,18 @@ class GeneralView
 
     function display($tpl='')
     {
-         if($tpl) $this->swoole->tpl->display($tpl);
-         else $this->swoole->tpl->display(self::$method_prefix.'_'.$this->app_name.'_'.$this->action.'.html');
+        if($tpl) $this->swoole->tpl->display($tpl);
+        else $this->swoole->tpl->display(self::$method_prefix.'_'.$this->app_name.'_'.$this->action.'.html');
     }
 
     function setModel($model_name)
     {
         $this->model = createModel($model_name);
+    }
+
+    function setTable($table_name)
+    {
+        $this->model = table($table_name);
     }
 
     function geturl($add='')
@@ -59,7 +72,10 @@ class GeneralView
         if(method_exists($this,$method)) call_user_func(array($this,$method));
         else Error::info('GeneralView Error!',"View <b>{$this->app_name}->{$method}</b> Not Found!");
     }
-
+    /**
+     * 处理上传文件
+     * @return unknown_type
+     */
     function proc_upfiles()
     {
         import_func('file');
@@ -71,6 +87,10 @@ class GeneralView
             }
         }
     }
+    /**
+     * 处理删除请求
+     * @return unknown_type
+     */
     function action_del()
     {
         if(isset($_GET['del']))
@@ -81,37 +101,86 @@ class GeneralView
         }
         else return false;
     }
-    function action_post()
+    function trim_post()
+    {
+        foreach($_POST as &$val)
+        {
+            if(is_array($val)) $val = implode(',',$val);
+            $val = trim($val);
+        }
+    }
+    /**
+     * 过滤字段
+     * @return unknown_type
+     */
+    private function filter_field()
+    {
+        foreach($_POST as $k=>$v)
+        {
+            if(strpos($this->gets['select'],$k)===false) unset($_POST[$k]);
+        }
+    }
+    /**
+     * 处理数据提交请求
+     * @param $trim
+     * @return unknown_type
+     */
+    function action_post($trim=false)
     {
         if($_POST)
         {
             $this->proc_upfiles();
-            if(isset($_GET['id'])) $this->model->set((int)$_GET['id'],$_POST);
-            else $this->model->put($_POST);
+            if($trim) $this->trim_post();
+            if($this->post_callback) call_user_func($this->post_callback,$this);
+
+            if(isset($this->gets['select'])) $this->filter_field();
+            if(isset($_GET['id']))
+            {
+                if($this->gets['set_disable']) return false;
+                if($this->set_callback) call_user_func($this->set_callback,$this);
+                $this->model->set((int)$_GET['id'],$_POST);
+            }
+            else
+            {
+                if($this->gets['add_disable']) return false;
+                if($this->add_callback) call_user_func($this->add_callback,$this);
+                $this->model->put($_POST);
+            }
             return true;
         }
         else return false;
     }
+    /**
+     * 处理详细内容请求
+     * @return unknown_type
+     */
     function action_detail()
     {
         if(isset($_GET['id']))
         {
-            $det = $this->model->get((int)$_GET['id'])->get();
-            $this->swoole->tpl->assign('det',$det);
+            $this->vars['det'] = $this->model->get((int)$_GET['id'])->get();
+            if($this->detail_callback) call_user_func($this->detail_callback,$this);
+            $this->swoole->tpl->assign('det',$this->vars['det']);
             return true;
         }
         return false;
     }
+    /**
+     * 处理内容列表请求
+     * @return unknown_type
+     */
     function action_list()
     {
         $_model = $this->model;
         $gets = $this->gets;
         $gets['page'] = empty($_GET['page'])?1:$_GET['page'];
-        $list = $this->model->gets($gets,$pager);
-
-        $pager = array('total'=>$pager->total,'render'=>$pager->render());
-        $this->swoole->tpl->assign('pager',$pager);
-        $this->swoole->tpl->assign('list',$list);
+        $this->vars['list'] = $this->model->gets($gets,$pager);
+        $this->vars['pager'] = array('total'=>$pager->total,
+        			   'render'=>$pager->render(),
+                       'pagesize'=>$pager->pagesize,
+                       'totalpage'=>$pager->totalpage);
+        $this->swoole->tpl->ref('pager',$this->vars['pager']);
+        $this->swoole->tpl->ref('list',$this->vars['list']);
     }
     function handle_entity_op($config)
     {
@@ -126,6 +195,10 @@ class GeneralView
             $_model->sets($set,$get);
             Swoole_js::js_parent_reload('推荐成功');
         }
+    }
+    function __get($key)
+    {
+        return $this->vars[$key];
     }
     function handle_entity_add($config)
     {
