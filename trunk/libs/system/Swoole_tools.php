@@ -11,7 +11,6 @@ class Swoole_tools
     static public $url_param_join = '&';
     static public $url_prefix = '';
     static public $url_add_end = '';
-
     /**
      * 解析URI
      * @param $url
