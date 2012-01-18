@@ -20,6 +20,7 @@ class GeneralView
 
     //保存读取到的变量
     public $vars = array();
+    static public $page_key = 'page';
 
     public $error_txt = '错误的参数';
     public $del_info = '删除成功！';
@@ -173,12 +174,13 @@ class GeneralView
     {
         $_model = $this->model;
         $gets = $this->gets;
-        $gets['page'] = empty($_GET['page'])?1:$_GET['page'];
+        $gets['page'] = empty($_REQUEST[self::$page_key])?1:$_REQUEST[self::$page_key];
         $this->vars['list'] = $this->model->gets($gets,$pager);
         $this->vars['pager'] = array('total'=>$pager->total,
         			   'render'=>$pager->render(),
                        'pagesize'=>$pager->pagesize,
-                       'totalpage'=>$pager->totalpage);
+                       'totalpage'=>$pager->totalpage,
+        				'nowpage'=>$pager->nowindex);
         $this->swoole->tpl->ref('pager',$this->vars['pager']);
         $this->swoole->tpl->ref('list',$this->vars['list']);
     }
