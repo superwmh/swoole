@@ -25,7 +25,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
      */
     function send($client_id,$data)
     {
-        $this->sendData($this->client_sock[$client_id],$data);
+        return $this->sendData($this->client_sock[$client_id],$data);
     }
     /**
      * 向所有client发送数据
@@ -55,7 +55,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
     function close($client_id)
     {
         sw_socket_close($this->client_sock[$client_id]);
-        $this->client_sock[$id] = null;
+        $this->client_sock[$client_id] = null;
         $this->fds[$client_id] = null;
         unset($this->client_sock[$client_id],$this->fds[$client_id]);
         $this->protocol->onClose($client_id);
@@ -74,30 +74,25 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
                     $socket_id = (int)$socket;
                     if($socket_id == $this->server_socket_id)
                     {
-                        $client_socket = stream_socket_accept($this->server_sock);
-                        $client_socket_id = (int)$client_socket;
-                        stream_set_blocking($client_socket,$this->client_block);
-                        $this->client_sock[$client_socket_id] = $client_socket;
-                        $this->fds[$client_socket_id] = $client_socket;
-                        $this->client_num++;
-
-                        if($this->client_num > $this->max_connect) $this->close($socket_id);
-                        else $this->protocol->onConnect();
+                        if($client_socket_id = parent::accept())
+                        {
+                        	$this->fds[$client_socket_id] = $this->client_sock[$client_socket_id];
+                        	$this->protocol->onConnect($client_socket_id);
+                        }
                     }
                     else
                     {
                         $data = sw_fread_stream($socket,$this->buffer_size);
-                        if($data !== false && $data !='')
+                        if($data !== false)
                         {
                             $this->protocol->onRecive($socket_id,$data);
                         }
                         else
                         {
-                            $this->close($socket_id);
+                        	$this->close($socket_id);
                         }
                     }
                 }
-                //sw_gc_array($read_fds);
             }
         }
     }

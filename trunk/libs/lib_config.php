@@ -181,10 +181,11 @@ function swoole_error_handler($errno, $errstr, $errfile, $errline)
     $info .= '<b>Code:</b> '.$errno."<br />\n";
     echo Error::info($title,$info);
 }
+spl_autoload_register('swoole_autoload');
 /**
  *自动导入类
  */
-function __autoload($class_name)
+function swoole_autoload($class_name)
 {
     if(is_file(LIBPATH.'/system/'.$class_name.'.php'))
     require(LIBPATH.'/system/'.$class_name.'.php');

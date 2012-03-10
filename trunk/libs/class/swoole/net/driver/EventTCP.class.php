@@ -66,11 +66,11 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 	 */
 	function sendAll($client_id,$data)
 	{
-	    foreach($this->client_sock as $k=>$sock)
-        {
-            if($client_id and $k==$client_id) continue;
-            $this->sendData($sock,$data);
-        }
+		foreach($this->client_sock as $k=>$sock)
+		{
+			if($client_id and $k==$client_id) continue;
+			$this->sendData($sock,$data);
+		}
 	}
 	/**
 	 * 关闭服务器程序
@@ -110,30 +110,19 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
  */
 function sw_server_handle_connect($server_socket,$events,$server)
 {
-	//接受连接
-	$client_socket = stream_socket_accept($server_socket);
-	//如果超过最大连接数，则拒绝请求
-	if(count($server->client_sock)>$server->max_connect)
+	if($client_id = $server->accept())
 	{
-		$server->sendData($client_socket,'Server is full!');
-		sw_socket_close($client_socket);
-		return false;
+		$client_socket = $server->client_sock[$client_id];
+		//新的事件监听，监听客户端发生的事件
+		$client_event = event_new();
+		event_set($client_event, $client_socket, EV_READ | EV_PERSIST, "sw_server_handle_receive", array($server,$client_id));
+		//设置基本时间系统
+		event_base_set($client_event,$server->base_event);
+		//加入事件监听组
+		event_add($client_event);
+		$server->client_event[$client_id] = $client_event;
+		$server->protocol->onConnect($client_id);
 	}
-
-	$client_id = (int)$client_socket;
-	//加入到客户端socket列表
-	$server->client_sock[$client_id] = $client_socket;
-	stream_set_blocking($client_socket , 0);
-	//新的事件监听，监听客户端发生的事件
-	$client_event = event_new();
-	event_set($client_event, $client_socket, EV_READ | EV_PERSIST, "sw_server_handle_receive", array($server,$client_id));
-	//设置基本时间系统
-	event_base_set($client_event,$server->base_event);
-	//加入事件监听组
-	event_add($client_event);
-	$server->client_sock[$client_id] = $client_socket;
-	$server->client_event[$client_id] = $client_event;
-	$server->protocol->onConnect($client_id);
 }
 /**
  * 接收到数据后进行处理
@@ -148,7 +137,7 @@ function sw_server_handle_receive($client_socket,$events,$arg)
 	$client_id = $arg[1];
 	$data = sw_fread_stream($client_socket,$server->buffer_size);
 
-	if($data !== false && $data !='')
+	if($data !== false)
 	{
 		$server->protocol->onRecive($client_id,$data);
 	}
