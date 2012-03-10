@@ -106,6 +106,16 @@ class Swoole
         if(DEBUG=='on') set_error_handler('swoole_error_handler');
     }
     /**
+     * 加载一个模块，并返回
+     * @param $lib
+     * @return object $lib
+     */
+    static function load($lib)
+    {
+    	$this->$lib = $this->load->loadLib($lib);
+    	return $this->$lib;
+    }
+    /**
      * 自动导入模块
      * @return None
      */

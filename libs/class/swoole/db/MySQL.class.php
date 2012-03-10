@@ -52,6 +52,18 @@ class MySQL implements IDatabase
 	    if(!mysql_ping($this->conn)) return false;
 	    else return true;
 	}
+	/**
+	 * 获取上一次操作影响的行数
+	 * @return int
+	 */
+	function affected_rows()
+	{
+		return mysql_affected_rows($this->conn);
+	}
+	/**
+	 * 关闭连接
+	 * @see libs/system/IDatabase#close()
+	 */
 	function close()
 	{
 		mysql_close($this->conn);

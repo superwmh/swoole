@@ -184,6 +184,11 @@ class HttpServer implements Swoole_TCP_Server_Protocol
         $request = new Request;
         // HTTP协议头,方法，路径，协议[RFC-2616 5.1]
         list($request->meta['method'],$request->meta['uri'],$request->meta['protocol']) = explode(' ',$headerLines[0]);
+        //错误的HTTP请求
+        if(empty($request->meta['method']) or empty($request->meta['uri']) or empty($request->meta['protocol']))
+        {
+        	return false;
+        }
         unset($headerLines[0]);
         //解析Head
         $request->head = $this->parse_head($headerLines);
@@ -210,17 +215,16 @@ class HttpServer implements Swoole_TCP_Server_Protocol
      */
     function response($client_id,$response)
     {
-        $response->head['Date'] = gmdate("D, d M Y H:i:s T");
-        $response->head['Server'] = $this->config['server']['software'];
-        $response->head['KeepAlive'] = 'off';
-        $response->head['Connection'] = 'close';
-        $response->head['Content-Length'] = strlen($response->body);
+        if(!isset($response->head['Date'])) $response->head['Date'] = gmdate("D, d M Y H:i:s T");
+        if(!isset($response->head['Server'])) $response->head['Server'] = $this->config['server']['software'];
+        if(!isset($response->head['KeepAlive'])) $response->head['KeepAlive'] = 'off';
+        if(!isset($response->head['Connection'])) $response->head['Connection'] = 'close';
+        if(!isset($response->head['Content-Length'])) $response->head['Content-Length'] = strlen($response->body);
 
         $out = $response->head();
         $out .= $response->body;
-
         $this->server->send($client_id,$out);
-        $this->server->close($client_id);
+        //$this->server->close($client_id);
     }
     function http_error($code,$response,$content='')
     {
