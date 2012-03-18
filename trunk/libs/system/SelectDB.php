@@ -323,7 +323,7 @@ class SelectDB
         else
         $this->pages=$this->num/$this->page_size;
         $this->limit($offset.','.$this->page_size);
-        $this->pager = new Pager(array('total'=>$this->num,'perpage'=>$this->page_size));
+        $this->pager = new Pager(array('total'=>$this->num,'perpage'=>$this->page_size,'nowindex'=>$this->page));
     }
 
     static function quote(&$sql)

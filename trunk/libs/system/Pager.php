@@ -257,13 +257,16 @@ class Pager
      */
     function _set_nowindex($nowindex)
     {
-        if(empty($nowindex)){
+        if(empty($nowindex))
+        {
             //系统获取
-
-            if(isset($_GET[$this->page_name])){
+            if(isset($_GET[$this->page_name]))
+            {
                 $this->nowindex=intval($_GET[$this->page_name]);
             }
-        }else{
+        }
+        else
+        {
             //手动设置
             $this->nowindex=intval($nowindex);
         }
