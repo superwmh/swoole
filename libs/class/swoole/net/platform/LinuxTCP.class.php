@@ -33,6 +33,7 @@ class LinuxTCP
 		{
 			$this->daemon();
 		}
+		$this->main_pid = posix_getpid();
 		if(isset($this->cfg['pcntl']['user']))
 		{
 			$user = posix_getpwnam($this->cfg['pcntl']['user']);
