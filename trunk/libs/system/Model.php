@@ -70,7 +70,7 @@ class Model
 		$selectdb->from($this->table);
 		$selectdb->primary = $this->primary;
 		$selectdb->select($this->select);
-		if(!isset($params['order'])) $params['order'] = $this->primary.' desc';
+		if(!isset($params['order'])) $params['order'] = "`{$this->table}`.{$this->primary} desc";
 		$selectdb->put($params);
 		if(isset($params['page']))
 		{
