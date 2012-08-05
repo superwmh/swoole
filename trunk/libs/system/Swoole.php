@@ -8,13 +8,8 @@
  */
 class Swoole
 {
-    public $db;
-    public $tpl;
-    public $cache;
-    public $event;
-    public $log;
-    public $upload;
-    public $user;
+    //所有全局对象都改为动态延迟加载
+    //如果希望启动加载,请使用Swoole::load()函数
 
     public $server;
     public $protocol;
@@ -24,6 +19,8 @@ class Swoole
     public $session_open = false;
 
     static public $config;
+    static public $app_root;
+    static public $app_path;
     /**
      * Swoole类的实例
      * @var unknown_type
@@ -41,6 +38,8 @@ class Swoole
     public $plugin;
     public $genv;
     public $env;
+
+    private $autoload_libs = array();
 
     private function __construct()
     {
@@ -60,7 +59,7 @@ class Swoole
         }
         return self::$php;
     }
-    function __release()
+    private function __release()
     {
         if($this->db instanceof Database) $this->db->close();
         unset($this->tpl);
@@ -97,7 +96,7 @@ class Swoole
      * 初始化环境
      * @return unknown_type
      */
-    function __init()
+    private function __init()
     {
         #记录运行时间和内存占用情况
         $this->env['runtime']['start'] = microtime(true);
@@ -121,8 +120,7 @@ class Swoole
      */
     function autoload()
     {
-        $autoload = func_get_args();
-        foreach($autoload as $lib) $this->$lib = $this->load->loadLib($lib);
+        $this->autoload_libs = array_flip(func_get_args());
     }
     /**
      * 加载config对象，不加载则为静态数组
@@ -133,6 +131,34 @@ class Swoole
         self::$config = new SwooleConfig;
     }
     /**
+     * 初始化App
+     * @param $mvc
+     */
+    function initApp($mvc)
+    {
+    	//为了兼容老的APPSPATH预定义常量方式
+    	if(defined('APPSPATH'))
+    	{
+    		self::$app_root = str_replace(WEBPATH, '', APPSPATH);
+    	}
+    	//新版全部使用类静态变量 self::$app_root
+    	elseif(empty(self::$app_root))
+    	{
+    		self::$app_root = "/apps";
+    	}
+    	$this->env['mvc'] = $mvc;
+    	self::$app_path = WEBPATH.self::$app_root;
+    	$this->env['app_root'] = self::$app_root;
+    }
+    function __get($lib_name)
+    {
+    	if(isset($this->autoload_libs[$lib_name]) and empty($this->$lib_name))
+    	{
+    		$this->$lib_name = $this->load->loadLib($lib_name);
+    	}
+    	return $this->$lib_name;
+    }
+    /**
      * 运行MVC处理模型
      * @param $url_processor
      * @return None
@@ -141,12 +167,34 @@ class Swoole
     {
         $url_func = 'url_process_'.$url_processor;
         if(!function_exists($url_func))
-        Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
-        $mvc = call_user_func($url_func);
-        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['controller'])) exit;
-        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['view'])) exit;
-        $this->env['mvc'] = $mvc;
-        $controller_path = APPSPATH.'/controllers/'.$mvc['controller'].'.php';
+        {
+        	return Error::info('MVC Error!',"Url Process function not found!<p>\nFunction:$url_func");
+        }
+        $mvc = $url_func();
+        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['controller']))
+        {
+        	return Error::info('MVC Error!',"controller name incorrect.Regx: /^[a-z0-9_]+$/i");
+        }
+        if(!preg_match('/^[a-z0-9_]+$/i',$mvc['view']))
+        {
+        	return Error::info('MVC Error!',"view name incorrect.Regx: /^[a-z0-9_]+$/i");
+        }
+        if(isset($mvc['app']) and !preg_match('/^[a-z0-9_]+$/i',$mvc['app']))
+        {
+        	return Error::info('MVC Error!',"app name incorrect.Regx: /^[a-z0-9_]+$/i");
+        }
+        //初始化APP环境
+		$this->initApp($mvc);
+		//支持app+controller+view三级映射
+		if(isset($mvc['app']))
+		{
+			 $controller_path = self::$app_path."/{$mvc['app']}/controllers/{$mvc['controller']}.php";
+		}
+        else
+        {
+        	$controller_path = self::$app_path."/controllers/{$mvc['controller']}.php";
+        }
+
         if(!is_file($controller_path))
         {
             header("HTTP/1.1 404 Not Found");
@@ -163,23 +211,20 @@ class Swoole
             header("HTTP/1.1 404 Not Found");
             Error::info('MVC Error!'.$mvc['view'],"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
         }
-        if(empty($mvc['param'])) $param = array();
+        if(empty($mvc['param'])) $param = null;
         else $param = $mvc['param'];
+
+        $method = $mvc['view'];
+        $return = $controller->$method($param);
 
         if($controller->is_ajax)
         {
             header('Cache-Control: no-cache, must-revalidate');
             header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
             header('Content-type: application/json');
-            $data = call_user_func(array($controller,$mvc['view']));
-            if(DBCHARSET!='utf8')
-            {
-                import_func('array');
-                $data = array_iconv(DBCHARSET , 'utf-8' , $data);
-            }
-            echo json_encode($data);
+            echo json_encode($return);
         }
-        else echo call_user_func(array($controller,$mvc['view']),$param);
+        else $return;
     }
 
     function runAjax()
