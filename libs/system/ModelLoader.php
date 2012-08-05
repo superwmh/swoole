@@ -29,14 +29,16 @@ class ModelLoader
 		if(count($m) > 1)
 		{
 			$model_file = Swoole::$app_path."/{$m[0]}/models/{$m[1]}.model.php";
+			$model_class = $m[1];
 		}
 		else
 		{
-			$model_file = Swoole::$app_path.'/models/'.$m[1].'.model.php';
+			$model_file = Swoole::$app_path.'/models/'.$m[0].'.model.php';
+			$model_class = $m[0];
 		}
 		if(!is_file($model_file)) throw new Error("不存在的模型, <b>$model_name</b>");
 		require_once($model_file);
-		$this->_models[$model_name] = new $m[1]($this->swoole);
+		$this->_models[$model_name] = new $model_class($this->swoole);
 		return $this->_models[$model_name];
 	}
 }
