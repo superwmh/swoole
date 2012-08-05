@@ -103,6 +103,20 @@ class Swoole
         $this->env['runtime']['mem'] = memory_get_usage();
         #捕获错误信息
         if(DEBUG=='on') set_error_handler('swoole_error_handler');
+		
+		#初始化App环境
+		//为了兼容老的APPSPATH预定义常量方式
+    	if(defined('APPSPATH'))
+    	{
+    		self::$app_root = str_replace(WEBPATH, '', APPSPATH);
+    	}
+    	//新版全部使用类静态变量 self::$app_root
+    	elseif(empty(self::$app_root))
+    	{
+    		self::$app_root = "/apps";
+    	}
+    	self::$app_path = WEBPATH.self::$app_root;
+    	$this->env['app_root'] = self::$app_root;
     }
     /**
      * 加载一个模块，并返回
@@ -129,26 +143,6 @@ class Swoole
     function loadConfig()
     {
         self::$config = new SwooleConfig;
-    }
-    /**
-     * 初始化App
-     * @param $mvc
-     */
-    function initApp($mvc)
-    {
-    	//为了兼容老的APPSPATH预定义常量方式
-    	if(defined('APPSPATH'))
-    	{
-    		self::$app_root = str_replace(WEBPATH, '', APPSPATH);
-    	}
-    	//新版全部使用类静态变量 self::$app_root
-    	elseif(empty(self::$app_root))
-    	{
-    		self::$app_root = "/apps";
-    	}
-    	$this->env['mvc'] = $mvc;
-    	self::$app_path = WEBPATH.self::$app_root;
-    	$this->env['app_root'] = self::$app_root;
     }
     function __get($lib_name)
     {
@@ -183,8 +177,7 @@ class Swoole
         {
         	return Error::info('MVC Error!',"app name incorrect.Regx: /^[a-z0-9_]+$/i");
         }
-        //初始化APP环境
-		$this->initApp($mvc);
+		$this->env['mvc'] = $mvc;
 		//支持app+controller+view三级映射
 		if(isset($mvc['app']))
 		{
@@ -194,7 +187,6 @@ class Swoole
         {
         	$controller_path = self::$app_path."/controllers/{$mvc['controller']}.php";
         }
-
         if(!is_file($controller_path))
         {
             header("HTTP/1.1 404 Not Found");
