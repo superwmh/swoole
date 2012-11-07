@@ -8,23 +8,23 @@ class Queue
 {
     public $server;
 
-	function __construct($config,$server_type)
+	function __construct($config, $server_type)
     {
     	import('#queue.'.$server_type);
-    	$this->server = new $server_type($config);
+    	$this->queue = new $server_type($config);
     }
 
-    function put($data)
+    function push($data)
     {
-    	return $this->server->put($data);
+    	return $this->queue->push($data);
     }
 
-    function get()
+    function pop()
     {
-    	return $this->server->get();
+    	return $this->queue->pop();
     }
 
-    function __call($method,$param=array())
+    function __call($method, $param=array())
     {
     	return call_user_func_array(array($this->$server,$method),$param);
     }

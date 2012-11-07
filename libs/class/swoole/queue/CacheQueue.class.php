@@ -1,4 +1,7 @@
 <?php
+/**
+ * 这里没办法保证原子性，请线上服务使用redis，httpsqs或系统的ipcs消息队列
+ */
 class CacheQueue implements IQueue
 {
 	private $swoole;
@@ -36,7 +39,7 @@ class CacheQueue implements IQueue
 		$end_id = $this->cache->get($this->cache_prefix.'end');
         if($end_id!==false) $this->end_id = $end_id;
 	}
-	function put($data)
+	function push($data)
 	{
 	    $c_id = $this->end_id;
 	    $this->cache->increment($this->cache_prefix.'end');
@@ -44,7 +47,7 @@ class CacheQueue implements IQueue
 		$this->cache->save();
 		return true;
 	}
-	function get()
+	function pop()
 	{
 		$c_id = $this->start_id;
 	    $data = $this->cache->get($this->cache_prefix.$c_id);

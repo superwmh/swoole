@@ -25,7 +25,7 @@ class SelectTCP extends SwooleServer implements Swoole_TCP_Server_Driver
      */
     function send($client_id,$data)
     {
-        return $this->sendData($this->client_sock[$client_id],$data);
+        return $this->sendData($this->client_sock[$client_id], $data);
     }
     /**
      * 向所有client发送数据
