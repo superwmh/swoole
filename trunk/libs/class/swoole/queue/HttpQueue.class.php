@@ -47,14 +47,14 @@ class HttpQueue implements IQueue
         if($this->client_type=='curl') return $this->http->post($url,$data);
         else return HttpClient::quickPost($url,$data);
     }
-    function put($data)
+    function push($data)
     {
         $result = $this->http_post("put",$data);
         if ($result == "HTTPSQS_PUT_OK") return true;
         else if($result== "HTTPSQS_PUT_END") return $result;
         else return false;
     }
-    function get()
+    function pop()
     {
         $result = $this->http_get("get");
         if ($result == false || $result== "HTTPSQS_ERROR" || $result== false) return false;

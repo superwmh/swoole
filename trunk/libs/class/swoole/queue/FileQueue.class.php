@@ -34,7 +34,7 @@ class FileQueue implements IQueue
      * 入队
      * @see libs/system/IQueue#put($data)
      */
-    function put($data)
+    function push($data)
     {
         if(is_array($data) or is_object($data)) $data = serialize($data);
         //入队
@@ -45,7 +45,7 @@ class FileQueue implements IQueue
      * 出对
      * @see libs/system/IQueue#get()
      */
-    function get()
+    function pop()
     {
         //出对
         return array_shift($this->data);

@@ -20,7 +20,7 @@ class EventTCP extends SwooleServer implements Swoole_TCP_Server_Driver
 
 	function __construct($host,$port,$timeout=30)
 	{
-		parent::__construct($host,$port,$timeout=30);
+		parent::__construct($host, $port, $timeout);
 	}
 	function init()
 	{
