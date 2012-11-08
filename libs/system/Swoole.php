@@ -39,8 +39,6 @@ class Swoole
     public $genv;
     public $env;
 
-    private $autoload_libs = array();
-
     private function __construct()
     {
         if(!defined('DEBUG')) define('DEBUG','off');
@@ -134,7 +132,8 @@ class Swoole
      */
     function autoload()
     {
-        $this->autoload_libs = array_flip(func_get_args());
+        //$this->autoload_libs = array_flip(func_get_args());
+        //历史遗留
     }
     /**
      * 加载config对象，不加载则为静态数组
@@ -146,7 +145,7 @@ class Swoole
     }
     function __get($lib_name)
     {
-    	if(isset($this->autoload_libs[$lib_name]) and empty($this->$lib_name))
+    	if(empty($this->$lib_name))
     	{
     		$this->$lib_name = $this->load->loadLib($lib_name);
     	}
