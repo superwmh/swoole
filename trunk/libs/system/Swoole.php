@@ -22,6 +22,19 @@ class Swoole
     static public $app_root;
     static public $app_path;
     /**
+     * 可使用的组件
+     */
+    static $autoload_libs = array(
+    	'db' => true,  //数据库
+    	'tpl' => true, //模板系统
+    	'cache' => true, //缓存
+    	'event' => true, //异步事件
+    	'log' => true, //日志
+    	'kdb' => true, //key-value数据库
+    	'upload' => true, //上传组件
+    	'user' => true,   //用户验证组件
+    );
+    /**
      * Swoole类的实例
      * @var unknown_type
      */
@@ -38,7 +51,7 @@ class Swoole
     public $plugin;
     public $genv;
     public $env;
-
+    
     private function __construct()
     {
         if(!defined('DEBUG')) define('DEBUG','off');
@@ -145,7 +158,7 @@ class Swoole
     }
     function __get($lib_name)
     {
-    	if(empty($this->$lib_name))
+    	if(isset(self::$autoload_libs[$lib_name]) and empty($this->$lib_name))
     	{
     		$this->$lib_name = $this->load->loadLib($lib_name);
     	}
