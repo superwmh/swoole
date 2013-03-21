@@ -210,7 +210,7 @@ class Swoole
             Error::info('MVC Error',"Controller Class <b>{$mvc['controller']}</b> not exist!");
         }
         $controller = new $mvc['controller']($this);
-        if(!method_exists($controller,$mvc['view']))
+        if(!is_callable(array($controller,$mvc['view'])))
         {
             header("HTTP/1.1 404 Not Found");
             Error::info('MVC Error!'.$mvc['view'],"View <b>{$mvc['controller']}->{$mvc['view']}</b> Not Found!");
