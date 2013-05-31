@@ -12,11 +12,13 @@ class Controller
 
     protected $trace = array();
     protected $model;
+    protected $config;
 
     function __construct($swoole)
     {
         $this->swoole = $swoole;
         $this->model = $swoole->model;
+        $this->config = $swoole->config;
         if($this->if_filter) Filter::request();
     }
     /**
