@@ -46,7 +46,7 @@ define('LOGIN_TABLE','user_login');
 //框架
 require_once WEBPATH.'/libs/lib_config.php';
 //自动加载项目，请查看libs/factory目录
-$php->autoload('db','tpl','cache');
+$php->autoload('db','tpl','cache', 'config');
 //加载插件
 #$php->plugin->load('kdb');
 //加载动态配置
