@@ -18,7 +18,6 @@ class Swoole
     public $session;
     public $session_open = false;
 
-    static public $config;
     static public $app_root;
     static public $app_path;
     /**
@@ -28,6 +27,7 @@ class Swoole
     	'db' => true,  //数据库
     	'tpl' => true, //模板系统
     	'cache' => true, //缓存
+    	'config' => true, //缓存
     	'event' => true, //异步事件
     	'log' => true, //日志
     	'kdb' => true, //key-value数据库
@@ -147,14 +147,6 @@ class Swoole
     {
         //$this->autoload_libs = array_flip(func_get_args());
         //历史遗留
-    }
-    /**
-     * 加载config对象，不加载则为静态数组
-     * @return unknown_type
-     */
-    function loadConfig()
-    {
-        self::$config = new SwooleConfig;
     }
     function __get($lib_name)
     {
